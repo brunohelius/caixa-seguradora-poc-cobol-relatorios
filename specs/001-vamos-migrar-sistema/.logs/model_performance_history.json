@@ -25,17 +25,24 @@
         ]
       },
       "trivial": {
-        "successes": 1,
+        "successes": 2,
         "failures": 0,
-        "total": 1,
-        "total_time": 434.9316580295563,
-        "avg_time": 434.9316580295563,
+        "total": 2,
+        "total_time": 957.6092901229858,
+        "avg_time": 478.8046450614929,
         "recent_tasks": [
           {
             "task_id": "T004",
             "success": true,
             "time": 434.9316580295563,
             "timestamp": "2025-10-23T01:41:34.842969",
+            "error": null
+          },
+          {
+            "task_id": "T003",
+            "success": true,
+            "time": 522.6776320934296,
+            "timestamp": "2025-10-23T01:43:31.993524",
             "error": null
           }
         ]
@@ -44,7 +51,7 @@
   },
   "metadata": {
     "created": "2025-10-23T01:20:40.309033",
-    "last_updated": "2025-10-23T01:41:34.843233",
-    "total_tasks_tracked": 3
+    "last_updated": "2025-10-23T01:43:31.993641",
+    "total_tasks_tracked": 4
   }
 }
