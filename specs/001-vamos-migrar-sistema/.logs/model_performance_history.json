@@ -2,11 +2,11 @@
   "models": {
     "qwen-code-exec": {
       "simple": {
-        "successes": 3,
+        "successes": 4,
         "failures": 0,
-        "total": 3,
-        "total_time": 1639.7601068019867,
-        "avg_time": 546.5867022673289,
+        "total": 4,
+        "total_time": 2039.6584720611572,
+        "avg_time": 509.9146180152893,
         "recent_tasks": [
           {
             "task_id": "T001",
@@ -27,6 +27,13 @@
             "success": true,
             "time": 551.9069912433624,
             "timestamp": "2025-10-23T01:53:35.304023",
+            "error": null
+          },
+          {
+            "task_id": "T007",
+            "success": true,
+            "time": 399.89836525917053,
+            "timestamp": "2025-10-23T02:01:08.486830",
             "error": null
           }
         ]
@@ -58,7 +65,7 @@
   },
   "metadata": {
     "created": "2025-10-23T01:20:40.309033",
-    "last_updated": "2025-10-23T01:53:35.304172",
-    "total_tasks_tracked": 5
+    "last_updated": "2025-10-23T02:01:08.486959",
+    "total_tasks_tracked": 6
   }
 }
