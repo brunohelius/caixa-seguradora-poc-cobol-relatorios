@@ -4,19 +4,26 @@ node_modules/
 # Build outputs
 dist/
 build/
-dist-ssr/
-
-# Coverage
 coverage/
-
-# Lock files
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-
-# Generated files
-*.min.js
-*.bundle.js
 
 # Environment
 .env*
+
+# Logs
+*.log
+
+# Git
+.git/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Package manager
+package-lock.json
+yarn.lock
+pnpm-lock.yaml

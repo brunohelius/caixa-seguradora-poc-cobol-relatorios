@@ -37,7 +37,7 @@
 - [x] T010 [P] Add NuGet packages to Infrastructure project (EF Core 9.0, SQLite provider, System.Text.Json)
 - [x] T011 [P] Add NuGet packages to test projects (xUnit, FluentAssertions, Moq, Microsoft.AspNetCore.Mvc.Testing)
 - [x] T012 Create React + Vite + TypeScript project structure in `frontend/` using `npm create vite@latest`
-- [x] **T013** [P] Install frontend dependencies (React Router 6+, Axios, Recharts, TailwindCSS) in `frontend/package.json`
+- [ ] T013 [P] Install frontend dependencies (React Router 6+, Axios, Recharts, TailwindCSS) in `frontend/package.json`
 - [x] T014 [P] Configure TailwindCSS with Caixa Seguradora branding in `frontend/tailwind.config.js` (colors from research.md R6)
 - [ ] T015 [P] Configure ESLint and Prettier for frontend in `frontend/.eslintrc.json` and `frontend/.prettierrc`
 - [ ] T016 [P] Configure .NET code formatting (.editorconfig) in `backend/` per quickstart.md guidelines
