@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 using CaixaSeguradora.Infrastructure.Data;
 using CaixaSeguradora.Infrastructure.Services;
 using CaixaSeguradora.Infrastructure.Repositories;
@@ -67,6 +69,12 @@ try
             options.EnableSensitiveDataLogging();
             options.EnableDetailedErrors();
         }
+    });
+
+    // Add EF Core design-time services for migrations
+    builder.Services.AddDbContextFactory<PremiumReportingDbContext>(options =>
+    {
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
     });
 
     // Configure CORS

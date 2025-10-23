@@ -5,6 +5,8 @@ namespace CaixaSeguradora.Core.Attributes
         Display,          // PIC X(n) or PIC 9(n) - standard display
         Numeric,          // PIC 9(n) COMP - binary integer
         PackedDecimal,    // PIC 9(n) COMP-3 - packed decimal
-        SignedNumeric     // PIC S9(n) COMP - signed binary
+        SignedNumeric,    // PIC S9(n) COMP - signed binary
+        Alphanumeric,     // PIC X(n) - alphanumeric
+        Date              // Date field
     }
 }
