@@ -1,37 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import { DashboardPage } from './pages/DashboardPage';
+import ReportGenerationPage from './pages/ReportGenerationPage';
+import QueryPage from './pages/QueryPage';
+import BatchJobsPage from './pages/BatchJobsPage';
+import MockDataPage from './pages/MockDataPage';
 import './styles/globals.css';
-
-// Placeholder pages (will be implemented in Phase 4-7)
-
-const ReportGenerationPage = () => (
-  <div className="text-center py-12">
-    <h1 className="text-3xl font-bold text-gray-900 mb-4">Geração de Relatórios</h1>
-    <p className="text-gray-600">Página de geração de relatórios será implementada na Fase 4</p>
-  </div>
-);
-
-const QueryPage = () => (
-  <div className="text-center py-12">
-    <h1 className="text-3xl font-bold text-gray-900 mb-4">Consulta de Dados</h1>
-    <p className="text-gray-600">Página de consulta será implementada na Fase 5</p>
-  </div>
-);
-
-const BatchJobsPage = () => (
-  <div className="text-center py-12">
-    <h1 className="text-3xl font-bold text-gray-900 mb-4">Jobs Agendados</h1>
-    <p className="text-gray-600">Página de jobs será implementada na Fase 6</p>
-  </div>
-);
-
-const DataManagementPage = () => (
-  <div className="text-center py-12">
-    <h1 className="text-3xl font-bold text-gray-900 mb-4">Gerenciamento de Dados</h1>
-    <p className="text-gray-600">Página de gerenciamento de dados será implementada na Fase 7</p>
-  </div>
-);
 
 const NotFoundPage = () => (
   <div className="text-center py-12">
@@ -53,7 +27,8 @@ function App() {
           <Route path="/reports" element={<ReportGenerationPage />} />
           <Route path="/query" element={<QueryPage />} />
           <Route path="/batch-jobs" element={<BatchJobsPage />} />
-          <Route path="/data-management" element={<DataManagementPage />} />
+          <Route path="/data-management" element={<MockDataPage />} />
+          <Route path="/mock-data" element={<MockDataPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Layout>

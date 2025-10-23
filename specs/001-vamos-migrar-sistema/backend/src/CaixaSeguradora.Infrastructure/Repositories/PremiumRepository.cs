@@ -100,4 +100,29 @@ public class PremiumRepository : Repository<PremiumRecord>, IPremiumRepository
                 .ToDictionary(g => g.Key, g => g.Count())
         };
     }
+
+    /// <inheritdoc />
+    public async IAsyncEnumerable<PremiumRecord> GetPremiumsForReportAsync(
+        DateTime startDate,
+        DateTime endDate,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        // Stream premium records for a date range
+        // This is used for report generation that spans multiple periods
+        // PolicyStartDate is in format "yyyy-MM-dd" so we can use string comparison
+        var startDateStr = startDate.ToString("yyyy-MM-dd");
+        var endDateStr = endDate.ToString("yyyy-MM-dd");
+
+        var query = _premiumContext.PremiumRecords
+            .AsNoTracking()
+            .Where(p => string.Compare(p.PolicyStartDate, startDateStr) >= 0
+                     && string.Compare(p.PolicyStartDate, endDateStr) <= 0)
+            .OrderBy(p => p.PolicyNumber)
+            .ThenBy(p => p.PolicyStartDate);
+
+        await foreach (var record in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        {
+            yield return record;
+        }
+    }
 }

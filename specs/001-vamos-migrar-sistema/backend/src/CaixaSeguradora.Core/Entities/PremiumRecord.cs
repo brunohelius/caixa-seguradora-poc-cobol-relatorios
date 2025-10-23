@@ -1,161 +1,483 @@
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using CaixaSeguradora.Core.Attributes;
 
 namespace CaixaSeguradora.Core.Entities
 {
     /// <summary>
-    /// Represents the full premium record from COBOL program RG1866B
-    /// Maps all 687 data items from the WORKING-STORAGE SECTION
+    /// Represents premium emission records - the core entity for report generation
+    /// COBOL Source: V0PREMIOS view, processed via cursor at section R0500-00-DECLARE-V0PREMIOS
     /// </summary>
     public class PremiumRecord
     {
-        public int Id { get; set; }
+        // Primary Key
+        [Key]
+        public long PremiumId { get; set; }
 
-        // Main identification fields
-        [CobolField("WS-NUM-APOLICE", CobolFieldType.Numeric, 1, 15)]
-        public long PolicyNumber { get; set; }
+        // Business Identifiers
+        [CobolField(PicClause = "9(9)", Length = 9, FieldType = CobolFieldType.Numeric)]
+        public int CompanyCode { get; set; }  // V0PREM-COD-EMP (COMP)
 
-        [CobolField("WS-NUM-ENDOSSO", CobolFieldType.Numeric, 16, 10)]
-        public int EndorsementNumber { get; set; }
+        [CobolField(PicClause = "9(4)", Length = 4)]
+        public int ReferenceYear { get; set; }  // V0PREM-ANO-REFER
 
-        [CobolField("WS-COD-SISTEMA", CobolFieldType.Alphanumeric, 26, 2)]
-        public string SystemCode { get; set; } = string.Empty;
+        [CobolField(PicClause = "9(4)", Length = 4)]
+        public int ReferenceMonth { get; set; }  // V0PREM-MES-REFER
 
-        // Policy dates
-        [CobolField("WS-DAT-INICIO-VIGENCIA", CobolFieldType.Date, 32, 8)]
-        public DateTime PolicyStartDate { get; set; }
+        [CobolField(PicClause = "9(4)", Length = 4)]
+        public int ReferenceDay { get; set; }  // V0PREM-DIA-REFER
 
-        [CobolField("WS-DAT-FIM-VIGENCIA", CobolFieldType.Date, 40, 8)]
-        public DateTime PolicyEndDate { get; set; }
+        [CobolField(PicClause = "X(1)", Length = 1)]
+        [MaxLength(1)]
+        public string MovementType { get; set; } = string.Empty;  // V0PREM-TIPO-MOVT ('E', 'C', 'R', etc.)
 
-        [CobolField("WS-DAT-EMISSAO", CobolFieldType.Date, 48, 8)]
-        public DateTime IssueDate { get; set; }
+        [CobolField(PicClause = "9(13)", Length = 13, FieldType = CobolFieldType.PackedDecimal)]
+        public long PolicyNumber { get; set; }  // V0PREM-NUM-APOL (COMP-3)
 
-        // Premium calculation fields (CRITICAL - use decimal per constitution)
-        [CobolField("WS-VAL-PREMIO-BRUTO", CobolFieldType.PackedDecimal, 56, 15, 2, "S9(13)V99")]
-        public decimal GrossPremium { get; set; }
+        [CobolField(PicClause = "9(9)", Length = 9)]
+        public int EndorsementNumber { get; set; }  // V0PREM-NRENDOS
 
-        [CobolField("WS-VAL-PREMIO-LIQUIDO", CobolFieldType.PackedDecimal, 71, 15, 2, "S9(13)V99")]
-        public decimal NetPremium { get; set; }
+        [CobolField(PicClause = "9(4)", Length = 4)]
+        public int InstallmentNumber { get; set; }  // V0PREM-NRPARCEL
 
-        [CobolField("WS-VAL-COMISSAO", CobolFieldType.PackedDecimal, 86, 15, 2, "S9(13)V99")]
-        public decimal CommissionAmount { get; set; }
+        [CobolField(PicClause = "9(4)", Length = 4)]
+        public int OccurrenceNumber { get; set; }  // V0PREM-NUM-OCORR
 
-        [CobolField("WS-VAL-IOF", CobolFieldType.PackedDecimal, 101, 15, 2, "S9(13)V99")]
-        public decimal IOFAmount { get; set; }
+        [CobolField(PicClause = "9(4)", Length = 4)]
+        public int HistoricalOccurrence { get; set; }  // V0PREM-OCORHIST
 
-        [CobolField("WS-VAL-ADICIONAL-FRACIONAMENTO", CobolFieldType.PackedDecimal, 116, 15, 2, "S9(13)V99")]
-        public decimal InstallmentFee { get; set; }
+        // Product Classification
+        [CobolField(PicClause = "9(4)", Length = 4)]
+        public int LineOfBusiness { get; set; }  // V0PREM-RAMOFR (Ramo)
 
-        [CobolField("WS-VAL-CUSTO-APOLICE", CobolFieldType.PackedDecimal, 131, 15, 2, "S9(13)V99")]
-        public decimal PolicyCost { get; set; }
+        [CobolField(PicClause = "9(4)", Length = 4)]
+        public int ProductModality { get; set; }  // V0PREM-MODALIFR
 
-        // Client information
-        [CobolField("WS-NOM-SEGURADO", CobolFieldType.Alphanumeric, 146, 60)]
-        public string InsuredName { get; set; } = string.Empty;
+        [CobolField(PicClause = "9(4)", Length = 4)]
+        public int OperationType { get; set; }  // V0PREM-OPERACAO
 
-        [CobolField("WS-NUM-CPF-CNPJ-SEGURADO", CobolFieldType.Numeric, 206, 14)]
-        public string InsuredTaxId { get; set; } = string.Empty;
+        [CobolField(PicClause = "9(4)", Length = 4)]
+        public int BusinessOperationType { get; set; }  // V0PREM-TIPO-OPER
 
-        [CobolField("WS-TIP-PESSOA-SEGURADO", CobolFieldType.Alphanumeric, 220, 1)]
-        public string InsuredPersonType { get; set; } = string.Empty;
+        [CobolField(PicClause = "9(9)", Length = 9)]
+        public int ClientCode { get; set; }  // V0PREM-CODCLIEN
 
-        // Product information
-        [CobolField("WS-COD-PRODUTO", CobolFieldType.Numeric, 221, 4)]
-        public int ProductCode { get; set; }
+        // Currency & Exchange
+        [CobolField(PicClause = "9(6)V9(9)", Length = 16, DecimalPlaces = 9, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,9)")]
+        public decimal ExchangeRate { get; set; }  // V0PREM-VALOR-COT
 
-        [CobolField("WS-NOM-PRODUTO", CobolFieldType.Alphanumeric, 225, 50)]
-        public string ProductName { get; set; } = string.Empty;
+        // Premium Components - Installment (Item)
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal InsuredAmountItem { get; set; }  // V0PREM-IMP-SEG-IT
 
-        [CobolField("WS-COD-RAMO", CobolFieldType.Numeric, 275, 4)]
-        public int LineOfBusinessCode { get; set; }
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal BasePremiumItem { get; set; }  // V0PREM-VLPRMBAS-IT
 
-        // Agency and producer information
-        [CobolField("WS-COD-AGENCIA", CobolFieldType.Numeric, 279, 6)]
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal FixedPremiumItem { get; set; }  // V0PREM-VLPREFIX-IT
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal TariffPremiumItem { get; set; }  // V0PREM-VLPRMTAR-IT
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal DiscountItem { get; set; }  // V0PREM-VLDESCON-IT
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal NetPremiumItem { get; set; }  // V0PREM-VLPRMLIQ-IT
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal AdditionalFractionalItem { get; set; }  // V0PREM-VLADIFRA-IT
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal IssuanceCostItem { get; set; }  // V0PREM-VLCUSEMI-IT
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal IofItem { get; set; }  // V0PREM-VLIOCC-IT
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal TotalPremiumItem { get; set; }  // V0PREM-VLPRMTOT-IT
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal CommissionItem { get; set; }  // V0PREM-VLCOMIS-IT
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal AdministrationFeeItem { get; set; }  // V0PREM-VLADMN-IT
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal AgencyCommissionItem { get; set; }  // V0PREM-VLAGENC-IT
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal PreferentialCommissionItem { get; set; }  // V0PREM-VLPREFCM-IT
+
+        // Premium Components - Net (Liquido)
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal InsuredAmountNet { get; set; }  // V0PREM-IMP-SEG-IL
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal BasePremiumNet { get; set; }  // V0PREM-VLPRMBAS-IL
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal FixedPremiumNet { get; set; }  // V0PREM-VLPREFIX-IL
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal TariffPremiumNet { get; set; }  // V0PREM-VLPRMTAR-IL
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal DiscountNet { get; set; }  // V0PREM-VLDESCON-IL
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal NetPremiumNet { get; set; }  // V0PREM-VLPRMLIQ-IL
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal AdditionalFractionalNet { get; set; }  // V0PREM-VLADIFRA-IL
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal IssuanceCostNet { get; set; }  // V0PREM-VLCUSEMI-IL
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal IofNet { get; set; }  // V0PREM-VLIOCC-IL
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal TotalPremiumNet { get; set; }  // V0PREM-VLPRMTOT-IL
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal CommissionNet { get; set; }  // V0PREM-VLCOMIS-IL
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal AdministrationFeeNet { get; set; }  // V0PREM-VLADMN-IL
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal AgencyCommissionNet { get; set; }  // V0PREM-VLAGENC-IL
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal PreferentialCommissionNet { get; set; }  // V0PREM-VLPREFCM-IL
+
+        // Premium Components - Cossurance (Cosseguro)
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal InsuredAmountCossurance { get; set; }  // V0PREM-IMP-SEG-IC
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal BasePremiumCossurance { get; set; }  // V0PREM-VLPRMBAS-IC
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal FixedPremiumCossurance { get; set; }  // V0PREM-VLPREFIX-IC
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal TariffPremiumCossurance { get; set; }  // V0PREM-VLPRMTAR-IC
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal DiscountCossurance { get; set; }  // V0PREM-VLDESCON-IC
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal NetPremiumCossurance { get; set; }  // V0PREM-VLPRMLIQ-IC
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal AdditionalFractionalCossurance { get; set; }  // V0PREM-VLADIFRA-IC
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal CommissionCossurance { get; set; }  // V0PREM-VLCOMIS-IC
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal AdministrationFeeCossurance { get; set; }  // V0PREM-VLADMN-IC
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal AgencyCommissionCossurance { get; set; }  // V0PREM-VLAGENC-IC
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal PreferentialCommissionCossurance { get; set; }  // V0PREM-VLPREFCM-IC
+
+        // Premium Components - Reinsurance
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal InsuredAmountReinsurance { get; set; }  // V0PREM-IMP-SEG-IR
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal TariffPremiumReinsurance { get; set; }  // V0PREM-VLPRMTAR-IR
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal DiscountReinsurance { get; set; }  // V0PREM-VLDESCON-IR
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal NetPremiumReinsurance { get; set; }  // V0PREM-VLPRMLIQ-IR
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal AdditionalFractionalReinsurance { get; set; }  // V0PREM-VLADIFRA-IR
+
+        [CobolField(PicClause = "9(10)V9(5)", Length = 16, DecimalPlaces = 5, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,5)")]
+        public decimal CommissionReinsurance { get; set; }  // V0PREM-VLCOMIS-IR
+
+        // Premium Totals
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal InsuredAmountTotal { get; set; }  // V0PREM-IMP-SEG-T
+
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal BasePremiumTotal { get; set; }  // V0PREM-VLPRMBAS-T
+
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal FixedPremiumTotal { get; set; }  // V0PREM-VLPREFIX-T
+
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal TariffPremiumTotal { get; set; }  // V0PREM-VLPRMTAR-T
+
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal DiscountTotal { get; set; }  // V0PREM-VLDESCON-T
+
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal NetPremiumTotal { get; set; }  // V0PREM-VLPRMLIQ-T
+
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal AdditionalFractionalTotal { get; set; }  // V0PREM-VLADIFRA-T
+
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal IssuanceCostTotal { get; set; }  // V0PREM-VLCUSEMI-T
+
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal IofTotal { get; set; }  // V0PREM-VLIOCC-T
+
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal TotalPremiumTotal { get; set; }  // V0PREM-VLPRMTOT-T
+
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal CommissionTotal { get; set; }  // V0PREM-VLCOMIS-T
+
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal AdministrationFeeTotal { get; set; }  // V0PREM-VLADMN-T
+
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal AgencyCommissionTotal { get; set; }  // V0PREM-VLAGENC-T
+
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal PreferentialCommissionTotal { get; set; }  // V0PREM-VLPREFCM-T
+
+        // Net Local Currency Totals
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal InsuredAmountLocalTotal { get; set; }  // V0PREM-IMP-SEG-L
+
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal BasePremiumLocalTotal { get; set; }  // V0PREM-VLPRMBAS-L
+
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal FixedPremiumLocalTotal { get; set; }  // V0PREM-VLPREFIX-L
+
+        // Calculated/Derived Properties (for backward compatibility with services)
+        [NotMapped]
+        public decimal NetPremium => NetPremiumTotal;
+
+        [NotMapped]
+        public decimal GrossPremium => TotalPremiumTotal;
+
+        [NotMapped]
+        public decimal IOFAmount => IofTotal;
+
+        [NotMapped]
+        public decimal CommissionAmount => CommissionTotal;
+
+        [NotMapped]
+        public int LineOfBusinessCode => LineOfBusiness;
+
+        // Additional business identifiers (from data-model.md analysis)
+        [CobolField(PicClause = "9(4)", Length = 4)]
+        public int ProductCode { get; set; }  // Derived from Product relationship
+
+        [CobolField(PicClause = "X(2)", Length = 2)]
+        [MaxLength(2)]
+        public string SystemCode { get; set; } = string.Empty;  // System identifier (e.g., 'RG', 'GL')
+
+        // Extended Properties for Repository/Service compatibility
+        public long Id { get; set; }  // Alias for PremiumId
+
+        [NotMapped]
+        public long PolicyId => PolicyNumber;
+
+        [CobolField(PicClause = "9(4)", Length = 4)]
         public int AgencyCode { get; set; }
 
-        [CobolField("WS-NOM-AGENCIA", CobolFieldType.Alphanumeric, 285, 60)]
+        [CobolField(PicClause = "X(100)", Length = 100)]
+        [MaxLength(100)]
         public string AgencyName { get; set; } = string.Empty;
 
-        [CobolField("WS-COD-PRODUTOR", CobolFieldType.Numeric, 345, 10)]
+        [CobolField(PicClause = "9(9)", Length = 9)]
         public int ProducerCode { get; set; }
 
-        [CobolField("WS-NOM-PRODUTOR", CobolFieldType.Alphanumeric, 355, 60)]
+        [CobolField(PicClause = "X(100)", Length = 100)]
+        [MaxLength(100)]
         public string ProducerName { get; set; } = string.Empty;
 
-        [CobolField("WS-PER-COMISSAO-PRODUTOR", CobolFieldType.PackedDecimal, 415, 5, 2, "S9(3)V99")]
+        [CobolField(PicClause = "9(4)V99", Length = 6, DecimalPlaces = 2)]
+        [Column(TypeName = "decimal(6,2)")]
         public decimal ProducerCommissionPercentage { get; set; }
 
-        // Coverage information
-        [CobolField("WS-VAL-IMPORTANCIA-SEGURADA", CobolFieldType.PackedDecimal, 420, 15, 2, "S9(13)V99")]
-        public decimal InsuredAmount { get; set; }
+        [CobolField(PicClause = "9(9)", Length = 9)]
+        public int InsuredCode { get; set; }
 
-        [CobolField("WS-NUM-PARCELAS", CobolFieldType.Numeric, 435, 3)]
-        public int NumberOfInstallments { get; set; }
+        [CobolField(PicClause = "X(100)", Length = 100)]
+        [MaxLength(100)]
+        public string InsuredName { get; set; } = string.Empty;
 
-        [CobolField("WS-VAL-PARCELA", CobolFieldType.PackedDecimal, 438, 15, 2, "S9(13)V99")]
-        public decimal InstallmentAmount { get; set; }
+        [CobolField(PicClause = "X(14)", Length = 14)]
+        [MaxLength(14)]
+        public string InsuredTaxId { get; set; } = string.Empty;
 
-        // Cossurance fields
-        [CobolField("WS-IND-COSSEGURO", CobolFieldType.Alphanumeric, 453, 1)]
-        public string CossuranceIndicator { get; set; } = "N"; // S=Sim, N=Não
+        [CobolField(PicClause = "X(1)", Length = 1)]
+        [MaxLength(1)]
+        public string InsuredPersonType { get; set; } = string.Empty;
 
-        [CobolField("WS-PER-PARTICIPACAO-COSSEGURO", CobolFieldType.PackedDecimal, 454, 5, 2, "S9(3)V99")]
-        public decimal CossurancePercentage { get; set; }
+        [CobolField(PicClause = "X(100)", Length = 100)]
+        [MaxLength(100)]
+        public string ProductName { get; set; } = string.Empty;
 
-        [CobolField("WS-VAL-PREMIO-COSSEGURO", CobolFieldType.PackedDecimal, 459, 15, 2, "S9(13)V99")]
-        public decimal CossurancePremium { get; set; }
+        [CobolField(PicClause = "X(10)", Length = 10)]
+        [MaxLength(10)]
+        public string PolicyStartDate { get; set; } = string.Empty;
 
-        [CobolField("WS-COD-COSSEGURADORA", CobolFieldType.Numeric, 474, 6)]
-        public int? CossurerCode { get; set; }
+        [CobolField(PicClause = "X(1)", Length = 1)]
+        [MaxLength(1)]
+        public string PolicyStatus { get; set; } = string.Empty;
 
-        // Status and control fields
-        [CobolField("WS-STAT-APOLICE", CobolFieldType.Alphanumeric, 480, 2)]
-        public string PolicyStatus { get; set; } = string.Empty; // VG=Vigente, CA=Cancelado, SU=Suspenso
-
-        [CobolField("WS-COD-MOEDA", CobolFieldType.Alphanumeric, 482, 3)]
+        [CobolField(PicClause = "X(3)", Length = 3)]
+        [MaxLength(3)]
         public string CurrencyCode { get; set; } = "BRL";
 
-        [CobolField("WS-TIP-CALCULO", CobolFieldType.Alphanumeric, 485, 1)]
-        public string CalculationType { get; set; } = string.Empty;
+        [CobolField(PicClause = "X(1)", Length = 1)]
+        [MaxLength(1)]
+        public string CossuranceIndicator { get; set; } = "N";
 
-        // Address fields
-        [CobolField("WS-COD-CEP", CobolFieldType.Numeric, 486, 8)]
-        public string PostalCode { get; set; } = string.Empty;
+        [CobolField(PicClause = "9(4)V9(9)", Length = 14, DecimalPlaces = 9)]
+        [Column(TypeName = "decimal(13,9)")]
+        public decimal CossurancePercentage { get; set; }
 
-        [CobolField("WS-NOM-LOGRADOURO", CobolFieldType.Alphanumeric, 494, 100)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal CossurancePremium { get; set; }
+
+        [CobolField(PicClause = "X(100)", Length = 100)]
+        [MaxLength(100)]
         public string Street { get; set; } = string.Empty;
 
-        [CobolField("WS-NUM-ENDERECO", CobolFieldType.Alphanumeric, 594, 10)]
+        [CobolField(PicClause = "X(10)", Length = 10)]
+        [MaxLength(10)]
         public string AddressNumber { get; set; } = string.Empty;
 
-        [CobolField("WS-NOM-CIDADE", CobolFieldType.Alphanumeric, 604, 50)]
+        [CobolField(PicClause = "X(50)", Length = 50)]
+        [MaxLength(50)]
         public string City { get; set; } = string.Empty;
 
-        [CobolField("WS-COD-UF", CobolFieldType.Alphanumeric, 654, 2)]
+        [CobolField(PicClause = "X(2)", Length = 2)]
+        [MaxLength(2)]
         public string State { get; set; } = string.Empty;
 
-        // Database control fields
-        [CobolField("WS-COD-USUARIO-INCLUSAO", CobolFieldType.Alphanumeric, 656, 10)]
+        [CobolField(PicClause = "X(8)", Length = 8)]
+        [MaxLength(8)]
+        public string PostalCode { get; set; } = string.Empty;
+
+        [CobolField(PicClause = "X(1)", Length = 1)]
+        [MaxLength(1)]
+        public string CalculationType { get; set; } = string.Empty;
+
+        // Audit fields
+        [CobolField(PicClause = "X(8)", Length = 8)]
+        [MaxLength(8)]
         public string CreatedBy { get; set; } = string.Empty;
 
-        [CobolField("WS-DAT-INCLUSAO", CobolFieldType.Date, 666, 8)]
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [CobolField(PicClause = "X(8)", Length = 8)]
+        [MaxLength(8)]
+        public string UpdatedBy { get; set; } = string.Empty;
 
-        [CobolField("WS-COD-USUARIO-ALTERACAO", CobolFieldType.Alphanumeric, 674, 10)]
-        public string? UpdatedBy { get; set; }
-
-        [CobolField("WS-DAT-ALTERACAO", CobolFieldType.Date, 684, 8)]
-        public DateTime? UpdatedAt { get; set; }
-
-        // Processing control
-        [CobolField("WS-SQLCODE", CobolFieldType.SignedNumeric, 692, 9)]
-        public int? SqlCode { get; set; }
-
+        [CobolField(PicClause = "X(32)", Length = 32)]
+        [MaxLength(32)]
         public string RecordChecksum { get; set; } = string.Empty;
 
-        // Navigation properties
-        public int? PolicyId { get; set; }
+        // Derived/calculated fields for service compatibility
+        [NotMapped]
+        public decimal InsuredAmount => InsuredAmountTotal;
+
+        [NotMapped]
+        public decimal GrossPremiumAmount => TotalPremiumTotal;
+
+        [NotMapped]
+        public decimal NetPremiumAmount => NetPremiumTotal;
+
+        [NotMapped]
+        public decimal IofTaxValue => IofTotal;
+
+        [NotMapped]
+        public decimal CommissionValue => CommissionTotal;
+
+        [NotMapped]
+        public decimal InstallmentAmount => TotalPremiumItem;
+
+        [NotMapped]
+        public decimal InstallmentFee => IssuanceCostItem;
+
+        [NotMapped]
+        public decimal PolicyCost => IssuanceCostTotal;
+
+        // Navigation Properties
         public Policy? Policy { get; set; }
+        public Product? Product { get; set; }
+        public Client? Client { get; set; }
+        public Endorsement? Endorsement { get; set; }
     }
 }

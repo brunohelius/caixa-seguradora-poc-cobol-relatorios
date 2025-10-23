@@ -74,13 +74,11 @@ public class PolicyRepository : Repository<Policy>, IPolicyRepository
         return new PolicyEffectiveData
         {
             PolicyNumber = policy.PolicyNumber,
-            EffectiveDate = DateTime.ParseExact(policy.EffectiveDate, "yyyy-MM-dd", null),
-            ExpirationDate = string.IsNullOrWhiteSpace(policy.ExpirationDate)
-                ? null
-                : DateTime.ParseExact(policy.ExpirationDate, "yyyy-MM-dd", null),
+            EffectiveDate = policy.EffectiveDate,
+            ExpirationDate = policy.ExpirationDate,
             PolicyStatus = policy.PolicyStatus,
-            CancellationDate = policy.PolicyStatus == "C" && !string.IsNullOrWhiteSpace(policy.ExpirationDate)
-                ? DateTime.ParseExact(policy.ExpirationDate, "yyyy-MM-dd", null)
+            CancellationDate = policy.PolicyStatus == "C"
+                ? policy.ExpirationDate
                 : null
         };
     }

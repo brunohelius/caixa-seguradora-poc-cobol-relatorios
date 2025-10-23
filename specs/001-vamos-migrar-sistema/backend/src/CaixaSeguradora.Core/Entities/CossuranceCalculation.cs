@@ -1,32 +1,66 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using CaixaSeguradora.Core.Attributes;
 
 namespace CaixaSeguradora.Core.Entities
 {
     public class CossuranceCalculation
     {
-        public int Id { get; set; }
+        [Key]
+        public long CalculationId { get; set; }
 
-        [CobolField("WS-VAL-PREMIO-BRUTO-TOTAL", CobolFieldType.PackedDecimal, 1, 15, 2, "S9(13)V99")]
-        public decimal TotalGrossPremium { get; set; }
+        [CobolField(PicClause = "9(13)", Length = 13, FieldType = CobolFieldType.PackedDecimal)]
+        public long PolicyNumber { get; set; }  // NUM_APOLICE
 
-        [CobolField("WS-VAL-PREMIO-LIQUIDO-TOTAL", CobolFieldType.PackedDecimal, 16, 15, 2, "S9(13)V99")]
-        public decimal TotalNetPremium { get; set; }
+        [CobolField(PicClause = "9(4)", Length = 4)]
+        public int CossuranceCode { get; set; }  // COD_COSSG
 
-        [CobolField("WS-VAL-COMISSAO-TOTAL", CobolFieldType.PackedDecimal, 31, 15, 2, "S9(13)V99")]
-        public decimal TotalCommission { get; set; }
+        [CobolField(PicClause = "9(4)V9(9)", Length = 14, DecimalPlaces = 9, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(13,9)")]
+        public decimal QuotaPercentage { get; set; }  // PCT_QUOTA
 
-        [CobolField("WS-VAL-IOF-TOTAL", CobolFieldType.PackedDecimal, 46, 15, 2, "S9(13)V99")]
-        public decimal TotalIOF { get; set; }
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal RetainedPremium { get; set; }  // VL_PRM_RETIDO
 
-        [CobolField("WS-VAL-PREMIO-COSSEGURADORA", CobolFieldType.PackedDecimal, 61, 15, 2, "S9(13)V99")]
-        public decimal CossurerPremium { get; set; }
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal CededPremium { get; set; }  // VL_PRM_CEDIDO
 
-        [CobolField("WS-VAL-COMISSAO-COSSEGURADORA", CobolFieldType.PackedDecimal, 76, 15, 2, "S9(13)V99")]
-        public decimal CossurerCommission { get; set; }
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal CededCommission { get; set; }  // VL_COMIS_CEDIDA
 
-        public int CossuredPolicyId { get; set; }
+        // Additional properties for service compatibility
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal TotalGrossPremium { get; set; }  // Total gross premium for calculation
+
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal TotalNetPremium { get; set; }  // Total net premium
+
+        [NotMapped]
+        public decimal CossurerPremium => CededPremium;  // Alias
+
+        [NotMapped]
+        public decimal CossurerCommission => CededCommission;  // Alias
+
+        [CobolField(PicClause = "9(13)V99", Length = 15, DecimalPlaces = 2, FieldType = CobolFieldType.PackedDecimal)]
+        [Column(TypeName = "decimal(15,2)")]
+        public decimal TotalIOF { get; set; }  // Total IOF tax
+
+        [NotMapped]
+        public long Id => CalculationId;  // Alias
+
+        [NotMapped]
+        public decimal TotalCommission => CededCommission;  // Alias
+
+        public long? CossuredPolicyId { get; set; }  // Foreign key to CossuredPolicy
+
+        public CossuredPolicy? CossuredPolicy { get; set; }  // Navigation to Cossured Policy
 
         // Navigation properties
-        public CossuredPolicy CossuredPolicy { get; set; } = null!;
+        public Policy Policy { get; set; } = null!;
     }
 }

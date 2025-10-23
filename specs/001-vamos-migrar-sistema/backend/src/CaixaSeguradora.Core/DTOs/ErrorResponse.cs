@@ -17,6 +17,16 @@ public class ErrorResponse
     public string Message { get; set; } = string.Empty;
 
     /// <summary>
+    /// Alias for Message property for backward compatibility
+    /// </summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string Error
+    {
+        get => Message;
+        set => Message = value;
+    }
+
+    /// <summary>
     /// Detailed error information for debugging (optional, only in development)
     /// </summary>
     public string? Details { get; set; }

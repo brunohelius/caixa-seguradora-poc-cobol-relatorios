@@ -203,10 +203,17 @@ export interface PremiumQueryRequest {
 
 export interface PremiumQueryResponse {
   data: Record<string, any>[];
+  premiums: PremiumRecord[]; // List of premium records
   summary: {
     totalRecords: number;
     totalPages: number;
     currentPage: number;
+  };
+  pagination: {
+    totalRecords: number;
+    totalPages: number;
+    currentPage: number;
+    pageSize: number;
   };
   aggregations?: Record<string, number>;
 }
@@ -219,8 +226,11 @@ export interface PremiumStatisticsRequest {
 
 export interface PremiumStatisticsResponse {
   groupLabel: string;
+  groupValue?: string; // The actual value for the grouping (e.g., product code, month)
   totalPremium: number;
+  totalCommission?: number; // Total commission amount
   policyCount: number;
+  recordCount: number; // Number of premium records
   averagePremium: number;
 }
 
@@ -334,12 +344,20 @@ export interface PremiumRecord {
   referenceYear: number;
   referenceMonth: number;
   referenceDay: number;
+  referenceDate?: string; // Formatted as "YYYY-MM-DD"
   movementType: string;
   policyNumber: number;
   endorsementNumber: number;
   totalPremiumTotal: number;
   netPremiumTotal: number;
-  // ... (add more fields as needed)
+  productCode?: number;
+  productName?: string;
+  premiumAmount?: number; // Alias for totalPremiumTotal
+  commissionAmount?: number;
+  iofTotal?: number;
+  lineOfBusiness?: number;
+  systemCode?: string;
+  installmentNumber?: number;
 }
 
 export interface Policy {

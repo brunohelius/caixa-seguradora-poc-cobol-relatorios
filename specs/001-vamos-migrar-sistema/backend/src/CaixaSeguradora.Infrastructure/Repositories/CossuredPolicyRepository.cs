@@ -93,10 +93,10 @@ public class CossuredPolicyRepository : Repository<CossuredPolicy>, ICossuredPol
 
         await foreach (var cossuredPolicy in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
-            // Filter by parsing the policy effective date
+            // Filter by policy effective date
             if (cossuredPolicy.Policy != null)
             {
-                var effectiveDate = DateTime.ParseExact(cossuredPolicy.Policy.EffectiveDate, "yyyy-MM-dd", null);
+                var effectiveDate = cossuredPolicy.Policy.EffectiveDate;
                 if (effectiveDate.Year == referenceYear && effectiveDate.Month == referenceMonth)
                 {
                     yield return cossuredPolicy;

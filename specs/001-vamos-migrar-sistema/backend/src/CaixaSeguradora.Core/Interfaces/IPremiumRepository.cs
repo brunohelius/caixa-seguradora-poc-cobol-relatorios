@@ -50,6 +50,19 @@ public interface IPremiumRepository : IRepository<PremiumRecord>
         int referenceYear,
         int referenceMonth,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Streams premium records for a date range for report generation.
+    /// Used for generating reports that span multiple periods.
+    /// </summary>
+    /// <param name="startDate">Start date of the range</param>
+    /// <param name="endDate">End date of the range</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Async enumerable stream of premium records</returns>
+    IAsyncEnumerable<PremiumRecord> GetPremiumsForReportAsync(
+        DateTime startDate,
+        DateTime endDate,
+        CancellationToken cancellationToken = default);
 }
 
 /// <summary>

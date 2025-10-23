@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using CaixaSeguradora.Core.Attributes;
 
 namespace CaixaSeguradora.Core.Entities
@@ -6,6 +7,9 @@ namespace CaixaSeguradora.Core.Entities
     public class Endorsement
     {
         public int Id { get; set; }
+
+        [NotMapped]
+        public int EndorsementId => Id;  // Alias for compatibility
 
         [CobolField("WS-NUM-ENDOSSO", CobolFieldType.Numeric, 1, 10)]
         public int EndorsementNumber { get; set; }
@@ -29,6 +33,13 @@ namespace CaixaSeguradora.Core.Entities
         public string Status { get; set; } = "A"; // A=Ativo, C=Cancelado
 
         public int PolicyId { get; set; }
+
+        // Additional properties for repository compatibility
+        [CobolField("WS-NUM-APOLICE-END", CobolFieldType.Numeric, 250, 15)]
+        public long PolicyNumber { get; set; }
+
+        [CobolField("WS-IND-CANCELAMENTO", CobolFieldType.Alphanumeric, 265, 1)]
+        public string CancellationFlag { get; set; } = "N";  // S=Sim, N=Não
 
         // Navigation properties
         public Policy Policy { get; set; } = null!;

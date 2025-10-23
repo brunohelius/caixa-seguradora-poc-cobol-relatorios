@@ -26,6 +26,8 @@ namespace CaixaSeguradora.Infrastructure.Data
         public DbSet<CossuranceCalculation> CossuranceCalculations => Set<CossuranceCalculation>();
         public DbSet<SystemConfiguration> SystemConfigurations => Set<SystemConfiguration>();
         public DbSet<ReportDefinition> ReportDefinitions => Set<ReportDefinition>();
+        public DbSet<BatchJob> BatchJobs => Set<BatchJob>();
+        public DbSet<BatchJobExecution> BatchJobExecutions => Set<BatchJobExecution>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

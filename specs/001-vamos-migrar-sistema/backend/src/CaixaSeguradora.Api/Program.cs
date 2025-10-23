@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using CaixaSeguradora.Infrastructure.Data;
 using CaixaSeguradora.Infrastructure.Services;
+using CaixaSeguradora.Infrastructure.Repositories;
 using CaixaSeguradora.Core.Interfaces;
+using CaixaSeguradora.Core.Services;
 using CaixaSeguradora.Api.Middleware;
 using Serilog;
 using Serilog.Events;
@@ -76,8 +78,39 @@ try
     // Register repository services (will be used by specific repositories later)
     // builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
+    // Register repositories (User Story 2)
+    builder.Services.AddScoped<IPremiumRepository, PremiumRepository>();
+    builder.Services.AddScoped<IPolicyRepository, PolicyRepository>();
+    builder.Services.AddScoped<IProductRepository, ProductRepository>();
+    builder.Services.AddScoped<IEndorsementRepository, EndorsementRepository>();
+    builder.Services.AddScoped<ICoverageRepository, CoverageRepository>();
+    builder.Services.AddScoped<IClientRepository, ClientRepository>();
+    builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+    builder.Services.AddScoped<ICossuredPolicyRepository, CossuredPolicyRepository>();
+    builder.Services.AddScoped<ICossuranceCalculationRepository, CossuranceCalculationRepository>();
+
+    // Register business logic services (User Story 2)
+    builder.Services.AddScoped<IPremiumCalculationService, PremiumCalculationService>();
+    builder.Services.AddScoped<ICossuranceService, CossuranceService>();
+    builder.Services.AddScoped<IExternalModuleService, ExternalModuleService>();
+
+    // Register report generation service (User Story 2)
+    builder.Services.AddScoped<IReportGenerationService, ReportGenerationService>();
+
     // Register dashboard service (User Story 1)
     builder.Services.AddScoped<IDashboardService, DashboardService>();
+
+    // Register query services (User Story 3)
+    builder.Services.AddScoped<IPremiumQueryService, PremiumQueryService>();
+    builder.Services.AddScoped<IPolicyQueryService, PolicyQueryService>();
+
+    // Register batch job services (Phase 6)
+    builder.Services.AddScoped<IBatchJobRepository, BatchJobRepository>();
+    builder.Services.AddScoped<IBackgroundJobService, BackgroundJobService>();
+
+    // Register mock data services (User Story 5)
+    builder.Services.AddScoped<ICsvParserService, CsvParserService>();
+    builder.Services.AddScoped<IDataValidationService, DataValidationService>();
 
     var app = builder.Build();
 

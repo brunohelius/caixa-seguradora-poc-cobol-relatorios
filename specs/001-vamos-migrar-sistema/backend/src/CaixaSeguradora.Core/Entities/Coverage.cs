@@ -27,6 +27,19 @@ namespace CaixaSeguradora.Core.Entities
         public int PolicyId { get; set; }
         public int ProductId { get; set; }
 
+        // Additional properties for repository compatibility
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public long CoverageId => Id;  // Alias
+
+        [CobolField("WS-TIP-COBERTURA", CobolFieldType.Alphanumeric, 100, 2)]
+        public string CoverageType { get; set; } = string.Empty;  // BA=Básica, AD=Adicional
+
+        [CobolField("WS-NUM-APOLICE-COB", CobolFieldType.Numeric, 102, 15)]
+        public long PolicyNumber { get; set; }
+
+        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
+        public System.Collections.Generic.ICollection<Coverage> Coverages { get; set; } = new System.Collections.Generic.List<Coverage>();
+
         // Navigation properties
         public Policy Policy { get; set; } = null!;
         public Product Product { get; set; } = null!;

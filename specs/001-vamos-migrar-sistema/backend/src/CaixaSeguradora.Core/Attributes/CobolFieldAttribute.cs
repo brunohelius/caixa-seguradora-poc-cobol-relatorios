@@ -12,11 +12,17 @@ namespace CaixaSeguradora.Core.Attributes
         public int DecimalPlaces { get; set; }
         public string PicClause { get; set; }
 
+        // Parameterless constructor for property-based initialization
+        public CobolFieldAttribute()
+        {
+        }
+
+        // Full constructor for backward compatibility
         public CobolFieldAttribute(
             string originalName,
-            CobolFieldType fieldType,
-            int position,
-            int length,
+            CobolFieldType fieldType = CobolFieldType.Alphanumeric,
+            int position = 0,
+            int length = 0,
             int decimalPlaces = 0,
             string picClause = "")
         {
