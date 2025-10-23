@@ -7,7 +7,7 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 import eslintConfigPrettier from 'eslint-config-prettier'
 
 export default defineConfig([
-  globalIgnores(['dist', 'node_modules', 'build', 'public']),
+  globalIgnores(['dist/**', 'node_modules/**', 'build/**', 'public/**']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -15,13 +15,11 @@ export default defineConfig([
       tseslint.configs.recommended,
       reactHooks.configs['recommended-latest'],
       reactRefresh.configs.vite,
+      eslintConfigPrettier,
     ],
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
-    },
-    plugins: {
-      'react-refresh': reactRefresh,
     },
     rules: {
       'react-refresh/only-export-components': [
@@ -37,6 +35,7 @@ export default defineConfig([
     files: ['**/*.{js,jsx}'],
     extends: [
       js.configs.recommended,
+      eslintConfigPrettier,
     ],
     languageOptions: {
       globals: globals.node,
@@ -45,6 +44,4 @@ export default defineConfig([
       'no-console': 'warn',
     },
   },
-  // Disable ESLint rules that conflict with Prettier
-  eslintConfigPrettier,
 ])
