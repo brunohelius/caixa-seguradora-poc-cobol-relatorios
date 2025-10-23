@@ -2,6 +2,63 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## CRITICAL PROJECT STRUCTURE RULES
+
+**⚠️ MANDATORY: READ THIS FIRST BEFORE ANY CODE CHANGES**
+
+### Directory Structure Requirements
+
+This project follows a **strict directory structure** that MUST be maintained at all times:
+
+```
+project-root/
+├── backend/              # ✅ ALL BACKEND CODE GOES HERE
+│   ├── src/
+│   │   ├── CaixaSeguradora.Api/
+│   │   ├── CaixaSeguradora.Core/
+│   │   └── CaixaSeguradora.Infrastructure/
+│   └── tests/
+├── frontend/             # ✅ ALL FRONTEND CODE GOES HERE
+│   ├── src/
+│   ├── public/
+│   └── tests/
+├── specs/                # 📄 DOCUMENTATION ONLY (NO EXECUTABLE CODE)
+│   ├── 001-feature-name/
+│   ├── 002-feature-name/
+│   └── NNN-feature-name/
+│       ├── spec.md
+│       ├── plan.md
+│       ├── tasks.md
+│       └── contracts/
+└── docs/                 # 📄 ANALYSIS & DOCUMENTATION
+```
+
+### Rules for File Creation/Modification
+
+1. **BACKEND CODE**: All .NET code (.cs, .csproj, etc.) MUST go in `/backend/`, NEVER in `/specs/`
+2. **FRONTEND CODE**: All React/TypeScript code (.tsx, .ts, .jsx, .js) MUST go in `/frontend/`, NEVER in `/specs/`
+3. **DOCUMENTATION ONLY**: The `/specs/` directory contains ONLY .md files, .yaml contracts, and design documents
+4. **NO EXECUTABLE CODE IN SPECS**: NEVER create backend/ or frontend/ subdirectories inside any `/specs/NNN-*/` folder
+
+### Path Validation Checklist
+
+Before creating ANY file, ask yourself:
+
+- [ ] **Is this executable code?** → Use `/backend/` or `/frontend/` at PROJECT ROOT
+- [ ] **Is this a specification/documentation?** → Use `/specs/` or `/docs/`
+- [ ] **Double-check:** Path does NOT contain `specs/*/backend` or `specs/*/frontend`
+- [ ] **Verify:** All .cs files go to `/backend/src/`, all .tsx/.ts files go to `/frontend/src/`
+
+### Historical Issue (DO NOT REPEAT)
+
+**Date**: October 23, 2025
+**Problem**: Backend and frontend code incorrectly created inside `/specs/` subdirectory
+**Impact**: 529 MB of code duplicated in wrong location
+**Resolution**: Files manually moved to project root, duplicates removed
+**Root Cause**: Misinterpretation of relative paths - specs/ is for DOCUMENTATION ONLY
+
+**Remember**: The `/specs/` directory structure is DYNAMIC (new features create new subdirectories), but it should NEVER contain executable code.
+
 ## Project Overview
 
 This repository contains the COBOL RG1866B to .NET 9 migration project for Caixa Seguradora's SUSEP Circular 360 Premium Reporting System. The project migrates a legacy COBOL batch program (~5,000 lines processing 687 data items across 26+ database tables) to a modern full-stack application with .NET 9 backend and React frontend.

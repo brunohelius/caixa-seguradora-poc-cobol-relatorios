@@ -1,0 +1,51 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.suo
+
+# Logs
+*.log
+*.tmp
+*.temp
+
+# Environment variables
+.env
+.env.local
+.env*.local
+
+# Node.js / JavaScript
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# .NET
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.user
+*.userosscache
+
+# Database files
+*.db
+*.db-shm
+*.db-wal
+
+# Build outputs
+dist/
+build/
+coverage/
+
+# Temporary files
+*.bak
+*.cache

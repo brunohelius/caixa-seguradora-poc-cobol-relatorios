@@ -1,0 +1,45 @@
+# .NET build outputs
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+
+# SQLite databases (will be mounted via volume)
+*.db
+*.db-shm
+*.db-wal
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.sln.docstates
+
+# Logs
+*.log
+logs/
+
+# Documentation
+*.md
+!README.md
+
+# Tests
+**/[Tt]ests/
+**/[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+
+# NuGet
+*.nupkg
+*.snupkg
+
+# Environment files
+.env*

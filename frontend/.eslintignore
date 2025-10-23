@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+dist-ssr/
+
+# Coverage
+coverage/
+
+# Generated files
+*.min.js
+*.bundle.js
+
+# Config files
+vite.config.ts
+tailwind.config.js
+postcss.config.js
+
+# Environment
+.env*

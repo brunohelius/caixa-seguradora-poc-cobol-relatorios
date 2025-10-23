@@ -1,0 +1,27 @@
+{
+  "models": {
+    "qwen-code-exec": {
+      "simple": {
+        "successes": 1,
+        "failures": 0,
+        "total": 1,
+        "total_time": 707.1182627677917,
+        "avg_time": 707.1182627677917,
+        "recent_tasks": [
+          {
+            "task_id": "T001",
+            "success": true,
+            "time": 707.1182627677917,
+            "timestamp": "2025-10-23T01:33:33.723891",
+            "error": null
+          }
+        ]
+      }
+    }
+  },
+  "metadata": {
+    "created": "2025-10-23T01:20:40.309033",
+    "last_updated": "2025-10-23T01:33:33.724055",
+    "total_tasks_tracked": 1
+  }
+}

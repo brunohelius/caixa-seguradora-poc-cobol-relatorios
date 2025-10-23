@@ -1,0 +1,60 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - heading "🏛️ Caixa Seguradora" [level=1] [ref=e9]:
+          - generic [ref=e10]: 🏛️
+          - text: Caixa Seguradora
+        - paragraph [ref=e12]: Sistema de Relatórios PREMIT/PREMCED
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - paragraph [ref=e15]: Usuário Sistema
+          - paragraph [ref=e16]: Migração COBOL → .NET
+        - generic [ref=e17]: US
+  - navigation [ref=e18]:
+    - generic [ref=e20]:
+      - link "📊 Dashboard" [ref=e21] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e22]: 📊
+        - text: Dashboard
+      - link "📄 Gerar Relatórios" [ref=e23] [cursor=pointer]:
+        - /url: /reports
+        - generic [ref=e24]: 📄
+        - text: Gerar Relatórios
+      - link "🔍 Consultar Dados" [ref=e25] [cursor=pointer]:
+        - /url: /query
+        - generic [ref=e26]: 🔍
+        - text: Consultar Dados
+      - link "⏰ Jobs Agendados" [ref=e27] [cursor=pointer]:
+        - /url: /batch-jobs
+        - generic [ref=e28]: ⏰
+        - text: Jobs Agendados
+      - link "💾 Gerenciar Dados" [ref=e29] [cursor=pointer]:
+        - /url: /data-management
+        - generic [ref=e30]: 💾
+        - text: Gerenciar Dados
+  - main [ref=e31]:
+    - generic [ref=e32]:
+      - alert [ref=e33]:
+        - generic [ref=e34]:
+          - img [ref=e36]
+          - generic [ref=e38]:
+            - heading "Erro" [level=3] [ref=e39]
+            - paragraph [ref=e41]: Sem resposta do servidor. Verifique sua conexão.
+      - button "Tentar Novamente" [ref=e42] [cursor=pointer]
+  - contentinfo [ref=e43]:
+    - generic [ref=e45]:
+      - generic [ref=e46]:
+        - paragraph [ref=e47]: © 2025 Caixa Seguradora - Sistema de Migração COBOL para .NET
+        - paragraph [ref=e48]: Circular SUSEP 360 - Relatórios PREMIT e PREMCED
+      - generic [ref=e49]:
+        - link "Documentação" [ref=e50] [cursor=pointer]:
+          - /url: "#"
+        - link "Suporte" [ref=e51] [cursor=pointer]:
+          - /url: "#"
+        - 'link "Versão: 1.0.0" [ref=e52] [cursor=pointer]':
+          - /url: "#"
+```
