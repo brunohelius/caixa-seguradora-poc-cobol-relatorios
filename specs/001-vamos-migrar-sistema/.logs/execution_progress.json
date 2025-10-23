@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-10-23T01:33:36.363716",
+  "completed_tasks": [
+    "T001"
+  ],
+  "failed_tasks": [],
+  "total_cost": 0.0,
+  "cost_by_model": {
+    "qwen-code-exec": 0.0
+  },
+  "tokens_by_model": {
+    "qwen-code-exec": 131933
+  }
+}
