@@ -1,0 +1,1798 @@
+openapi: 3.0.3
+info:
+  title: SUSEP Circular 360 Premium Reporting API
+  description: |
+    RESTful API for the COBOL RG1866B to .NET 9 migration project.
+
+    This API provides modern web access to premium reporting functionality previously handled by
+    legacy COBOL batch programs. It enables interactive report generation, data querying, and
+    visualization while maintaining byte-for-byte compatibility with legacy output formats.
+
+    ## Key Features
+    - Premium report generation (PREMIT.TXT, PREMCED.TXT)
+    - Policy and premium data querying
+    - Batch job scheduling and monitoring
+    - Mock data management for testing
+    - Migration metrics dashboard
+
+    ## Regulatory Compliance
+    All financial calculations maintain decimal precision matching COBOL arithmetic to ensure
+    SUSEP Circular 360 regulatory compliance.
+
+  version: 1.0.0
+  contact:
+    name: Caixa Seguradora Development Team
+    email: dev@caixaseguradora.com.br
+  license:
+    name: Proprietary
+
+servers:
+  - url: https://localhost:5001/api/v1
+    description: Local development server
+  - url: https://dev-premiums.caixaseguradora.com.br/api/v1
+    description: Development environment
+  - url: https://staging-premiums.caixaseguradora.com.br/api/v1
+    description: Staging environment
+
+tags:
+  - name: Reports
+    description: Premium report generation and retrieval
+  - name: Premiums
+    description: Premium record querying and analysis
+  - name: Policies
+    description: Policy information access
+  - name: Products
+    description: Insurance product catalog
+  - name: Clients
+    description: Client and address information
+  - name: Batch Jobs
+    description: Scheduled batch processing
+  - name: Mock Data
+    description: Test data management
+  - name: Dashboard
+    description: Migration metrics and analytics
+  - name: System
+    description: System configuration and health
+
+paths:
+  # ==================== REPORTS ENDPOINTS ====================
+  /reports/generate:
+    post:
+      tags: [Reports]
+      summary: Generate premium reports
+      description: |
+        Generate PREMIT.TXT and/or PREMCED.TXT reports for a specified date range.
+        This endpoint replicates the COBOL RG1866B batch processing logic interactively.
+
+        Processing steps:
+        1. Validate parameters
+        2. Fetch premium records matching criteria
+        3. Execute business logic (sections R0500-R5500)
+        4. Generate fixed-width output files
+        5. Return download links
+
+      operationId: generateReports
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportGenerationRequest'
+            examples:
+              weeklyReport:
+                summary: Weekly cumulative report
+                value:
+                  startDate: "2025-10-15"
+                  endDate: "2025-10-22"
+                  reportTypes: ["PREMIT", "PREMCED"]
+                  systemId: "GL"
+                  processingMode: "WEEKLY_CUMULATIVE"
+              monthlyReport:
+                summary: Monthly report
+                value:
+                  startDate: "2025-10-01"
+                  endDate: "2025-10-31"
+                  reportTypes: ["PREMIT"]
+                  systemId: "GL"
+                  processingMode: "MONTHLY"
+      responses:
+        '202':
+          description: Report generation accepted and processing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportGenerationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /reports/{reportId}:
+    get:
+      tags: [Reports]
+      summary: Get report generation status
+      description: Retrieve the status and results of a report generation request
+      operationId: getReportStatus
+      parameters:
+        - name: reportId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Report generation request ID
+      responses:
+        '200':
+          description: Report status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportStatusResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /reports/{reportId}/download/{fileType}:
+    get:
+      tags: [Reports]
+      summary: Download generated report file
+      description: Download PREMIT.TXT or PREMCED.TXT file
+      operationId: downloadReport
+      parameters:
+        - name: reportId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: fileType
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [PREMIT, PREMCED]
+      responses:
+        '200':
+          description: Report file download
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+              example: 'attachment; filename="PREMIT_20251022.TXT"'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /reports/history:
+    get:
+      tags: [Reports]
+      summary: List report generation history
+      description: Retrieve paginated list of past report generation requests
+      operationId: getReportHistory
+      parameters:
+        - $ref: '#/components/parameters/PageNumber'
+        - $ref: '#/components/parameters/PageSize'
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [PENDING, PROCESSING, COMPLETED, FAILED]
+      responses:
+        '200':
+          description: Report history retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportHistoryResponse'
+
+  /reports/compare:
+    post:
+      tags: [Reports]
+      summary: Compare COBOL vs .NET report outputs
+      description: |
+        Perform byte-level comparison between COBOL-generated and .NET-generated reports
+        for migration validation purposes.
+      operationId: compareReports
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportComparisonRequest'
+      responses:
+        '200':
+          description: Comparison completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportComparisonResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  # ==================== PREMIUMS ENDPOINTS ====================
+  /premiums:
+    get:
+      tags: [Premiums]
+      summary: Query premium records
+      description: |
+        Query premium emission records with flexible filtering, sorting, and pagination.
+        Supports complex queries for analytics and reporting.
+      operationId: queryPremiums
+      parameters:
+        - $ref: '#/components/parameters/PageNumber'
+        - $ref: '#/components/parameters/PageSize'
+        - name: policyNumber
+          in: query
+          schema:
+            type: integer
+            format: int64
+          description: Filter by policy number
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Filter by reference date (start)
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Filter by reference date (end)
+        - name: productCode
+          in: query
+          schema:
+            type: integer
+          description: Filter by product code
+        - name: lineOfBusiness
+          in: query
+          schema:
+            type: integer
+          description: Filter by SUSEP line of business (ramo)
+        - name: movementType
+          in: query
+          schema:
+            type: string
+            enum: [E, C, R, S, A]
+          description: Filter by movement type (E=Emission, C=Cancellation, etc.)
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [referenceDate, policyNumber, premiumAmount]
+            default: referenceDate
+        - name: sortOrder
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        '200':
+          description: Premium records retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PremiumRecordsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /premiums/{premiumId}:
+    get:
+      tags: [Premiums]
+      summary: Get premium record details
+      description: Retrieve detailed information for a specific premium record
+      operationId: getPremiumById
+      parameters:
+        - name: premiumId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Premium record found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PremiumRecord'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /premiums/statistics:
+    get:
+      tags: [Premiums]
+      summary: Get premium statistics
+      description: Retrieve aggregated statistics for premium records
+      operationId: getPremiumStatistics
+      parameters:
+        - name: startDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: groupBy
+          in: query
+          schema:
+            type: string
+            enum: [product, lineOfBusiness, movementType, month]
+            default: month
+      responses:
+        '200':
+          description: Statistics retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PremiumStatistics'
+
+  # ==================== POLICIES ENDPOINTS ====================
+  /policies/{policyNumber}:
+    get:
+      tags: [Policies]
+      summary: Get policy details
+      description: Retrieve comprehensive policy information including coverages and endorsements
+      operationId: getPolicyByNumber
+      parameters:
+        - name: policyNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Policy found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Policy'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /policies/{policyNumber}/endorsements:
+    get:
+      tags: [Policies]
+      summary: Get policy endorsements
+      description: Retrieve all endorsements for a policy
+      operationId: getPolicyEndorsements
+      parameters:
+        - name: policyNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Endorsements retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Endorsement'
+
+  /policies/{policyNumber}/coverages:
+    get:
+      tags: [Policies]
+      summary: Get policy coverages
+      description: Retrieve all coverages for a policy
+      operationId: getPolicyCoverages
+      parameters:
+        - name: policyNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Coverages retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Coverage'
+
+  /policies/{policyNumber}/cossurance:
+    get:
+      tags: [Policies]
+      summary: Get policy cossurance arrangements
+      description: Retrieve cossurance and ceded reinsurance information
+      operationId: getPolicyCossurance
+      parameters:
+        - name: policyNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Cossurance data retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CossuredPolicy'
+
+  # ==================== PRODUCTS ENDPOINTS ====================
+  /products:
+    get:
+      tags: [Products]
+      summary: List insurance products
+      description: Retrieve paginated list of insurance products
+      operationId: listProducts
+      parameters:
+        - $ref: '#/components/parameters/PageNumber'
+        - $ref: '#/components/parameters/PageSize'
+        - name: lineOfBusiness
+          in: query
+          schema:
+            type: integer
+          description: Filter by SUSEP line of business
+        - name: productStatus
+          in: query
+          schema:
+            type: string
+            enum: [A, I, S]
+          description: Filter by status (A=Active, I=Inactive, S=Suspended)
+      responses:
+        '200':
+          description: Products retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductsResponse'
+
+  /products/{productCode}:
+    get:
+      tags: [Products]
+      summary: Get product details
+      description: Retrieve detailed information for a specific product
+      operationId: getProductByCode
+      parameters:
+        - name: productCode
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Product found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ==================== CLIENTS ENDPOINTS ====================
+  /clients/{clientCode}:
+    get:
+      tags: [Clients]
+      summary: Get client details
+      description: Retrieve client information including addresses
+      operationId: getClientByCode
+      parameters:
+        - name: clientCode
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Client found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /clients/{clientCode}/addresses:
+    get:
+      tags: [Clients]
+      summary: Get client addresses
+      description: Retrieve all addresses for a client
+      operationId: getClientAddresses
+      parameters:
+        - name: clientCode
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Addresses retrieved
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Address'
+
+  # ==================== BATCH JOBS ENDPOINTS ====================
+  /batch-jobs:
+    get:
+      tags: [Batch Jobs]
+      summary: List scheduled batch jobs
+      description: Retrieve list of scheduled report generation jobs
+      operationId: listBatchJobs
+      parameters:
+        - $ref: '#/components/parameters/PageNumber'
+        - $ref: '#/components/parameters/PageSize'
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [SCHEDULED, RUNNING, COMPLETED, FAILED]
+      responses:
+        '200':
+          description: Batch jobs retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchJobsResponse'
+
+    post:
+      tags: [Batch Jobs]
+      summary: Create scheduled batch job
+      description: Schedule a recurring report generation job
+      operationId: createBatchJob
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchJobCreateRequest'
+      responses:
+        '201':
+          description: Batch job created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchJob'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /batch-jobs/{jobId}:
+    get:
+      tags: [Batch Jobs]
+      summary: Get batch job details
+      description: Retrieve detailed information for a scheduled job
+      operationId: getBatchJobById
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Job found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchJob'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags: [Batch Jobs]
+      summary: Cancel scheduled batch job
+      description: Cancel a scheduled job (does not affect already running executions)
+      operationId: deleteBatchJob
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Job cancelled successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /batch-jobs/{jobId}/executions:
+    get:
+      tags: [Batch Jobs]
+      summary: Get job execution history
+      description: Retrieve past executions for a scheduled job
+      operationId: getBatchJobExecutions
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/PageNumber'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Executions retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobExecutionsResponse'
+
+  # ==================== MOCK DATA ENDPOINTS ====================
+  /mock-data/load:
+    post:
+      tags: [Mock Data]
+      summary: Load mock data into database
+      description: |
+        Load test data from CSV or JSON files into SQLite database.
+        Validates schema compatibility with DB2 structure.
+      operationId: loadMockData
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: CSV or JSON file containing mock data
+                entityType:
+                  type: string
+                  enum: [premiums, policies, products, clients, addresses]
+                  description: Type of entity being loaded
+                replaceExisting:
+                  type: boolean
+                  default: false
+                  description: Whether to replace existing data
+      responses:
+        '200':
+          description: Mock data loaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MockDataLoadResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /mock-data/reset:
+    post:
+      tags: [Mock Data]
+      summary: Reset database to clean state
+      description: Clear all data from SQLite database
+      operationId: resetMockData
+      responses:
+        '204':
+          description: Database reset successfully
+
+  /mock-data/validate:
+    post:
+      tags: [Mock Data]
+      summary: Validate mock data schema
+      description: Validate loaded data against DB2 schema rules
+      operationId: validateMockData
+      responses:
+        '200':
+          description: Validation completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataValidationResponse'
+
+  # ==================== DASHBOARD ENDPOINTS ====================
+  /dashboard/metrics:
+    get:
+      tags: [Dashboard]
+      summary: Get migration metrics
+      description: |
+        Retrieve comprehensive migration analysis metrics for dashboard display.
+        Includes COBOL program structure, complexity analysis, and migration progress.
+      operationId: getDashboardMetrics
+      responses:
+        '200':
+          description: Metrics retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardMetrics'
+
+  /dashboard/function-points:
+    get:
+      tags: [Dashboard]
+      summary: Get function points estimation
+      description: Retrieve function points breakdown for migration effort estimation
+      operationId: getFunctionPoints
+      responses:
+        '200':
+          description: Function points retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FunctionPoints'
+
+  /dashboard/database-dependencies:
+    get:
+      tags: [Dashboard]
+      summary: Get database dependency graph
+      description: Retrieve table/view dependencies for visualization
+      operationId: getDatabaseDependencies
+      responses:
+        '200':
+          description: Dependencies retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseDependencies'
+
+  # ==================== SYSTEM ENDPOINTS ====================
+  /system/health:
+    get:
+      tags: [System]
+      summary: Health check
+      description: Check API and database health status
+      operationId: healthCheck
+      responses:
+        '200':
+          description: System healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+        '503':
+          description: System unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+
+  /system/configuration:
+    get:
+      tags: [System]
+      summary: Get system configuration
+      description: Retrieve current system configuration parameters
+      operationId: getSystemConfiguration
+      responses:
+        '200':
+          description: Configuration retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfiguration'
+
+# ==================== COMPONENTS ====================
+components:
+  parameters:
+    PageNumber:
+      name: page
+      in: query
+      description: Page number (1-indexed)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+
+    PageSize:
+      name: pageSize
+      in: query
+      description: Number of items per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+  schemas:
+    # ==================== REQUEST SCHEMAS ====================
+    ReportGenerationRequest:
+      type: object
+      required:
+        - startDate
+        - endDate
+        - reportTypes
+        - systemId
+      properties:
+        startDate:
+          type: string
+          format: date
+          description: Start date for report period (YYYY-MM-DD)
+          example: "2025-10-01"
+        endDate:
+          type: string
+          format: date
+          description: End date for report period (YYYY-MM-DD)
+          example: "2025-10-31"
+        reportTypes:
+          type: array
+          items:
+            type: string
+            enum: [PREMIT, PREMCED]
+          description: Types of reports to generate
+          minItems: 1
+          example: ["PREMIT", "PREMCED"]
+        systemId:
+          type: string
+          maxLength: 2
+          description: System identifier (e.g., 'GL', 'RG')
+          example: "GL"
+        processingMode:
+          type: string
+          enum: [WEEKLY_CUMULATIVE, MONTHLY, DAILY]
+          default: MONTHLY
+          description: Processing mode for date range handling
+        includeExternalModuleCalls:
+          type: boolean
+          default: true
+          description: Whether to include external module processing (GE0009S, GE0010S)
+
+    ReportComparisonRequest:
+      type: object
+      required:
+        - cobolFilePath
+        - dotnetReportId
+        - fileType
+      properties:
+        cobolFilePath:
+          type: string
+          description: Path to COBOL-generated report file
+          example: "/legacy/reports/PREMIT_20251022.TXT"
+        dotnetReportId:
+          type: string
+          format: uuid
+          description: .NET report generation ID to compare
+        fileType:
+          type: string
+          enum: [PREMIT, PREMCED]
+
+    BatchJobCreateRequest:
+      type: object
+      required:
+        - jobName
+        - recurrencePattern
+        - reportParameters
+      properties:
+        jobName:
+          type: string
+          maxLength: 100
+          description: Descriptive job name
+          example: "Monthly SUSEP Reports"
+        description:
+          type: string
+          maxLength: 500
+          description: Job description
+        recurrencePattern:
+          type: string
+          enum: [DAILY, WEEKLY, MONTHLY, CUSTOM_CRON]
+          description: Job recurrence pattern
+        cronExpression:
+          type: string
+          description: Cron expression (required if recurrencePattern is CUSTOM_CRON)
+          example: "0 0 2 1 * ?"
+        reportParameters:
+          $ref: '#/components/schemas/ReportGenerationRequest'
+        notificationRecipients:
+          type: array
+          items:
+            type: string
+            format: email
+          description: Email addresses for job notifications
+          example: ["admin@caixaseguradora.com.br"]
+
+    # ==================== RESPONSE SCHEMAS ====================
+    ReportGenerationResponse:
+      type: object
+      properties:
+        reportId:
+          type: string
+          format: uuid
+          description: Unique report generation request ID
+        status:
+          type: string
+          enum: [ACCEPTED, PROCESSING]
+          description: Current processing status
+        estimatedCompletionTime:
+          type: string
+          format: date-time
+          description: Estimated completion time
+        message:
+          type: string
+          description: Status message
+          example: "Report generation accepted. Processing 15,432 premium records."
+
+    ReportStatusResponse:
+      type: object
+      properties:
+        reportId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [PENDING, PROCESSING, COMPLETED, FAILED]
+        progress:
+          type: object
+          properties:
+            currentRecord:
+              type: integer
+              description: Current record being processed
+            totalRecords:
+              type: integer
+              description: Total records to process
+            percentComplete:
+              type: number
+              format: double
+              minimum: 0
+              maximum: 100
+        startTime:
+          type: string
+          format: date-time
+        completionTime:
+          type: string
+          format: date-time
+          nullable: true
+        executionTime:
+          type: string
+          description: Execution duration (e.g., "2m 34s")
+        files:
+          type: array
+          items:
+            type: object
+            properties:
+              fileType:
+                type: string
+                enum: [PREMIT, PREMCED]
+              fileName:
+                type: string
+              sizeBytes:
+                type: integer
+                format: int64
+              downloadUrl:
+                type: string
+                format: uri
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorDetail'
+        summary:
+          type: object
+          properties:
+            recordsProcessed:
+              type: integer
+            premiumEmissions:
+              type: integer
+            premiumCancellations:
+              type: integer
+            totalPremiumAmount:
+              type: number
+              format: double
+
+    ReportHistoryResponse:
+      type: object
+      properties:
+        reports:
+          type: array
+          items:
+            type: object
+            properties:
+              reportId:
+                type: string
+                format: uuid
+              requestDate:
+                type: string
+                format: date-time
+              userId:
+                type: string
+              status:
+                type: string
+                enum: [PENDING, PROCESSING, COMPLETED, FAILED]
+              reportTypes:
+                type: array
+                items:
+                  type: string
+              dateRange:
+                type: object
+                properties:
+                  startDate:
+                    type: string
+                    format: date
+                  endDate:
+                    type: string
+                    format: date
+        pagination:
+          $ref: '#/components/schemas/PaginationInfo'
+
+    ReportComparisonResponse:
+      type: object
+      properties:
+        comparisonId:
+          type: string
+          format: uuid
+        filesMatch:
+          type: boolean
+          description: Whether files match byte-for-byte
+        differences:
+          type: array
+          items:
+            type: object
+            properties:
+              bytePosition:
+                type: integer
+                format: int64
+              cobolByte:
+                type: string
+              dotnetByte:
+                type: string
+              context:
+                type: string
+                description: Surrounding bytes for context
+        summary:
+          type: object
+          properties:
+            totalBytes:
+              type: integer
+              format: int64
+            matchingBytes:
+              type: integer
+              format: int64
+            differenceCount:
+              type: integer
+            matchPercentage:
+              type: number
+              format: double
+
+    PremiumRecordsResponse:
+      type: object
+      properties:
+        premiums:
+          type: array
+          items:
+            $ref: '#/components/schemas/PremiumRecord'
+        pagination:
+          $ref: '#/components/schemas/PaginationInfo'
+        aggregations:
+          type: object
+          properties:
+            totalPremiumAmount:
+              type: number
+              format: double
+            averagePremiumAmount:
+              type: number
+              format: double
+            recordCount:
+              type: integer
+
+    PremiumRecord:
+      type: object
+      description: Premium emission record with all financial components
+      properties:
+        premiumId:
+          type: integer
+          format: int64
+        companyCode:
+          type: integer
+        referenceYear:
+          type: integer
+        referenceMonth:
+          type: integer
+          minimum: 1
+          maximum: 12
+        referenceDay:
+          type: integer
+          minimum: 1
+          maximum: 31
+        movementType:
+          type: string
+          enum: [E, C, R, S, A]
+          description: E=Emission, C=Cancellation, R=Reversal, S=Supplement, A=Adjustment
+        policyNumber:
+          type: integer
+          format: int64
+        endorsementNumber:
+          type: integer
+        installmentNumber:
+          type: integer
+        lineOfBusiness:
+          type: integer
+          description: SUSEP line of business code (ramo)
+        productModality:
+          type: integer
+        clientCode:
+          type: integer
+        exchangeRate:
+          type: number
+          format: double
+          description: Exchange rate with 9 decimal places precision
+        totalPremiumTotal:
+          type: number
+          format: double
+          description: Total premium amount
+        netPremiumTotal:
+          type: number
+          format: double
+          description: Net premium amount
+        commissionTotal:
+          type: number
+          format: double
+          description: Total commission amount
+
+    PremiumStatistics:
+      type: object
+      properties:
+        groupBy:
+          type: string
+          enum: [product, lineOfBusiness, movementType, month]
+        statistics:
+          type: array
+          items:
+            type: object
+            properties:
+              groupKey:
+                type: string
+              groupLabel:
+                type: string
+              recordCount:
+                type: integer
+              totalPremium:
+                type: number
+                format: double
+              averagePremium:
+                type: number
+                format: double
+              minPremium:
+                type: number
+                format: double
+              maxPremium:
+                type: number
+                format: double
+
+    Policy:
+      type: object
+      properties:
+        policyNumber:
+          type: integer
+          format: int64
+        companyCode:
+          type: integer
+        productCode:
+          type: integer
+        clientCode:
+          type: integer
+        effectiveDate:
+          type: string
+          format: date
+        expirationDate:
+          type: string
+          format: date
+        issuanceDate:
+          type: string
+          format: date
+        policyStatus:
+          type: string
+          enum: [A, C, S, E]
+          description: A=Active, C=Cancelled, S=Suspended, E=Expired
+        insuredAmount:
+          type: number
+          format: double
+        totalPremium:
+          type: number
+          format: double
+        product:
+          $ref: '#/components/schemas/Product'
+        policyholder:
+          $ref: '#/components/schemas/Client'
+
+    Endorsement:
+      type: object
+      properties:
+        endorsementId:
+          type: integer
+          format: int64
+        policyNumber:
+          type: integer
+          format: int64
+        endorsementNumber:
+          type: integer
+        endorsementDate:
+          type: string
+          format: date
+        endorsementType:
+          type: integer
+        endorsementStatus:
+          type: string
+        premiumImpact:
+          type: number
+          format: double
+          description: Premium change (can be negative)
+        insuredAmountChange:
+          type: number
+          format: double
+        cancellationFlag:
+          type: string
+          enum: [S, N]
+        endorsementDescription:
+          type: string
+
+    Coverage:
+      type: object
+      properties:
+        coverageId:
+          type: integer
+          format: int64
+        policyNumber:
+          type: integer
+          format: int64
+        coverageCode:
+          type: integer
+        coverageName:
+          type: string
+        insuredAmount:
+          type: number
+          format: double
+        rate:
+          type: number
+          format: double
+          description: Rate with 4 decimal places
+        tariffPremium:
+          type: number
+          format: double
+        coverageType:
+          type: string
+          enum: [B, A]
+          description: B=Basic, A=Additional
+        isMandatory:
+          type: string
+          enum: [S, N]
+
+    CossuredPolicy:
+      type: object
+      properties:
+        cossuranceId:
+          type: integer
+          format: int64
+        policyNumber:
+          type: integer
+          format: int64
+        cossuranceCode:
+          type: integer
+        cossuranceType:
+          type: string
+          enum: [C, R, E]
+          description: C=Cosseguro, R=Resseguro, E=Retrocessao
+        cedingCompanyCode:
+          type: integer
+        acquiringCompanyCode:
+          type: integer
+        percentageShare:
+          type: number
+          format: double
+          description: Share percentage (0.0 to 1.0) with 9 decimal precision
+        cededInsuredAmount:
+          type: number
+          format: double
+        cededPremium:
+          type: number
+          format: double
+        isLeader:
+          type: string
+          enum: [S, N]
+
+    Product:
+      type: object
+      properties:
+        productCode:
+          type: integer
+        companyCode:
+          type: integer
+        productName:
+          type: string
+        lineOfBusiness:
+          type: integer
+          description: SUSEP line of business code
+        lineOfBusinessGroup:
+          type: integer
+        susepProcessNumber:
+          type: string
+        productType:
+          type: string
+        productStatus:
+          type: string
+          enum: [A, I, S]
+
+    ProductsResponse:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        pagination:
+          $ref: '#/components/schemas/PaginationInfo'
+
+    Client:
+      type: object
+      properties:
+        clientCode:
+          type: integer
+        companyCode:
+          type: integer
+        clientName:
+          type: string
+        clientType:
+          type: string
+          enum: [F, J]
+          description: F=Pessoa Fisica, J=Pessoa Juridica
+        documentNumber:
+          type: string
+          description: CPF or CNPJ
+        identityDocument:
+          type: string
+        birthDate:
+          type: string
+          format: date
+          nullable: true
+        gender:
+          type: string
+          enum: [M, F, O]
+          nullable: true
+        email:
+          type: string
+          format: email
+          nullable: true
+        phoneNumber:
+          type: string
+          nullable: true
+        clientStatus:
+          type: string
+          enum: [A, I]
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+
+    Address:
+      type: object
+      properties:
+        addressId:
+          type: integer
+          format: int64
+        clientCode:
+          type: integer
+        addressSequence:
+          type: integer
+        addressType:
+          type: string
+          enum: [R, C, P, O]
+          description: R=Residential, C=Commercial, P=Postal, O=Other
+        streetAddress:
+          type: string
+        number:
+          type: string
+        complement:
+          type: string
+          nullable: true
+        neighborhood:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+          minLength: 2
+          maxLength: 2
+          description: Brazilian UF code (e.g., SP, RJ)
+        postalCode:
+          type: string
+          pattern: '^\d{5}-?\d{3}$'
+          description: Brazilian CEP format
+        countryCode:
+          type: integer
+          default: 1058
+          description: Country code (1058 = Brazil)
+
+    BatchJob:
+      type: object
+      properties:
+        jobId:
+          type: string
+          format: uuid
+        jobName:
+          type: string
+        description:
+          type: string
+        recurrencePattern:
+          type: string
+        cronExpression:
+          type: string
+          nullable: true
+        reportParameters:
+          $ref: '#/components/schemas/ReportGenerationRequest'
+        status:
+          type: string
+          enum: [SCHEDULED, RUNNING, COMPLETED, FAILED, CANCELLED]
+        createdAt:
+          type: string
+          format: date-time
+        lastExecutionTime:
+          type: string
+          format: date-time
+          nullable: true
+        nextExecutionTime:
+          type: string
+          format: date-time
+          nullable: true
+        notificationRecipients:
+          type: array
+          items:
+            type: string
+            format: email
+
+    BatchJobsResponse:
+      type: object
+      properties:
+        jobs:
+          type: array
+          items:
+            $ref: '#/components/schemas/BatchJob'
+        pagination:
+          $ref: '#/components/schemas/PaginationInfo'
+
+    JobExecutionsResponse:
+      type: object
+      properties:
+        executions:
+          type: array
+          items:
+            type: object
+            properties:
+              executionId:
+                type: string
+                format: uuid
+              startTime:
+                type: string
+                format: date-time
+              completionTime:
+                type: string
+                format: date-time
+                nullable: true
+              status:
+                type: string
+                enum: [RUNNING, COMPLETED, FAILED]
+              recordsProcessed:
+                type: integer
+              errorMessage:
+                type: string
+                nullable: true
+        pagination:
+          $ref: '#/components/schemas/PaginationInfo'
+
+    MockDataLoadResponse:
+      type: object
+      properties:
+        recordsLoaded:
+          type: integer
+          description: Number of records successfully loaded
+        recordsSkipped:
+          type: integer
+          description: Number of records skipped (duplicates, validation errors)
+        validationErrors:
+          type: array
+          items:
+            type: object
+            properties:
+              recordNumber:
+                type: integer
+              field:
+                type: string
+              error:
+                type: string
+        summary:
+          type: object
+          properties:
+            totalRecords:
+              type: integer
+            successRate:
+              type: number
+              format: double
+
+    DataValidationResponse:
+      type: object
+      properties:
+        isValid:
+          type: boolean
+        validationResults:
+          type: array
+          items:
+            type: object
+            properties:
+              entityType:
+                type: string
+              recordCount:
+                type: integer
+              violations:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    violationType:
+                      type: string
+                      enum: [FOREIGN_KEY, DATA_TYPE, CONSTRAINT, BUSINESS_RULE]
+                    severity:
+                      type: string
+                      enum: [ERROR, WARNING]
+                    description:
+                      type: string
+
+    DashboardMetrics:
+      type: object
+      properties:
+        programInfo:
+          type: object
+          properties:
+            programName:
+              type: string
+              example: "RG1866B"
+            linesOfCode:
+              type: integer
+              example: 5000
+            creationDate:
+              type: string
+              format: date
+            lastModifiedDate:
+              type: string
+              format: date
+        dataStructure:
+          type: object
+          properties:
+            totalDataItems:
+              type: integer
+              example: 687
+            level01Structures:
+              type: integer
+            level77Variables:
+              type: integer
+            tablesAccessed:
+              type: integer
+              example: 26
+        processingComplexity:
+          type: object
+          properties:
+            totalSections:
+              type: integer
+              example: 63
+            totalParagraphs:
+              type: integer
+              example: 65
+            cursorCount:
+              type: integer
+              example: 4
+            externalModuleCalls:
+              type: integer
+              example: 3
+        databaseDependencies:
+          type: object
+          properties:
+            viewsAccessed:
+              type: integer
+            tablesAccessed:
+              type: integer
+            totalQueries:
+              type: integer
+        migrationProgress:
+          type: object
+          properties:
+            specificationComplete:
+              type: boolean
+            dataModelComplete:
+              type: boolean
+            apiContractsComplete:
+              type: boolean
+            implementationProgress:
+              type: number
+              format: double
+              minimum: 0
+              maximum: 100
+
+    FunctionPoints:
+      type: object
+      properties:
+        totalFunctionPoints:
+          type: number
+          format: double
+        breakdown:
+          type: array
+          items:
+            type: object
+            properties:
+              component:
+                type: string
+                enum: [Backend, Frontend, Database, Integration, Testing]
+              functionPoints:
+                type: number
+                format: double
+              complexityRating:
+                type: string
+                enum: [High, Medium, Low]
+              effortEstimate:
+                type: string
+                description: Estimated effort (e.g., "40 hours")
+
+    DatabaseDependencies:
+      type: object
+      properties:
+        tables:
+          type: array
+          items:
+            type: object
+            properties:
+              tableName:
+                type: string
+              tableType:
+                type: string
+                enum: [VIEW, TABLE]
+              accessPattern:
+                type: string
+                enum: [SELECT, INSERT, UPDATE, DELETE, CURSOR]
+              accessCount:
+                type: integer
+              relatedTables:
+                type: array
+                items:
+                  type: string
+
+    SystemConfiguration:
+      type: object
+      properties:
+        systemId:
+          type: string
+        systemName:
+          type: string
+        processingDate:
+          type: string
+          format: date
+        companyCode:
+          type: integer
+        systemStatus:
+          type: string
+          enum: [A, I]
+
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+        timestamp:
+          type: string
+          format: date-time
+        components:
+          type: object
+          properties:
+            database:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [healthy, unhealthy]
+                responseTime:
+                  type: string
+                  description: Response time (e.g., "5ms")
+            fileSystem:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [healthy, unhealthy]
+                availableSpace:
+                  type: string
+
+    PaginationInfo:
+      type: object
+      properties:
+        currentPage:
+          type: integer
+        pageSize:
+          type: integer
+        totalPages:
+          type: integer
+        totalRecords:
+          type: integer
+        hasNextPage:
+          type: boolean
+        hasPreviousPage:
+          type: boolean
+
+    ErrorDetail:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        field:
+          type: string
+          nullable: true
+        timestamp:
+          type: string
+          format: date-time
+
+  responses:
+    BadRequest:
+      description: Bad request - validation error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Validation failed"
+              details:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ErrorDetail'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Resource not found"
+              resourceType:
+                type: string
+              resourceId:
+                type: string
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "An unexpected error occurred"
+              errorId:
+                type: string
+                format: uuid
+                description: Error tracking ID for support
+              timestamp:
+                type: string
+                format: date-time
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token-based authentication
+
+security:
+  - bearerAuth: []

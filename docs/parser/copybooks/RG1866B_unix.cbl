@@ -82,8 +82,8 @@
       *            - CADMUS - 103462                                   *
       * 10/10/2014 - WELLINGTON VERAS (TE39902)       PROJETO C103462  *
       *----------------------------------------------------------------*
-      *  ALTERACAO - RECUPERAR O N£MERO DE PROPOSTA DOS PRODUTOS 1803  *
-      *              1805 PELO NUMERO DO T•TULO GRAVADO NO SIAS.       *
+      *  ALTERACAO - RECUPERAR O NUMERO DE PROPOSTA DOS PRODUTOS 1803  *
+      *              1805 PELO NUMERO DO TITULO GRAVADO NO SIAS.       *
       * 26/02/2015   MOVER ZEROS PARA COD FONTE.                       *
       *     CADMUS - 105223                     NO VERSIONA  C105223   *
       * 15/01/2015 - WELLINGTON VERAS  TE39902   PROCURAR POR 105223   *
@@ -97,7 +97,7 @@
       *              MAIOR QUE DATA-INICIO-VIG                         *
       * RESPONSAVEL- WELLINGTON VERAS  TE39902   PROCURAR POR 112349   *
       *----------------------------------------------------------------*
-      *  ALTERACAO - ADICIONAR NO PREMCED DATA DE EMISSﬁO DOS PREMIOS  *
+      *  ALTERACAO - ADICIONAR NO PREMCED DATA DE EMISSAO DOS PREMIOS  *
       *              EMITIDOS                                          *
       *     CADMUS - 119167                                            *
       * 16/06/2015 - WELLINGTON VERAS (TE39902)  PROCURAR POR 119167   *
@@ -206,12 +206,12 @@
       * 27/03/2019 - WELLINGTON F R C VERAS   JAZZ - HISTORIA - 192299 *
       *----------------------------------------------------------------*
       *  ALTERACAO - INCLUIR CAMPO EMI_PROP_SIVPF E INSERIR TRATATIVAS *
-      *              BUSCANDO O NßMERO DA PROPOSTA NO SIVPF            *
+      *              BUSCANDO O NUMERO DA PROPOSTA NO SIVPF            *
       * 17/04/2019 - RAUL BASILI ROTTA        JAZZ - HISTORIA - 198783 *
       *                                PROCURAR POR  TAREFA   - 198785 *
       *----------------------------------------------------------------*
       *  ALTERACAO - INCLUIR CAMPO EMI_PROP_SIVPF E INSERIR TRATATIVAS *
-      *              BUSCANDO O NßMERO DA PROPOSTA NO SIVPF            *
+      *              BUSCANDO O NUMERO DA PROPOSTA NO SIVPF            *
       * 29/07/2019 - WELLINGTON VERAS         JAZZ - TAREFA   - 198785 *
       *----------------------------------------------------------------*
       *  ALTERACAO - INCLUIR NO PARAMETRO DE SAIDA DA SUB-ROTN RE0001S *
@@ -232,7 +232,7 @@
       *  ALTERACAO - INCLUIR RAMOS 0969 E 0982 COM NUMBIL > 0.         *
       * 02/05/2020 - JOSE RENATO              JAZZ - TAREFA   - 243278 *
       *----------------------------------------------------------------*
-      *  ALTERACAO - tratar o CÏdigo da Cia. por empresa da HCXS       *
+      *  ALTERACAO - tratar o CODIGO da Cia. por empresa da HCXS       *
       *              EMPRESA = 00 MOVER 05631 P. CODIGO DA CIA         *
       *              EMPRESA = 10 MOVER 08141 P. CODIGO DA CIA         *
       *              EMPRESA = 11 MOVER 00442 P. CODIGO DA CIA         *
@@ -259,11 +259,11 @@
       *              NA TABELA RELATORIOS.                             *
       * 18/04/2022 - WELLINGTON FRC VERAS.    JAZZ TAREFA - 379341     *
       *----------------------------------------------------------------*
-      *  ALTERACAO - Substituir variêveis WHOST-DIA-INI, WHOST-DIA-FIM *
-      *              pela variêvel WHOST-DIA-REFER como sendo SMALLINT *
-      *              excluir as variêveis WS-ANO-REFER e WS-MES-REFER. *
-      *              Alterar no parêgrafo R0200 o teste do SQLCODE     *
-      *              Alterar no parêgrafo R0500                        *
+      *  ALTERACAO - Substituir variaveis WHOST-DIA-INI, WHOST-DIA-FIM *
+      *              pela variavel WHOST-DIA-REFER como sendo SMALLINT *
+      *              excluir as variaveis WS-ANO-REFER e WS-MES-REFER. *
+      *              Alterar no paragrafo R0200 o teste do SQLCODE     *
+      *              Alterar no paragrafo R0500                        *
       * 21/09/2022 - WELLINGTON FRC VERAS.    JAZZ TAREFA - 428303     *
       *----------------------------------------------------------------*
            EJECT

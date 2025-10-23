@@ -1,0 +1,312 @@
+/**
+ * Global styles for Caixa Seguradora application.
+ * Includes Tailwind imports and custom Caixa branding.
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Caixa Seguradora branding colors */
+:root {
+  /* Primary Caixa colors */
+  --caixa-blue: #0047BB;
+  --caixa-blue-dark: #003789;
+  --caixa-blue-light: #336DC7;
+  --caixa-orange: #FFB81C;
+  --caixa-orange-dark: #E6A319;
+  --caixa-orange-light: #FFC845;
+
+  /* Neutral colors */
+  --gray-50: #F9FAFB;
+  --gray-100: #F3F4F6;
+  --gray-200: #E5E7EB;
+  --gray-300: #D1D5DB;
+  --gray-400: #9CA3AF;
+  --gray-500: #6B7280;
+  --gray-600: #4B5563;
+  --gray-700: #374151;
+  --gray-800: #1F2937;
+  --gray-900: #111827;
+
+  /* Semantic colors */
+  --success: #10B981;
+  --warning: #F59E0B;
+  --error: #EF4444;
+  --info: #3B82F6;
+}
+
+/* Base styles */
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  html {
+    @apply h-full;
+  }
+
+  body {
+    @apply h-full bg-gray-50 text-gray-900 font-sans antialiased;
+  }
+
+  #root {
+    @apply h-full;
+  }
+
+  /* Typography */
+  h1 {
+    @apply text-4xl font-bold text-gray-900;
+  }
+
+  h2 {
+    @apply text-3xl font-bold text-gray-900;
+  }
+
+  h3 {
+    @apply text-2xl font-semibold text-gray-900;
+  }
+
+  h4 {
+    @apply text-xl font-semibold text-gray-900;
+  }
+
+  h5 {
+    @apply text-lg font-medium text-gray-900;
+  }
+
+  h6 {
+    @apply text-base font-medium text-gray-900;
+  }
+
+  p {
+    @apply text-base text-gray-700 leading-relaxed;
+  }
+
+  a {
+    @apply text-caixa-blue hover:text-caixa-blue-dark transition-colors duration-200;
+  }
+
+  /* Form elements */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="date"],
+  input[type="time"],
+  input[type="tel"],
+  select,
+  textarea {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm
+           focus:outline-none focus:ring-2 focus:ring-caixa-blue focus:border-transparent
+           disabled:bg-gray-100 disabled:cursor-not-allowed;
+  }
+
+  label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+  }
+}
+
+/* Component styles */
+@layer components {
+  /* Caixa branded button (primary) */
+  .btn-caixa {
+    @apply bg-caixa-blue text-white px-4 py-2 rounded font-semibold
+           hover:bg-caixa-blue-dark transition-colors duration-200
+           focus:outline-none focus:ring-2 focus:ring-caixa-blue focus:ring-offset-2
+           disabled:bg-gray-400 disabled:cursor-not-allowed;
+  }
+
+  /* Caixa secondary button (orange accent) */
+  .btn-caixa-secondary {
+    @apply bg-caixa-orange text-gray-900 px-4 py-2 rounded font-semibold
+           hover:bg-caixa-orange-dark transition-colors duration-200
+           focus:outline-none focus:ring-2 focus:ring-caixa-orange focus:ring-offset-2
+           disabled:bg-gray-400 disabled:cursor-not-allowed;
+  }
+
+  /* Caixa card component */
+  .card-caixa {
+    @apply bg-white rounded-lg shadow-md p-6 border-t-4 border-caixa-blue;
+  }
+
+  /* Data table styles */
+  .table-caixa {
+    @apply w-full border-collapse;
+  }
+
+  .table-caixa thead {
+    @apply bg-caixa-blue text-white;
+  }
+
+  .table-caixa th {
+    @apply px-4 py-3 text-left text-sm font-semibold;
+  }
+
+  .table-caixa td {
+    @apply px-4 py-3 text-sm border-b border-gray-200;
+  }
+
+  .table-caixa tbody tr:hover {
+    @apply bg-gray-50;
+  }
+
+  /* Badge styles */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-success {
+    @apply bg-green-100 text-green-800;
+  }
+
+  .badge-warning {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+
+  .badge-error {
+    @apply bg-red-100 text-red-800;
+  }
+
+  .badge-info {
+    @apply bg-blue-100 text-blue-800;
+  }
+
+  /* Loading skeleton */
+  .skeleton {
+    @apply animate-pulse bg-gray-200 rounded;
+  }
+
+  /* Container utilities */
+  .container-caixa {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Page header */
+  .page-header {
+    @apply mb-6 pb-4 border-b-2 border-caixa-blue;
+  }
+
+  .page-title {
+    @apply text-3xl font-bold text-gray-900;
+  }
+
+  .page-subtitle {
+    @apply mt-2 text-sm text-gray-600;
+  }
+}
+
+/* Utility classes */
+@layer utilities {
+  /* Text colors */
+  .text-caixa-blue {
+    color: var(--caixa-blue);
+  }
+
+  .text-caixa-orange {
+    color: var(--caixa-orange);
+  }
+
+  /* Background colors */
+  .bg-caixa-blue {
+    background-color: var(--caixa-blue);
+  }
+
+  .bg-caixa-blue-dark {
+    background-color: var(--caixa-blue-dark);
+  }
+
+  .bg-caixa-orange {
+    background-color: var(--caixa-orange);
+  }
+
+  /* Border colors */
+  .border-caixa-blue {
+    border-color: var(--caixa-blue);
+  }
+
+  .border-caixa-orange {
+    border-color: var(--caixa-orange);
+  }
+
+  /* Custom scrollbar for Caixa branding */
+  .scrollbar-caixa::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+
+  .scrollbar-caixa::-webkit-scrollbar-track {
+    @apply bg-gray-100 rounded;
+  }
+
+  .scrollbar-caixa::-webkit-scrollbar-thumb {
+    @apply bg-caixa-blue rounded;
+  }
+
+  .scrollbar-caixa::-webkit-scrollbar-thumb:hover {
+    @apply bg-caixa-blue-dark;
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    @apply bg-white;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .page-break-before {
+    page-break-before: always;
+  }
+
+  .page-break-after {
+    page-break-after: always;
+  }
+}
+
+/* Responsive utilities */
+@media (max-width: 640px) {
+  .container-caixa {
+    @apply px-3;
+  }
+}
+
+/* Accessibility improvements */
+.sr-only {
+  @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+}
+
+.focus-visible:focus {
+  @apply outline-none ring-2 ring-caixa-blue ring-offset-2;
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-in-out;
+}
