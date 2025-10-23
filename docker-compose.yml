@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # Backend API service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.backend
+    container_name: caixa-backend
+    ports:
+      - "5001:8080"  # Map to container port 8080 (common for .NET apps)
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Data Source=/app/data/premium_reporting.db
+    volumes:
+      - ./backend/src/CaixaSeguradora.Api/logs:/app/logs
+      - ./data:/app/data  # For SQLite database persistence
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  # Frontend React service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+    container_name: caixa-frontend
+    ports:
+      - "5173:80"  # Vite dev server typically runs on port 80 in container
+    environment:
+      - VITE_API_BASE_URL=http://backend:8080/api/v1
+    volumes:
+      - ./frontend/src:/app/src:ro  # Live reload for development
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  # SQLite database service (using a file-based volume)
+  db:
+    image: nouchka/sqlite3:latest
+    container_name: caixa-db
+    volumes:
+      - ./data:/var/lib/sqlite3
+    environment:
+      - SQLITE_DATABASE=premium_reporting.db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  database_data:
+    driver: local

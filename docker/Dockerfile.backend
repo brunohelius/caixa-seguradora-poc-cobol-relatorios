@@ -1,0 +1,25 @@
+# Use the official .NET SDK image to build the application
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /app
+
+# Copy csproj and restore dependencies
+COPY backend/src/CaixaSeguradora.Api/CaixaSeguradora.Api.csproj ./backend/src/CaixaSeguradora.Api/
+COPY backend/src/CaixaSeguradora.Core/CaixaSeguradora.Core.csproj ./backend/src/CaixaSeguradora.Core/
+COPY backend/src/CaixaSeguradora.Infrastructure/CaixaSeguradora.Infrastructure.csproj ./backend/src/CaixaSeguradora.Infrastructure/
+COPY backend/CaixaSeguradora.sln ./
+
+WORKDIR /app/backend/src/CaixaSeguradora.Api
+RUN dotnet restore
+
+# Copy everything else and build
+WORKDIR /app
+COPY backend/ ./backend/
+WORKDIR /app/backend/src/CaixaSeguradora.Api
+RUN dotnet publish -c Release -o out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+WORKDIR /app
+COPY --from=build /app/backend/src/CaixaSeguradora.Api/out .
+EXPOSE 8080
+ENTRYPOINT ["dotnet", "CaixaSeguradora.Api.dll"]
