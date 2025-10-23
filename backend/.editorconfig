@@ -20,6 +20,7 @@ indent_size = 2
 
 # C# naming conventions
 [*.cs]
+# Interface names should begin with 'I'
 dotnet_naming_rule.interfaces_should_be_pascal_case.severity = warning
 dotnet_naming_rule.interfaces_should_be_pascal_case.symbols = interface
 dotnet_naming_rule.interfaces_should_be_pascal_case.style = begins_with_i
@@ -31,9 +32,89 @@ dotnet_naming_symbols.interface.required_modifiers =
 dotnet_naming_style.begins_with_i.required_prefix = I
 dotnet_naming_style.begins_with_i.capitalization = pascal_case
 
-# Code style
+# Public enum members should be PascalCase
+dotnet_naming_rule.public_enum_members_should_be_pascal_case.severity = warning
+dotnet_naming_rule.public_enum_members_should_be_pascal_case.symbols = public_enum_member
+dotnet_naming_rule.public_enum_members_should_be_pascal_case.style = pascal_case_style
+
+dotnet_naming_symbols.public_enum_member.applicable_kinds = enum_member
+dotnet_naming_symbols.public_enum_member.applicable_accessibilities = public
+dotnet_naming_symbols.public_enum_member.required_modifiers =
+
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+
+# Code style preferences
+# Use expression-bodied members where possible
+csharp_style_expression_bodied_members = when_on_single_line:warning
+csharp_style_expression_bodied_constructors = false:warning
+csharp_style_expression_bodied_methods = false:warning
+csharp_style_expression_bodied_properties = true:warning
+csharp_style_expression_bodied_indexers = true:warning
+csharp_style_expression_bodied_accessors = true:warning
+
+# Use object collection initializers
+csharp_style_object_initializer = true:warning
+csharp_style_collection_initializer = true:warning
+
+# Use simplified boolean expressions
+csharp_style_implicit_boolean_check = true:suggestion
+
+# Use var instead of explicit type when type is obvious
+csharp_style_var_for_built_in_types = true:warning
+csharp_style_var_when_type_is_apparent = true:warning
+csharp_style_var_elsewhere = false:warning
+
+# Use null checking patterns
+csharp_style_conditional_delegate_call = true:warning
+
+# Braces and spacing preferences
 csharp_prefer_braces = true:warning
 csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true
 csharp_new_line_before_catch = true
 csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_anonymous_types = true
+csharp_new_line_between_query_expression_clauses = true
+
+# Use pattern matching
+csharp_style_pattern_matching_over_is_with_cast_check = true:warning
+csharp_style_pattern_matching_over_as_with_null_check = true:warning
+csharp_style_inlined_variable_declaration = true:warning
+csharp_style_deconstructed_variable_declaration = true:warning
+csharp_style_throw_expression = true:warning
+csharp_style_conditional_assignment = true:warning
+
+# Code quality preferences
+csharp_prefer_simple_default_expression = true:warning
+csharp_prefer_static_list_conversion_methods = true:warning
+csharp_prefer_direct_implementation_names = true:warning
+csharp_prefer_inferred_tuple_names = true:warning
+csharp_prefer_inferred_anonymous_type_member_names = true:warning
+csharp_prefer_auto_properties = true:warning
+csharp_prefer_is_null_check_over_reference_equality_method = true:warning
+csharp_prefer_simplified_boolean_expressions = true:warning
+csharp_prefer_simplified_interpolation = true:warning
+csharp_prefer_simplified_lambda_parameter_for_readability = false:warning
+
+# Accessibility preferences
+csharp_prefer_public_fields_or_properties = false:warning
+csharp_prefer_readonly_fields = true:warning
+
+# Formatting preferences
+csharp_space_after_cast = false
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_between_parentheses = false
+csharp_space_before_colon_in_inheritance_clause = true
+csharp_space_after_colon_in_inheritance_clause = true
+csharp_space_around_binary_operators = before_and_after
+csharp_space_between_method_call_parameter_list_parentheses = false
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+csharp_indent_block_contents = true
+csharp_indent_braces = false
+csharp_indent_case_contents = true
+csharp_indent_switch_labels = true
+csharp_indent_labels = flush_left
+
+# Severity settings
+dotnet_diagnostic.IDE1006.severity = warning
