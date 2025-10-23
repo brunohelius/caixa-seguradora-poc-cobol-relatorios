@@ -1,51 +1,112 @@
-# OS files
+# Universal
 .DS_Store
 Thumbs.db
-
-# Editor directories and files
+*.tmp
+*.swp
 .vscode/
 .idea/
-*.swp
-*.swo
-*~
+
+# C#/.NET
+bin/
+obj/
+*.user
 *.suo
-
-# Logs
+packages/
+*.nupkg
+*.nuspec
 *.log
-*.tmp
-*.temp
+*.cache
+debug/
+release/
 
-# Environment variables
-.env
-.env.local
-.env*.local
-
-# Node.js / JavaScript
+# Node.js/JavaScript
 node_modules/
+dist/
+build/
+*.log
+.env*
+.nyc_output/
+coverage/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
+.pnp/
+.pnp.js
+.next/
+.nuxt/
+.vuepress/dist/
+.svelte/
+.svelte-kit/
 
-# .NET
-bin/
-obj/
+# Python (if needed)
+__pycache__/
+*.pyc
+.venv/
+venv/
+dist/
+*.egg-info/
+
+# Database
+*.db
+*.db-journal
+premium_reporting.db
+premium_reporting.db-shm
+premium_reporting.db-wal
+
+# IDE
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
 *.dll
 *.exe
-*.pdb
-*.user
-*.userosscache
+*.so
+*.dylib
 
-# Database files
-*.db
-*.db-shm
-*.db-wal
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.DocumentRevisions-V100
+.fseventsd
+.SoftLink
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.com.apple.timemachine.supported
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
 
-# Build outputs
-dist/
-build/
-coverage/
+# Windows
+Thumbs.db
+ehthumbs.db
+Icon?
+!Icon
+desktop.ini
 
-# Temporary files
+# Environment
+.env
+.env.local
+.env.dev
+.env.development
+.env.prod
+.env.production
+.env.staging
+.env.test
+.env.testing
+
+# Backup files
+*~
 *.bak
-*.cache
+*.backup
+*.old
+*.orig
+*.tmp
+*.temp
