@@ -28,12 +28,12 @@ public class CossuredPolicyRepository : Repository<CossuredPolicy>, ICossuredPol
         // Maps to COBOL cursor: CUR-V0APOLCOSCED declared at R4900-00-DECLARE-V0APOLCOSCED
         // Fetched at R5000-00-FETCH-V0APOLCOSCED
         // SELECT * FROM V0APOLCOSCED WHERE NUM_APOLICE = :policyNumber ORDER BY COD_COSSG
-        var query = _premiumContext.CossuredPolicies
+        IOrderedQueryable<CossuredPolicy> query = _premiumContext.CossuredPolicies
             .AsNoTracking()
             .Where(cp => cp.PolicyNumber == policyNumber)
             .OrderBy(cp => cp.CossuranceCode);
 
-        await foreach (var cossuredPolicy in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        await foreach (CossuredPolicy? cossuredPolicy in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             yield return cossuredPolicy;
         }
@@ -45,13 +45,13 @@ public class CossuredPolicyRepository : Repository<CossuredPolicy>, ICossuredPol
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         // SELECT * FROM V0APOLCOSCED WHERE TIP_COSSG = :cossuranceType
-        var query = _premiumContext.CossuredPolicies
+        IOrderedQueryable<CossuredPolicy> query = _premiumContext.CossuredPolicies
             .AsNoTracking()
             .Where(cp => cp.CossuranceType == cossuranceType)
             .OrderBy(cp => cp.PolicyNumber)
             .ThenBy(cp => cp.CossuranceCode);
 
-        await foreach (var cossuredPolicy in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        await foreach (CossuredPolicy? cossuredPolicy in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             yield return cossuredPolicy;
         }
@@ -84,19 +84,19 @@ public class CossuredPolicyRepository : Repository<CossuredPolicy>, ICossuredPol
         // INNER JOIN V0APOLICE ap ON cp.NUM_APOLICE = ap.NUM_APOLICE
         // WHERE YEAR(ap.DT_INIVIG) = :referenceYear AND MONTH(ap.DT_INIVIG) = :referenceMonth
 
-        var query = _premiumContext.CossuredPolicies
+        IOrderedQueryable<CossuredPolicy> query = _premiumContext.CossuredPolicies
             .AsNoTracking()
             .Include(cp => cp.Policy)
             .Where(cp => cp.Policy != null)
             .OrderBy(cp => cp.PolicyNumber)
             .ThenBy(cp => cp.CossuranceCode);
 
-        await foreach (var cossuredPolicy in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        await foreach (CossuredPolicy? cossuredPolicy in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             // Filter by policy effective date
             if (cossuredPolicy.Policy != null)
             {
-                var effectiveDate = cossuredPolicy.Policy.EffectiveDate;
+                DateTime effectiveDate = cossuredPolicy.Policy.EffectiveDate;
                 if (effectiveDate.Year == referenceYear && effectiveDate.Month == referenceMonth)
                 {
                     yield return cossuredPolicy;

@@ -1,6 +1,7 @@
 using CaixaSeguradora.Core.DTOs;
 using CaixaSeguradora.Core.Entities;
 using CaixaSeguradora.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CaixaSeguradora.Api.Controllers
@@ -12,6 +13,7 @@ namespace CaixaSeguradora.Api.Controllers
     [ApiController]
     [Route("api/batch-jobs")]
     [Produces("application/json")]
+    [Authorize] // Require authentication for all batch job operations
     public class BatchJobsController : ControllerBase
     {
         private readonly IBatchJobRepository _batchJobRepository;
@@ -62,9 +64,9 @@ namespace CaixaSeguradora.Api.Controllers
                     CreatedBy = request.CreatedBy
                 };
 
-                var createdJob = await _backgroundJobService.ScheduleJobAsync(job, cancellationToken);
+                BatchJob createdJob = await _backgroundJobService.ScheduleJobAsync(job, cancellationToken);
 
-                var response = MapToResponseDto(createdJob);
+                BatchJobResponseDto response = MapToResponseDto(createdJob);
 
                 return CreatedAtAction(nameof(GetBatchJob), new { jobId = createdJob.JobId }, response);
             }
@@ -140,7 +142,7 @@ namespace CaixaSeguradora.Api.Controllers
         {
             try
             {
-                var job = await _batchJobRepository.GetByIdAsync(jobId, cancellationToken);
+                BatchJob? job = await _batchJobRepository.GetByIdAsync(jobId, cancellationToken);
                 if (job == null)
                 {
                     return NotFound(new ErrorResponse
@@ -150,10 +152,10 @@ namespace CaixaSeguradora.Api.Controllers
                     });
                 }
 
-                var response = MapToResponseDto(job);
+                BatchJobResponseDto response = MapToResponseDto(job);
 
                 // Include latest execution
-                var latestExecution = await _batchJobRepository.GetLatestExecutionAsync(jobId, cancellationToken);
+                BatchJobExecution? latestExecution = await _batchJobRepository.GetLatestExecutionAsync(jobId, cancellationToken);
                 if (latestExecution != null)
                 {
                     response.LatestExecution = new BatchJobExecutionSummaryDto
@@ -197,7 +199,7 @@ namespace CaixaSeguradora.Api.Controllers
         {
             try
             {
-                var existingJob = await _batchJobRepository.GetByIdAsync(jobId, cancellationToken);
+                BatchJob? existingJob = await _batchJobRepository.GetByIdAsync(jobId, cancellationToken);
                 if (existingJob == null)
                 {
                     return NotFound(new ErrorResponse
@@ -208,18 +210,57 @@ namespace CaixaSeguradora.Api.Controllers
                 }
 
                 // Apply updates
-                if (request.JobName != null) existingJob.JobName = request.JobName;
-                if (request.Description != null) existingJob.Description = request.Description;
-                if (request.RecurrencePattern != null) existingJob.RecurrencePattern = request.RecurrencePattern;
-                if (request.ReportParameters != null) existingJob.ReportParameters = request.ReportParameters;
-                if (request.ExecutionHour.HasValue) existingJob.ExecutionHour = request.ExecutionHour;
-                if (request.ExecutionMinute.HasValue) existingJob.ExecutionMinute = request.ExecutionMinute;
-                if (request.DayOfWeek.HasValue) existingJob.DayOfWeek = request.DayOfWeek;
-                if (request.DayOfMonth.HasValue) existingJob.DayOfMonth = request.DayOfMonth;
-                if (request.NotificationRecipients != null) existingJob.NotificationRecipients = request.NotificationRecipients;
-                if (request.MaxRetries.HasValue) existingJob.MaxRetries = request.MaxRetries.Value;
+                if (request.JobName != null)
+                {
+                    existingJob.JobName = request.JobName;
+                }
 
-                var updatedJob = await _backgroundJobService.UpdateJobScheduleAsync(jobId, existingJob, cancellationToken);
+                if (request.Description != null)
+                {
+                    existingJob.Description = request.Description;
+                }
+
+                if (request.RecurrencePattern != null)
+                {
+                    existingJob.RecurrencePattern = request.RecurrencePattern;
+                }
+
+                if (request.ReportParameters != null)
+                {
+                    existingJob.ReportParameters = request.ReportParameters;
+                }
+
+                if (request.ExecutionHour.HasValue)
+                {
+                    existingJob.ExecutionHour = request.ExecutionHour;
+                }
+
+                if (request.ExecutionMinute.HasValue)
+                {
+                    existingJob.ExecutionMinute = request.ExecutionMinute;
+                }
+
+                if (request.DayOfWeek.HasValue)
+                {
+                    existingJob.DayOfWeek = request.DayOfWeek;
+                }
+
+                if (request.DayOfMonth.HasValue)
+                {
+                    existingJob.DayOfMonth = request.DayOfMonth;
+                }
+
+                if (request.NotificationRecipients != null)
+                {
+                    existingJob.NotificationRecipients = request.NotificationRecipients;
+                }
+
+                if (request.MaxRetries.HasValue)
+                {
+                    existingJob.MaxRetries = request.MaxRetries.Value;
+                }
+
+                BatchJob updatedJob = await _backgroundJobService.UpdateJobScheduleAsync(jobId, existingJob, cancellationToken);
 
                 return Ok(MapToResponseDto(updatedJob));
             }
@@ -287,12 +328,12 @@ namespace CaixaSeguradora.Api.Controllers
         {
             try
             {
-                var execution = await _backgroundJobService.ExecuteJobAsync(
+                BatchJobExecution execution = await _backgroundJobService.ExecuteJobAsync(
                     jobId,
                     request.ExecutedBy,
                     cancellationToken);
 
-                var response = MapToExecutionDto(execution);
+                BatchJobExecutionDto response = MapToExecutionDto(execution);
 
                 return Accepted($"/api/batch-jobs/{jobId}/executions/{execution.ExecutionId}", response);
             }
@@ -331,7 +372,7 @@ namespace CaixaSeguradora.Api.Controllers
         {
             try
             {
-                var executions = await _batchJobRepository.GetJobHistoryAsync(jobId, limit, cancellationToken);
+                IReadOnlyList<BatchJobExecution> executions = await _batchJobRepository.GetJobHistoryAsync(jobId, limit, cancellationToken);
                 var response = executions.Select(MapToExecutionDto).ToList();
 
                 return Ok(response);

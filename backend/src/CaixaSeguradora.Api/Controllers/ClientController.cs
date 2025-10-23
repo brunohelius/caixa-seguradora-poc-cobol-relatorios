@@ -42,7 +42,7 @@ public class ClientController : ControllerBase
         {
             _logger.LogInformation("Fetching client: {ClientCode}", clientCode);
 
-            var client = await _clientRepository.GetByClientCodeAsync((int)clientCode, cancellationToken);
+            Core.Entities.Client? client = await _clientRepository.GetByClientCodeAsync((int)clientCode, cancellationToken);
 
             if (client == null)
             {
@@ -115,7 +115,7 @@ public class ClientController : ControllerBase
             // Try to parse as client code
             if (long.TryParse(searchTerm, out var clientCode))
             {
-                var client = await _clientRepository.GetByClientCodeAsync((int)clientCode, cancellationToken);
+                Core.Entities.Client? client = await _clientRepository.GetByClientCodeAsync((int)clientCode, cancellationToken);
                 if (client != null)
                 {
                     return Ok(new List<ClientDto>
@@ -134,7 +134,7 @@ public class ClientController : ControllerBase
 
             // Search by name or document (case-insensitive)
             var searchLower = searchTerm.ToLowerInvariant();
-            var clients = await _clientRepository.FindAsync(
+            IReadOnlyList<Core.Entities.Client> clients = await _clientRepository.FindAsync(
                 c => c.ClientName.ToLower().Contains(searchLower) ||
                      c.DocumentNumber.Contains(searchTerm),
                 cancellationToken);

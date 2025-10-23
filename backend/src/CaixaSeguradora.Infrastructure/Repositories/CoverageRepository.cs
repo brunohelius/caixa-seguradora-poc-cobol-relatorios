@@ -26,12 +26,12 @@ public class CoverageRepository : Repository<Coverage>, ICoverageRepository
     {
         // Maps to COBOL sections R0850-00-SELECT-V0COBERAPOL, R1250-00-SELECT-V0COBERAPOL:
         // SELECT * FROM V0COBERAPOL WHERE NUM_APOLICE = :policyNumber
-        var query = _premiumContext.Coverages
+        IOrderedQueryable<Coverage> query = _premiumContext.Coverages
             .AsNoTracking()
             .Where(c => c.PolicyNumber == policyNumber)
             .OrderBy(c => c.CoverageCode);
 
-        await foreach (var coverage in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        await foreach (Coverage? coverage in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             yield return coverage;
         }
@@ -62,13 +62,13 @@ public class CoverageRepository : Repository<Coverage>, ICoverageRepository
         // SELECT * FROM COBPRPVA WHERE NUM_PROPT = :proposalNumber
         // Note: Assuming proposal number can be derived from policy relationship
         // In production, this might require a join or separate proposal coverage table
-        var query = _premiumContext.Coverages
+        IOrderedQueryable<Coverage> query = _premiumContext.Coverages
             .AsNoTracking()
             .Include(c => c.Policy)
             .Where(c => c.Policy != null && c.Policy.ProposalNumber == proposalNumber)
             .OrderBy(c => c.CoverageCode);
 
-        await foreach (var coverage in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        await foreach (Coverage? coverage in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             yield return coverage;
         }

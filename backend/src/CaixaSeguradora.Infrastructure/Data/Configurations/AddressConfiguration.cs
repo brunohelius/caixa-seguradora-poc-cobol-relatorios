@@ -10,10 +10,10 @@ namespace CaixaSeguradora.Infrastructure.Data.Configurations
         {
             builder.ToTable("Addresses");
 
-            builder.HasKey(a => a.Id);
+            builder.HasKey(a => a.AddressId);
 
             builder.Property(a => a.PostalCode).IsRequired().HasMaxLength(8);
-            builder.Property(a => a.Street).IsRequired().HasMaxLength(100);
+            builder.Property(a => a.StreetAddress).IsRequired().HasMaxLength(100);
             builder.Property(a => a.Number).HasMaxLength(10);
             builder.Property(a => a.Complement).HasMaxLength(50);
             builder.Property(a => a.Neighborhood).HasMaxLength(50);
@@ -23,7 +23,8 @@ namespace CaixaSeguradora.Infrastructure.Data.Configurations
 
             builder.HasOne(a => a.Client)
                 .WithMany(c => c.Addresses)
-                .HasForeignKey(a => a.ClientId)
+                .HasForeignKey(a => a.ClientCode)
+                .HasPrincipalKey(c => c.ClientCode)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

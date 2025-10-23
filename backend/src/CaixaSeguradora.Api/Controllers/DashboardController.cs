@@ -9,7 +9,7 @@ namespace CaixaSeguradora.Api.Controllers;
 /// Endpoints support the interactive dashboard UI for RG1866B migration project.
 /// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/v1/[controller]")]
 [Produces("application/json")]
 public class DashboardController : ControllerBase
 {
@@ -39,7 +39,7 @@ public class DashboardController : ControllerBase
         try
         {
             _logger.LogInformation("Fetching dashboard metrics");
-            var metrics = await _dashboardService.GetDashboardMetricsAsync(cancellationToken);
+            DashboardMetricsDto metrics = await _dashboardService.GetDashboardMetricsAsync(cancellationToken);
             _logger.LogInformation("Dashboard metrics retrieved successfully: {ProgramName}, {TasksCompleted}/{TotalTasks} tasks",
                 metrics.ProgramInfo.ProgramName,
                 metrics.MigrationProgress.TasksCompleted,
@@ -75,7 +75,7 @@ public class DashboardController : ControllerBase
         try
         {
             _logger.LogInformation("Fetching function points analysis");
-            var functionPoints = await _dashboardService.GetFunctionPointsAsync(cancellationToken);
+            FunctionPointsDto functionPoints = await _dashboardService.GetFunctionPointsAsync(cancellationToken);
             _logger.LogInformation("Function points analysis retrieved: {TotalFP} adjusted FP, {EffortMonths} months estimated",
                 functionPoints.TotalAdjustedFunctionPoints,
                 functionPoints.EstimatedEffortMonths);
@@ -110,7 +110,7 @@ public class DashboardController : ControllerBase
         try
         {
             _logger.LogInformation("Fetching database dependencies analysis");
-            var dependencies = await _dashboardService.GetDatabaseDependenciesAsync(cancellationToken);
+            DatabaseDependenciesDto dependencies = await _dashboardService.GetDatabaseDependenciesAsync(cancellationToken);
             _logger.LogInformation("Database dependencies retrieved: {TableCount} tables, {CursorCount} cursors, {SqlOps} SQL operations",
                 dependencies.TotalTables,
                 dependencies.TotalCursors,

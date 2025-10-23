@@ -5,7 +5,6 @@ import ReportGenerationPage from './pages/ReportGenerationPage';
 import QueryPage from './pages/QueryPage';
 import BatchJobsPage from './pages/BatchJobsPage';
 import MockDataPage from './pages/MockDataPage';
-import './styles/globals.css';
 
 const NotFoundPage = () => (
   <div className="text-center py-12">

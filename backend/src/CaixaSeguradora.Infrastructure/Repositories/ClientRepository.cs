@@ -55,12 +55,12 @@ public class ClientRepository : Repository<Client>, IClientRepository
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         // SELECT * FROM V0CLIENTE WHERE NOM_CLIEN LIKE '%:namePattern%'
-        var query = _premiumContext.Clients
+        IOrderedQueryable<Client> query = _premiumContext.Clients
             .AsNoTracking()
             .Where(c => c.ClientName.Contains(namePattern))
             .OrderBy(c => c.ClientName);
 
-        await foreach (var client in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        await foreach (Client? client in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             yield return client;
         }

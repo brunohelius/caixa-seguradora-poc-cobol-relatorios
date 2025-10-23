@@ -33,13 +33,13 @@ public class PolicyQueryService : IPolicyQueryService
         CancellationToken cancellationToken = default)
     {
         // Validate query parameters
-        if (!query.IsValid(out var errors))
+        if (!query.IsValid(out List<string>? errors))
         {
             throw new ArgumentException($"Invalid query parameters: {string.Join(", ", errors)}");
         }
 
         // Get filtered queryable
-        var queryable = GetFilteredQuery(query);
+        IQueryable<Policy> queryable = GetFilteredQuery(query);
 
         // Get total count
         var totalRecords = await queryable.CountAsync(cancellationToken);
@@ -49,12 +49,12 @@ public class PolicyQueryService : IPolicyQueryService
 
         // Apply pagination
         var skip = (query.Page - 1) * query.PageSize;
-        var pagedQuery = queryable
+        IQueryable<Policy> pagedQuery = queryable
             .Skip(skip)
             .Take(query.PageSize);
 
         // Execute query and map to DTOs
-        var records = await pagedQuery
+        List<PolicyRecordDto> records = await pagedQuery
             .Select(p => MapToPolicyRecordDto(p))
             .ToListAsync(cancellationToken);
 
@@ -72,7 +72,7 @@ public class PolicyQueryService : IPolicyQueryService
         };
 
         // Get statistics
-        var statistics = await GetPolicyStatisticsAsync(query, cancellationToken);
+        PolicyStatisticsDto statistics = await GetPolicyStatisticsAsync(query, cancellationToken);
 
         return new PolicyQueryResponseDto
         {
@@ -89,7 +89,7 @@ public class PolicyQueryService : IPolicyQueryService
         long policyNumber,
         CancellationToken cancellationToken = default)
     {
-        var policy = await _policyRepository.GetByPolicyNumberAsync(policyNumber, cancellationToken);
+        Policy? policy = await _policyRepository.GetByPolicyNumberAsync(policyNumber, cancellationToken);
 
         return policy != null ? MapToPolicyRecordDto(policy) : null;
     }
@@ -101,8 +101,8 @@ public class PolicyQueryService : IPolicyQueryService
         PolicyQueryDto query,
         CancellationToken cancellationToken = default)
     {
-        var queryable = GetFilteredQuery(query);
-        var records = await queryable.ToListAsync(cancellationToken);
+        IQueryable<Policy> queryable = GetFilteredQuery(query);
+        List<Policy> records = await queryable.ToListAsync(cancellationToken);
 
         if (records.Count == 0)
         {
@@ -124,12 +124,12 @@ public class PolicyQueryService : IPolicyQueryService
         };
 
         // Breakdown by product
-        var productGroups = records
+        IEnumerable<IGrouping<int, Policy>> productGroups = records
             .GroupBy(p => p.ProductCode)
             .OrderByDescending(g => g.Sum(p => p.TotalPremium))
             .Take(10);
 
-        foreach (var group in productGroups)
+        foreach (IGrouping<int, Policy>? group in productGroups)
         {
             statistics.ByProduct[group.Key] = new PolicyProductStatistics
             {
@@ -142,10 +142,10 @@ public class PolicyQueryService : IPolicyQueryService
         }
 
         // Breakdown by status
-        var statusGroups = records
+        IEnumerable<IGrouping<string, Policy>> statusGroups = records
             .GroupBy(p => p.PolicyStatus);
 
-        foreach (var group in statusGroups)
+        foreach (IGrouping<string, Policy> group in statusGroups)
         {
             statistics.ByStatus[group.Key] = new PolicyStatusStatistics
             {
@@ -179,7 +179,7 @@ public class PolicyQueryService : IPolicyQueryService
         // Try to parse as client code
         if (long.TryParse(searchTerm, out var clientCode))
         {
-            var policiesByCode = await _policyRepository
+            IReadOnlyList<Policy> policiesByCode = await _policyRepository
                 .FindAsync(p => p.InsuredCode == clientCode, cancellationToken);
 
             return policiesByCode
@@ -201,11 +201,11 @@ public class PolicyQueryService : IPolicyQueryService
         PolicyQueryDto query,
         CancellationToken cancellationToken = default)
     {
-        var queryable = GetFilteredQuery(query);
+        IQueryable<Policy> queryable = GetFilteredQuery(query);
         queryable = ApplySorting(queryable, query.SortBy, query.SortOrder);
 
         // Limit to 50,000 records for export
-        var records = await queryable
+        List<PolicyRecordDto> records = await queryable
             .Take(50000)
             .Select(p => MapToPolicyRecordDto(p))
             .ToListAsync(cancellationToken);
@@ -218,7 +218,7 @@ public class PolicyQueryService : IPolicyQueryService
                       "InsuredCapital,TotalPremium,NumberOfInstallments,IsActive");
 
         // Data rows
-        foreach (var record in records)
+        foreach (PolicyRecordDto? record in records)
         {
             csv.AppendLine(string.Join(",",
                 EscapeCsv(record.PolicyNumber.ToString()),
@@ -247,7 +247,7 @@ public class PolicyQueryService : IPolicyQueryService
 
     private IQueryable<Policy> GetFilteredQuery(PolicyQueryDto query)
     {
-        var queryable = _context.Policies.AsNoTracking();
+        IQueryable<Policy> queryable = _context.Policies.AsNoTracking();
 
         if (query.PolicyNumber.HasValue)
         {
@@ -272,17 +272,17 @@ public class PolicyQueryService : IPolicyQueryService
 
         if (query.AgencyCode.HasValue)
         {
-            queryable = queryable.Where(p => p.AgencyId == query.AgencyCode.Value);
+            queryable = queryable.Where(p => p.AgencyCode == query.AgencyCode.Value);
         }
 
         if (query.ProducerCode.HasValue)
         {
-            queryable = queryable.Where(p => p.ProducerId == query.ProducerCode.Value);
+            queryable = queryable.Where(p => p.ProducerCode == query.ProducerCode.Value);
         }
 
         if (query.ClientCode.HasValue)
         {
-            queryable = queryable.Where(p => p.ClientId == query.ClientCode.Value);
+            queryable = queryable.Where(p => p.ClientCode == query.ClientCode.Value);
         }
 
         // Date filters
@@ -309,7 +309,7 @@ public class PolicyQueryService : IPolicyQueryService
         // Active only filter
         if (query.ActiveOnly.HasValue && query.ActiveOnly.Value)
         {
-            var now = DateTime.Now;
+            DateTime now = DateTime.Now;
             queryable = queryable.Where(p => p.ExpirationDate >= now);
         }
 
@@ -349,15 +349,15 @@ public class PolicyQueryService : IPolicyQueryService
     {
         return new PolicyRecordDto
         {
-            PolicyId = policy.Id,
+            PolicyId = policy.PolicyNumber,
             PolicyNumber = policy.PolicyNumber,
             ProductCode = policy.ProductCode,
             ProductDescription = policy.Product?.ProductDescription,
             LineOfBusinessCode = 0, // Not available in Policy entity - needs to be added or queried from Product
             CompanyCode = 0, // Not available in Policy entity
-            AgencyCode = policy.AgencyId,
-            ProducerCode = policy.ProducerId,
-            InsuredCode = policy.ClientId,
+            AgencyCode = policy.Agency?.AgencyCode ?? 0,
+            ProducerCode = policy.Producer?.ProducerCode ?? 0,
+            InsuredCode = policy.ClientCode,
             PolicyHolderCode = null,
             IssueDate = policy.EffectiveDate, // Using EffectiveDate as IssueDate
             StartValidityDate = policy.EffectiveDate,

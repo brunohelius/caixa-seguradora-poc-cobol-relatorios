@@ -31,7 +31,7 @@ namespace CaixaSeguradora.Infrastructure.Data
         {
             // Configure all entity configurations
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(PremiumReportingDbContext).Assembly);
-            
+
             base.OnModelCreating(modelBuilder);
         }
     }

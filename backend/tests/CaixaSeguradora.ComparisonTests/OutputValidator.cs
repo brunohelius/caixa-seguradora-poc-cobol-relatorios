@@ -40,8 +40,8 @@ namespace CaixaSeguradora.ComparisonTests
                 };
             }
 
-            byte[] cobolBytes = File.ReadAllBytes(cobolFile);
-            byte[] dotnetBytes = File.ReadAllBytes(dotnetFile);
+            var cobolBytes = File.ReadAllBytes(cobolFile);
+            var dotnetBytes = File.ReadAllBytes(dotnetFile);
 
             if (cobolBytes.Length != dotnetBytes.Length)
             {
@@ -52,7 +52,7 @@ namespace CaixaSeguradora.ComparisonTests
                 };
             }
 
-            for (int i = 0; i < cobolBytes.Length; i++)
+            for (var i = 0; i < cobolBytes.Length; i++)
             {
                 if (cobolBytes[i] != dotnetBytes[i])
                 {
@@ -70,15 +70,15 @@ namespace CaixaSeguradora.ComparisonTests
 
         private string GetContext(byte[] bytes, int position, int contextSize)
         {
-            int start = Math.Max(0, position - contextSize);
-            int end = Math.Min(bytes.Length, position + contextSize);
-            
+            var start = Math.Max(0, position - contextSize);
+            var end = Math.Min(bytes.Length, position + contextSize);
+
             var contextBytes = new byte[end - start];
             Array.Copy(bytes, start, contextBytes, 0, contextBytes.Length);
-            
+
             // Convert to readable string, replacing non-printable characters with dots
             var contextBuilder = new StringBuilder();
-            foreach (byte b in contextBytes)
+            foreach (var b in contextBytes)
             {
                 if (b >= 32 && b <= 126) // Printable ASCII range
                 {
@@ -89,7 +89,7 @@ namespace CaixaSeguradora.ComparisonTests
                     contextBuilder.Append('.');
                 }
             }
-            
+
             return contextBuilder.ToString();
         }
     }

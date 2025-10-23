@@ -39,7 +39,7 @@ public class ProductController : ControllerBase
         {
             _logger.LogInformation("Fetching all products");
 
-            var products = await _productRepository.GetAllAsync(cancellationToken);
+            IReadOnlyList<Core.Entities.Product> products = await _productRepository.GetAllAsync(cancellationToken);
 
             var productDtos = products.Select(p => new ProductDto
             {
@@ -85,7 +85,7 @@ public class ProductController : ControllerBase
         {
             _logger.LogInformation("Fetching product: {ProductCode}", code);
 
-            var product = await _productRepository.GetByProductCodeAsync(code, cancellationToken);
+            Core.Entities.Product? product = await _productRepository.GetByProductCodeAsync(code, cancellationToken);
 
             if (product == null)
             {
@@ -140,7 +140,7 @@ public class ProductController : ControllerBase
         {
             _logger.LogInformation("Fetching products for line of business: {LOB}", lineOfBusiness);
 
-            var products = await _productRepository
+            IReadOnlyList<Core.Entities.Product> products = await _productRepository
                 .FindAsync(p => p.LineOfBusinessCode == lineOfBusiness, cancellationToken);
 
             var productDtos = products.Select(p => new ProductDto

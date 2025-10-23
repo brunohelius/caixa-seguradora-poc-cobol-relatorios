@@ -34,12 +34,12 @@ public class PolicyRepository : Repository<Policy>, IPolicyRepository
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         // Maps to COBOL: SELECT * FROM V0APOLICE WHERE COD_CLIEN = :clientCode
-        var query = _premiumContext.Policies
+        IOrderedQueryable<Policy> query = _premiumContext.Policies
             .AsNoTracking()
             .Where(p => p.ClientCode == clientCode)
             .OrderBy(p => p.PolicyNumber);
 
-        await foreach (var policy in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        await foreach (Policy? policy in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             yield return policy;
         }
@@ -89,12 +89,12 @@ public class PolicyRepository : Repository<Policy>, IPolicyRepository
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         // Maps to COBOL: SELECT * FROM V0APOLICE WHERE COD_PROD = :productCode
-        var query = _premiumContext.Policies
+        IOrderedQueryable<Policy> query = _premiumContext.Policies
             .AsNoTracking()
             .Where(p => p.ProductCode == productCode)
             .OrderBy(p => p.PolicyNumber);
 
-        await foreach (var policy in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        await foreach (Policy? policy in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             yield return policy;
         }

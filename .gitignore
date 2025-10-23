@@ -110,3 +110,17 @@ desktop.ini
 *.orig
 *.tmp
 *.temp
+
+# SSL/TLS Certificates (NEVER commit private keys or certificates)
+*.pfx
+*.p12
+*.key
+*.pem
+*.crt
+*.cer
+*.csr
+certs/
+certificates/
+ssl/
+*.key.enc
+*.pfx.enc

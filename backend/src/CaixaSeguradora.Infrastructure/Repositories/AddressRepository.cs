@@ -27,12 +27,12 @@ public class AddressRepository : Repository<Address>, IAddressRepository
         // Maps to COBOL cursor: CUR-V0ENDERECOS declared at R1230-00-DECLARE-V0ENDERECOS
         // Used in R1220-00-PROCESSA-UF-VIDA for life insurance address processing
         // SELECT * FROM V0ENDERECOS WHERE COD_CLIEN = :clientCode ORDER BY SEQ_ENDER
-        var query = _premiumContext.Addresses
+        IOrderedQueryable<Address> query = _premiumContext.Addresses
             .AsNoTracking()
             .Where(a => a.ClientCode == clientCode)
             .OrderBy(a => a.AddressSequence);
 
-        await foreach (var address in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        await foreach (Address? address in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             yield return address;
         }
@@ -79,13 +79,13 @@ public class AddressRepository : Repository<Address>, IAddressRepository
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         // SELECT * FROM V0ENDERECOS WHERE COD_UF = :stateCode
-        var query = _premiumContext.Addresses
+        IOrderedQueryable<Address> query = _premiumContext.Addresses
             .AsNoTracking()
             .Where(a => a.State == stateCode)
             .OrderBy(a => a.City)
             .ThenBy(a => a.ClientCode);
 
-        await foreach (var address in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        await foreach (Address? address in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             yield return address;
         }

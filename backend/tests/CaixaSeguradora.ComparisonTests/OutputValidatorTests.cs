@@ -23,13 +23,13 @@ namespace CaixaSeguradora.ComparisonTests
             // Arrange
             var filePath1 = Path.Combine(_testDirectory, "identical1.txt");
             var filePath2 = Path.Combine(_testDirectory, "identical2.txt");
-            
+
             var content = "PREMIT000000000001000000000002000000000003";
             File.WriteAllText(filePath1, content);
             File.WriteAllText(filePath2, content);
 
             // Act
-            var result = _validator.CompareFiles(filePath1, filePath2);
+            OutputValidator.ComparisonResult result = _validator.CompareFiles(filePath1, filePath2);
 
             // Assert
             Assert.True(result.Match);
@@ -42,12 +42,12 @@ namespace CaixaSeguradora.ComparisonTests
             // Arrange
             var filePath1 = Path.Combine(_testDirectory, "different1.txt");
             var filePath2 = Path.Combine(_testDirectory, "different2.txt");
-            
+
             File.WriteAllText(filePath1, "PREMIT000000000001000000000002");
             File.WriteAllText(filePath2, "PREMIT000000000001000000000003");
 
             // Act
-            var result = _validator.CompareFiles(filePath1, filePath2);
+            OutputValidator.ComparisonResult result = _validator.CompareFiles(filePath1, filePath2);
 
             // Assert
             Assert.False(result.Match);
@@ -61,12 +61,12 @@ namespace CaixaSeguradora.ComparisonTests
             // Arrange
             var filePath1 = Path.Combine(_testDirectory, "size1.txt");
             var filePath2 = Path.Combine(_testDirectory, "size2.txt");
-            
+
             File.WriteAllText(filePath1, "PREMIT000000000001");
             File.WriteAllText(filePath2, "PREMIT000000000001000000000002");
 
             // Act
-            var result = _validator.CompareFiles(filePath1, filePath2);
+            OutputValidator.ComparisonResult result = _validator.CompareFiles(filePath1, filePath2);
 
             // Assert
             Assert.False(result.Match);
@@ -83,7 +83,7 @@ namespace CaixaSeguradora.ComparisonTests
             File.WriteAllText(existingPath, "PREMIT000000000001");
 
             // Act
-            var result = _validator.CompareFiles(missingPath, existingPath);
+            OutputValidator.ComparisonResult result = _validator.CompareFiles(missingPath, existingPath);
 
             // Assert
             Assert.False(result.Match);
@@ -97,12 +97,12 @@ namespace CaixaSeguradora.ComparisonTests
             // Arrange
             var filePath1 = Path.Combine(_testDirectory, "mismatch1.txt");
             var filePath2 = Path.Combine(_testDirectory, "mismatch2.txt");
-            
+
             File.WriteAllText(filePath1, "PREMIT000000000001000000000002");
             File.WriteAllText(filePath2, "PREMIT000000000002000000000002"); // Different at position 15
 
             // Act
-            var result = _validator.CompareFiles(filePath1, filePath2);
+            OutputValidator.ComparisonResult result = _validator.CompareFiles(filePath1, filePath2);
 
             // Assert
             Assert.False(result.Match);

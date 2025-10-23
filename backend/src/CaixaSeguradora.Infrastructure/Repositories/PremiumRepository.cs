@@ -36,7 +36,7 @@ public class PremiumRepository : Repository<PremiumRecord>, IPremiumRepository
         //     AND MES_REFER = :referenceMonth
         //   ORDER BY NUM_APOLICE, NUM_ENDOS
 
-        var query = _premiumContext.PremiumRecords
+        IOrderedQueryable<PremiumRecord> query = _premiumContext.PremiumRecords
             .AsNoTracking()
             .Where(p => p.CompanyCode == companyCode
                      && p.ReferenceYear == referenceYear
@@ -45,7 +45,7 @@ public class PremiumRepository : Repository<PremiumRecord>, IPremiumRepository
             .ThenBy(p => p.EndorsementNumber);
 
         // Stream results using COBOL FETCH pattern
-        await foreach (var premium in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        await foreach (PremiumRecord? premium in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             yield return premium;
         }
@@ -72,7 +72,7 @@ public class PremiumRepository : Repository<PremiumRecord>, IPremiumRepository
         CancellationToken cancellationToken = default)
     {
         // Aggregate statistics for dashboard and validation
-        var premiums = await _premiumContext.PremiumRecords
+        List<PremiumRecord> premiums = await _premiumContext.PremiumRecords
             .AsNoTracking()
             .Where(p => p.ReferenceYear == referenceYear && p.ReferenceMonth == referenceMonth)
             .ToListAsync(cancellationToken);
@@ -113,14 +113,14 @@ public class PremiumRepository : Repository<PremiumRecord>, IPremiumRepository
         var startDateStr = startDate.ToString("yyyy-MM-dd");
         var endDateStr = endDate.ToString("yyyy-MM-dd");
 
-        var query = _premiumContext.PremiumRecords
+        IOrderedQueryable<PremiumRecord> query = _premiumContext.PremiumRecords
             .AsNoTracking()
             .Where(p => string.Compare(p.PolicyStartDate, startDateStr) >= 0
                      && string.Compare(p.PolicyStartDate, endDateStr) <= 0)
             .OrderBy(p => p.PolicyNumber)
             .ThenBy(p => p.PolicyStartDate);
 
-        await foreach (var record in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        await foreach (PremiumRecord? record in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             yield return record;
         }

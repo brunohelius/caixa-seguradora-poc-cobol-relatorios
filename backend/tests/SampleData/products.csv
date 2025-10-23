@@ -1,0 +1,4 @@
+ProductCode,ProductName,LineOfBusiness,ProductType,CompanyCode
+1001,Seguro Residencial,1001,Habitacional,1
+1002,Seguro Auto,1002,Automóvel,1
+1003,Seguro Empresarial,1003,Empresarial,1

@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'outline';
+  variant?: 'primary' | 'secondary' | 'danger' | 'success';
   size?: 'small' | 'medium' | 'large';
   loading?: boolean;
   fullWidth?: boolean;
@@ -17,59 +17,44 @@ const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const baseClasses = 'font-semibold rounded transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2';
+  const getButtonStyle = (): React.CSSProperties => {
+    const baseStyle: React.CSSProperties = {
+      backgroundColor: '#d3dce0',
+      border: '1px solid #787878',
+      cursor: loading || disabled ? 'not-allowed' : 'pointer',
+      fontSize: size === 'small' ? '1em' : size === 'large' ? '1.4em' : '1.2em',
+      fontWeight: 600,
+      padding: size === 'small' ? '4px 8px' : size === 'large' ? '10px 14px' : '7px 10px',
+      marginRight: '8px',
+      width: fullWidth ? '100%' : 'auto',
+      opacity: disabled ? 0.6 : 1,
+    };
 
-  const variantClasses = {
-    primary: 'bg-caixa-blue text-white hover:bg-blue-700 focus:ring-caixa-blue disabled:bg-gray-400',
-    secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-600 disabled:bg-gray-400',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-600 disabled:bg-gray-400',
-    success: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-600 disabled:bg-gray-400',
-    outline: 'border-2 border-caixa-blue text-caixa-blue hover:bg-caixa-blue hover:text-white focus:ring-caixa-blue disabled:border-gray-400 disabled:text-gray-400',
+    if (variant === 'primary') {
+      baseStyle.backgroundColor = '#7ac0da';
+      baseStyle.color = '#fff';
+      baseStyle.border = '1px solid #5a9fb8';
+    } else if (variant === 'danger') {
+      baseStyle.backgroundColor = '#e80c4d';
+      baseStyle.color = '#fff';
+      baseStyle.border = '1px solid #c00a3e';
+    } else if (variant === 'success') {
+      baseStyle.backgroundColor = '#28A745';
+      baseStyle.color = '#fff';
+      baseStyle.border = '1px solid #218838';
+    }
+
+    return baseStyle;
   };
-
-  const sizeClasses = {
-    small: 'px-3 py-1.5 text-sm',
-    medium: 'px-4 py-2 text-base',
-    large: 'px-6 py-3 text-lg',
-  };
-
-  const widthClass = fullWidth ? 'w-full' : '';
-
-  const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${widthClass} ${className}`;
 
   return (
     <button
-      className={classes}
+      style={getButtonStyle()}
       disabled={disabled || loading}
+      className={className}
       {...props}
     >
-      {loading ? (
-        <span className="flex items-center justify-center">
-          <svg
-            className="animate-spin -ml-1 mr-2 h-4 w-4 text-current"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
-          Carregando...
-        </span>
-      ) : (
-        children
-      )}
+      {loading ? 'Carregando...' : children}
     </button>
   );
 };

@@ -30,27 +30,27 @@ export const DatabaseDependenciesChart: React.FC<DatabaseDependenciesChartProps>
       <div className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <p className="text-sm text-blue-600 dark:text-blue-400 mb-1">Total de Tabelas</p>
-            <p className="text-3xl font-bold text-blue-700 dark:text-blue-300">
+          <div className="p-4 rounded-lg" style={{ backgroundColor: '#E3F2FD', border: '2px solid #0047BB' }}>
+            <p className="text-sm font-semibold mb-1" style={{ color: '#1565C0' }}>Total de Tabelas</p>
+            <p className="text-3xl font-black" style={{ color: '#0D47A1' }}>
               {dependencies.totalTables}
             </p>
           </div>
-          <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-            <p className="text-sm text-green-600 dark:text-green-400 mb-1">Cursores</p>
-            <p className="text-3xl font-bold text-green-700 dark:text-green-300">
+          <div className="p-4 rounded-lg" style={{ backgroundColor: '#E8F5E9', border: '2px solid #28A745' }}>
+            <p className="text-sm font-semibold mb-1" style={{ color: '#2E7D32' }}>Cursores</p>
+            <p className="text-3xl font-black" style={{ color: '#1B5E20' }}>
               {dependencies.totalCursors}
             </p>
           </div>
-          <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-            <p className="text-sm text-purple-600 dark:text-purple-400 mb-1">Operações SQL</p>
-            <p className="text-3xl font-bold text-purple-700 dark:text-purple-300">
+          <div className="p-4 rounded-lg" style={{ backgroundColor: '#F3E5F5', border: '2px solid #7B1FA2' }}>
+            <p className="text-sm font-semibold mb-1" style={{ color: '#7B1FA2' }}>Operações SQL</p>
+            <p className="text-3xl font-black" style={{ color: '#4A148C' }}>
               {dependencies.sqlStats.totalOperations}
             </p>
           </div>
-          <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-            <p className="text-sm text-orange-600 dark:text-orange-400 mb-1">Somente Leitura</p>
-            <p className="text-3xl font-bold text-orange-700 dark:text-orange-300">
+          <div className="p-4 rounded-lg" style={{ backgroundColor: '#FFF3E0', border: '2px solid #FF9800' }}>
+            <p className="text-sm font-semibold mb-1" style={{ color: '#E65100' }}>Somente Leitura</p>
+            <p className="text-3xl font-black" style={{ color: '#BF360C' }}>
               {dependencies.sqlStats.readOnlyPercentage.toFixed(1)}%
             </p>
           </div>
@@ -58,7 +58,7 @@ export const DatabaseDependenciesChart: React.FC<DatabaseDependenciesChartProps>
 
         {/* Top Tables by Row Count */}
         <div>
-          <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300 mb-3">
+          <h4 className="text-md font-semibold mb-3" style={{ color: '#333' }}>
             Top 10 Tabelas por Volume de Registros
           </h4>
           <ResponsiveContainer width="100%" height={300}>
@@ -87,7 +87,7 @@ export const DatabaseDependenciesChart: React.FC<DatabaseDependenciesChartProps>
         {/* SQL Operations Distribution */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300 mb-3">
+            <h4 className="text-md font-semibold mb-3" style={{ color: '#333' }}>
               Distribuição de Operações SQL
             </h4>
             <ResponsiveContainer width="100%" height={200}>
@@ -113,22 +113,26 @@ export const DatabaseDependenciesChart: React.FC<DatabaseDependenciesChartProps>
 
           {/* Cursor Information */}
           <div>
-            <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300 mb-3">
+            <h4 className="text-md font-semibold mb-3" style={{ color: '#333' }}>
               Cursores Declarados ({dependencies.cursors.length})
             </h4>
             <div className="space-y-2 max-h-[200px] overflow-y-auto">
               {dependencies.cursors.map((cursor, index) => (
                 <div
                   key={index}
-                  className="p-3 bg-gray-50 dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700"
+                  className="p-3 rounded"
+                  style={{
+                    backgroundColor: '#F5F5F5',
+                    border: '1px solid #e2e2e2'
+                  }}
                 >
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                  <p className="text-sm font-semibold" style={{ color: '#000' }}>
                     {cursor.cursorName}
                   </p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                  <p className="text-xs" style={{ color: '#666' }}>
                     Tabela: {cursor.targetTable}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-500">
+                  <p className="text-xs" style={{ color: '#999' }}>
                     ~{cursor.estimatedRecordsProcessed.toLocaleString('pt-BR')} registros
                   </p>
                 </div>

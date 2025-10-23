@@ -39,13 +39,13 @@ public class PremiumQueryService : IPremiumQueryService
         CancellationToken cancellationToken = default)
     {
         // Validate query parameters
-        if (!query.IsValid(out var errors))
+        if (!query.IsValid(out List<string>? errors))
         {
             throw new ArgumentException($"Invalid query parameters: {string.Join(", ", errors)}");
         }
 
         // Get base queryable from repository
-        var queryable = GetFilteredQuery(query);
+        IQueryable<PremiumRecord> queryable = GetFilteredQuery(query);
 
         // Get total count before pagination
         var totalRecords = await queryable.CountAsync(cancellationToken);
@@ -55,12 +55,12 @@ public class PremiumQueryService : IPremiumQueryService
 
         // Apply pagination
         var skip = (query.Page - 1) * query.PageSize;
-        var pagedQuery = queryable
+        IQueryable<PremiumRecord> pagedQuery = queryable
             .Skip(skip)
             .Take(query.PageSize);
 
         // Execute query and map to DTOs
-        var records = await pagedQuery
+        List<PremiumRecordDto> records = await pagedQuery
             .Select(p => MapToPremiumRecordDto(p))
             .ToListAsync(cancellationToken);
 
@@ -78,7 +78,7 @@ public class PremiumQueryService : IPremiumQueryService
         };
 
         // Get statistics for the filtered data
-        var statistics = await GetPremiumStatisticsAsync(query, cancellationToken);
+        PremiumStatisticsDto statistics = await GetPremiumStatisticsAsync(query, cancellationToken);
 
         return new PremiumQueryResponseDto
         {
@@ -95,9 +95,9 @@ public class PremiumQueryService : IPremiumQueryService
         PremiumQueryDto query,
         CancellationToken cancellationToken = default)
     {
-        var queryable = GetFilteredQuery(query);
+        IQueryable<PremiumRecord> queryable = GetFilteredQuery(query);
 
-        var records = await queryable.ToListAsync(cancellationToken);
+        List<PremiumRecord> records = await queryable.ToListAsync(cancellationToken);
 
         if (records.Count == 0)
         {
@@ -121,11 +121,11 @@ public class PremiumQueryService : IPremiumQueryService
         };
 
         // Breakdown by movement type
-        var movementGroups = records
+        IOrderedEnumerable<IGrouping<string, PremiumRecord>> movementGroups = records
             .GroupBy(p => p.MovementType)
             .OrderByDescending(g => g.Count());
 
-        foreach (var group in movementGroups)
+        foreach (IGrouping<string, PremiumRecord>? group in movementGroups)
         {
             statistics.ByMovementType[group.Key] = new MovementTypeStatistics
             {
@@ -137,12 +137,12 @@ public class PremiumQueryService : IPremiumQueryService
         }
 
         // Breakdown by product code
-        var productGroups = records
+        IEnumerable<IGrouping<int, PremiumRecord>> productGroups = records
             .GroupBy(p => p.ProductCode)
             .OrderByDescending(g => g.Sum(p => p.NetPremiumItem))
             .Take(10); // Top 10 products
 
-        foreach (var group in productGroups)
+        foreach (IGrouping<int, PremiumRecord>? group in productGroups)
         {
             statistics.ByProduct[group.Key] = new ProductStatistics
             {
@@ -179,7 +179,7 @@ public class PremiumQueryService : IPremiumQueryService
         long premiumId,
         CancellationToken cancellationToken = default)
     {
-        var premium = await _premiumRepository.GetByIdAsync(premiumId, cancellationToken);
+        PremiumRecord? premium = await _premiumRepository.GetByIdAsync(premiumId, cancellationToken);
 
         if (premium == null)
         {
@@ -196,7 +196,7 @@ public class PremiumQueryService : IPremiumQueryService
         long policyNumber,
         CancellationToken cancellationToken = default)
     {
-        var premiums = await _premiumRepository
+        IReadOnlyList<PremiumRecord> premiums = await _premiumRepository
             .FindAsync(p => p.PolicyNumber == policyNumber, cancellationToken);
 
         return premiums
@@ -213,11 +213,11 @@ public class PremiumQueryService : IPremiumQueryService
         CancellationToken cancellationToken = default)
     {
         // Apply filters and sorting, but no pagination
-        var queryable = GetFilteredQuery(query);
+        IQueryable<PremiumRecord> queryable = GetFilteredQuery(query);
         queryable = ApplySorting(queryable, query.SortBy, query.SortOrder);
 
         // Limit to reasonable export size (max 100,000 records)
-        var records = await queryable
+        List<PremiumRecordDto> records = await queryable
             .Take(100000)
             .Select(p => MapToPremiumRecordDto(p))
             .ToListAsync(cancellationToken);
@@ -232,7 +232,7 @@ public class PremiumQueryService : IPremiumQueryService
                       "EndorsementNumber,InstallmentNumber,ClientCode,ClientName");
 
         // Data rows
-        foreach (var record in records)
+        foreach (PremiumRecordDto? record in records)
         {
             csv.AppendLine(string.Join(",",
                 EscapeCsv(record.PremiumId.ToString()),
@@ -297,7 +297,7 @@ public class PremiumQueryService : IPremiumQueryService
     /// </summary>
     private IQueryable<PremiumRecord> GetFilteredQuery(PremiumQueryDto query)
     {
-        var queryable = _context.PremiumRecords.AsNoTracking();
+        IQueryable<PremiumRecord> queryable = _context.PremiumRecords.AsNoTracking();
 
         // Apply filters
         if (query.PolicyNumber.HasValue)

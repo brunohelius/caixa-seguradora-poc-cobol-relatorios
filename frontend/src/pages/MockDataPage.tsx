@@ -294,11 +294,11 @@ const MockDataPage: React.FC = () => {
 
             {/* Entity Counts */}
             {stats &&
-              Object.entries(stats.entityCounts)
-                .filter(([_, count]) => count > 0)
-                .sort((a, b) => b[1] - a[1])
+              stats.entityCounts
+                .filter((item) => item.count > 0)
+                .sort((a, b) => b.count - a.count)
                 .slice(0, 4)
-                .map(([entityType, count]) => (
+                .map(({ entityType, count }) => (
                   <div key={entityType} className="bg-white rounded-lg shadow p-6 border-l-4 border-gray-300">
                     <div className="flex items-center">
                       <div className="flex-shrink-0">

@@ -10,15 +10,12 @@ namespace CaixaSeguradora.Infrastructure.Data.Configurations
         {
             builder.ToTable("Agencies");
 
-            builder.HasKey(a => a.Id);
+            builder.HasKey(a => a.AgencyCode);
 
-            builder.Property(a => a.AgencyCode).IsRequired();
             builder.Property(a => a.AgencyName).IsRequired().HasMaxLength(60);
             builder.Property(a => a.RegionalCode).IsRequired();
             builder.Property(a => a.RegionalName).HasMaxLength(50);
             builder.Property(a => a.Status).HasMaxLength(1).HasDefaultValue("A");
-
-            builder.HasIndex(a => a.AgencyCode).IsUnique();
         }
     }
 }

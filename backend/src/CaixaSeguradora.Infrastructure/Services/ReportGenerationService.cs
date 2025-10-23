@@ -109,7 +109,7 @@ public class ReportGenerationService : IReportGenerationService
     /// <inheritdoc/>
     public Task<ReportStatusDto> GetReportStatusAsync(Guid reportId, CancellationToken cancellationToken = default)
     {
-        if (!_reportStatuses.TryGetValue(reportId, out var status))
+        if (!_reportStatuses.TryGetValue(reportId, out ReportStatusDto? status))
         {
             throw new KeyNotFoundException($"Report not found: {reportId}");
         }
@@ -123,14 +123,14 @@ public class ReportGenerationService : IReportGenerationService
         string fileType,
         CancellationToken cancellationToken = default)
     {
-        var status = await GetReportStatusAsync(reportId, cancellationToken);
+        ReportStatusDto status = await GetReportStatusAsync(reportId, cancellationToken);
 
         if (status.Status != "Completed")
         {
             throw new InvalidOperationException($"Report is not ready for download. Current status: {status.Status}");
         }
 
-        var file = status.Files.FirstOrDefault(f => f.FileType.Equals(fileType, StringComparison.OrdinalIgnoreCase));
+        ReportFileDto? file = status.Files.FirstOrDefault(f => f.FileType.Equals(fileType, StringComparison.OrdinalIgnoreCase));
         if (file == null)
         {
             throw new FileNotFoundException($"File type '{fileType}' not found for report {reportId}");
@@ -156,7 +156,7 @@ public class ReportGenerationService : IReportGenerationService
         string cobolFilePath,
         CancellationToken cancellationToken = default)
     {
-        var startTime = DateTime.UtcNow;
+        DateTime startTime = DateTime.UtcNow;
         var comparisonId = Guid.NewGuid();
 
         _logger.LogInformation("Starting COBOL comparison for report {ReportId}", reportId);
@@ -166,14 +166,14 @@ public class ReportGenerationService : IReportGenerationService
             throw new FileNotFoundException($"COBOL output file not found: {cobolFilePath}");
         }
 
-        var status = await GetReportStatusAsync(reportId, cancellationToken);
+        ReportStatusDto status = await GetReportStatusAsync(reportId, cancellationToken);
         if (status.Status != "Completed")
         {
             throw new InvalidOperationException("Cannot compare incomplete report");
         }
 
         // For simplicity, compare PREMIT file (can extend to support both)
-        var netFile = status.Files.FirstOrDefault(f => f.FileType == "PREMIT");
+        ReportFileDto? netFile = status.Files.FirstOrDefault(f => f.FileType == "PREMIT");
         if (netFile == null || string.IsNullOrEmpty(netFile.StoragePath))
         {
             throw new FileNotFoundException("PREMIT file not found for comparison");
@@ -192,11 +192,11 @@ public class ReportGenerationService : IReportGenerationService
         comparison.ByteLevelMatch = byteLevelMatch;
 
         // Line-by-line comparison
-        var lineDifferences = await CompareLineLevelAsync(netFile.StoragePath, cobolFilePath);
+        List<ReportDifferenceDto> lineDifferences = await CompareLineLevelAsync(netFile.StoragePath, cobolFilePath);
         comparison.Differences = lineDifferences;
 
         // Semantic comparison (business logic totals)
-        var semanticComparison = await CompareSemanticAsync(status.Summary, cobolFilePath);
+        SemanticComparisonDto semanticComparison = await CompareSemanticAsync(status.Summary, cobolFilePath);
         comparison.SemanticComparison = semanticComparison;
         comparison.SemanticMatch = semanticComparison?.AllValuesMatch ?? false;
 
@@ -259,20 +259,28 @@ public class ReportGenerationService : IReportGenerationService
         int pageSize = 20,
         CancellationToken cancellationToken = default)
     {
-        var query = _reportStatuses.Values.AsEnumerable();
+        IEnumerable<ReportStatusDto> query = _reportStatuses.Values.AsEnumerable();
 
         // Apply filters
         if (startDate.HasValue)
+        {
             query = query.Where(r => r.RequestedAt >= startDate.Value);
+        }
 
         if (endDate.HasValue)
+        {
             query = query.Where(r => r.RequestedAt <= endDate.Value);
+        }
 
         if (!string.IsNullOrEmpty(systemId))
+        {
             query = query.Where(r => r.Request?.SystemId == systemId);
+        }
 
         if (!string.IsNullOrEmpty(status))
+        {
             query = query.Where(r => r.Status.Equals(status, StringComparison.OrdinalIgnoreCase));
+        }
 
         var totalCount = query.Count();
 
@@ -289,7 +297,7 @@ public class ReportGenerationService : IReportGenerationService
     /// <inheritdoc/>
     public Task<bool> CancelReportGenerationAsync(Guid reportId, CancellationToken cancellationToken = default)
     {
-        if (!_reportStatuses.TryGetValue(reportId, out var status))
+        if (!_reportStatuses.TryGetValue(reportId, out ReportStatusDto? status))
         {
             return Task.FromResult(false);
         }
@@ -324,8 +332,8 @@ public class ReportGenerationService : IReportGenerationService
         ReportGenerationRequestDto request,
         CancellationToken cancellationToken)
     {
-        var status = _reportStatuses[reportId];
-        var startTime = DateTime.UtcNow;
+        ReportStatusDto status = _reportStatuses[reportId];
+        DateTime startTime = DateTime.UtcNow;
 
         // Transaction scope wraps the entire logical unit of work (matching COBOL COMMIT point)
         // Per research.md R5: Use TransactionScope with async flow enabled
@@ -348,7 +356,7 @@ public class ReportGenerationService : IReportGenerationService
             _logger.LogInformation("Starting report generation for {ReportId}", reportId);
 
             // Fetch data using streaming (IAsyncEnumerable) - Read-only operation
-            var premiumStream = _premiumRepository.GetPremiumsForReportAsync(
+            IAsyncEnumerable<PremiumRecord> premiumStream = _premiumRepository.GetPremiumsForReportAsync(
                 request.StartDate,
                 request.EndDate,
                 cancellationToken);
@@ -360,11 +368,13 @@ public class ReportGenerationService : IReportGenerationService
 
             // Process records (read-only data processing)
             status.CurrentPhase = "Calculation";
-            await foreach (var premium in premiumStream.WithCancellation(cancellationToken))
+            await foreach (PremiumRecord? premium in premiumStream.WithCancellation(cancellationToken))
             {
                 // Apply filters
                 if (!ShouldIncludeRecord(premium, request))
+                {
                     continue;
+                }
 
                 recordsProcessed++;
                 status.RecordsProcessed = recordsProcessed;
@@ -386,7 +396,7 @@ public class ReportGenerationService : IReportGenerationService
             // Generate PREMIT file if requested
             if (request.ReportType == "PREMIT" || request.ReportType == "Both")
             {
-                var premitFile = await GeneratePremitFileAsync(
+                ReportFileDto premitFile = await GeneratePremitFileAsync(
                     reportId,
                     premiumRecords,
                     request,
@@ -398,7 +408,7 @@ public class ReportGenerationService : IReportGenerationService
             // Generate PREMCED file if requested
             if (request.ReportType == "PREMCED" || request.ReportType == "Both")
             {
-                var premcedFile = await GeneratePremcedFileAsync(
+                ReportFileDto premcedFile = await GeneratePremcedFileAsync(
                     reportId,
                     premiumRecords,
                     request,
@@ -472,19 +482,29 @@ public class ReportGenerationService : IReportGenerationService
     {
         // Apply optional filters
         if (request.PolicyNumber != null && premium.PolicyNumber != request.PolicyNumber)
+        {
             return false;
+        }
 
         if (request.ProductCode.HasValue && premium.ProductCode != request.ProductCode.Value)
+        {
             return false;
+        }
 
         if (request.LineOfBusiness.HasValue && premium.LineOfBusiness != request.LineOfBusiness.Value)
+        {
             return false;
+        }
 
         if (!request.IncludeCancelled && premium.MovementType == "C")
+        {
             return false;
+        }
 
         if (!request.IncludeReversals && premium.MovementType == "R")
+        {
             return false;
+        }
 
         return true;
     }
@@ -566,7 +586,7 @@ public class ReportGenerationService : IReportGenerationService
     /// </summary>
     private async Task<string> CalculateFileHashAsync(string filePath)
     {
-        using var stream = File.OpenRead(filePath);
+        using FileStream stream = File.OpenRead(filePath);
         var hashBytes = await SHA256.HashDataAsync(stream);
         return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
     }
@@ -579,11 +599,17 @@ public class ReportGenerationService : IReportGenerationService
         summary.TotalRecordsProcessed++;
 
         if (premium.MovementType == "E")
+        {
             summary.EmissionCount++;
+        }
         else if (premium.MovementType == "C")
+        {
             summary.CancellationCount++;
+        }
         else if (premium.MovementType == "R")
+        {
             summary.ReversalCount++;
+        }
 
         // Accumulate totals (stub - use actual calculation service in production)
         summary.TotalNetPremium += (decimal)premium.NetPremium;
@@ -655,7 +681,7 @@ public class ReportGenerationService : IReportGenerationService
         var differences = new List<ReportDifferenceDto>();
         var maxLines = Math.Max(lines1.Length, lines2.Length);
 
-        for (int i = 0; i < maxLines; i++)
+        for (var i = 0; i < maxLines; i++)
         {
             var line1 = i < lines1.Length ? lines1[i] : null;
             var line2 = i < lines2.Length ? lines2[i] : null;
@@ -698,7 +724,7 @@ public class ReportGenerationService : IReportGenerationService
     /// </summary>
     private void UpdateStatusAsFailed(Guid reportId, Exception ex)
     {
-        if (_reportStatuses.TryGetValue(reportId, out var status))
+        if (_reportStatuses.TryGetValue(reportId, out ReportStatusDto? status))
         {
             status.Status = "Failed";
             status.CompletedAt = DateTime.UtcNow;
@@ -713,7 +739,7 @@ public class ReportGenerationService : IReportGenerationService
     private async Task<string> ComputeMD5HashAsync(string filePath)
     {
         using var md5 = MD5.Create();
-        using var stream = File.OpenRead(filePath);
+        using FileStream stream = File.OpenRead(filePath);
         var hash = await md5.ComputeHashAsync(stream);
         return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
     }
@@ -724,7 +750,7 @@ public class ReportGenerationService : IReportGenerationService
     private async Task<string> ComputeSHA256HashAsync(string filePath)
     {
         using var sha256 = SHA256.Create();
-        using var stream = File.OpenRead(filePath);
+        using FileStream stream = File.OpenRead(filePath);
         var hash = await sha256.ComputeHashAsync(stream);
         return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
     }
@@ -736,7 +762,7 @@ public class ReportGenerationService : IReportGenerationService
     {
         string[] sizes = { "B", "KB", "MB", "GB" };
         double len = bytes;
-        int order = 0;
+        var order = 0;
         while (len >= 1024 && order < sizes.Length - 1)
         {
             order++;

@@ -56,7 +56,7 @@ namespace CaixaSeguradora.Infrastructure.Services
         {
             _logger.LogInformation("Executing job {JobId} by {ExecutedBy}", jobId, executedBy);
 
-            var job = await _batchJobRepository.GetByIdAsync(jobId, cancellationToken);
+            BatchJob? job = await _batchJobRepository.GetByIdAsync(jobId, cancellationToken);
             if (job == null)
             {
                 throw new InvalidOperationException($"Job {jobId} not found");
@@ -95,7 +95,7 @@ namespace CaixaSeguradora.Infrastructure.Services
                     execution.ExecutionId, job.JobId);
 
                 // Deserialize report parameters
-                var reportRequest = JsonSerializer.Deserialize<ReportGenerationRequestDto>(job.ReportParameters);
+                ReportGenerationRequestDto? reportRequest = JsonSerializer.Deserialize<ReportGenerationRequestDto>(job.ReportParameters);
                 if (reportRequest == null)
                 {
                     throw new InvalidOperationException("Invalid report parameters");
@@ -103,10 +103,10 @@ namespace CaixaSeguradora.Infrastructure.Services
 
                 // Generate report
                 execution.ExecutionLog += $"Generating report with parameters: {job.ReportParameters}\n";
-                var reportId = await _reportGenerationService.GenerateReportAsync(reportRequest, cancellationToken);
+                Guid reportId = await _reportGenerationService.GenerateReportAsync(reportRequest, cancellationToken);
 
                 // Poll for report completion
-                var reportStatus = await WaitForReportCompletionAsync(reportId, cancellationToken);
+                ReportStatusDto reportStatus = await WaitForReportCompletionAsync(reportId, cancellationToken);
 
                 execution.EndTime = DateTime.UtcNow;
                 execution.RecordsProcessed = reportStatus.RecordsProcessed;
@@ -194,11 +194,11 @@ namespace CaixaSeguradora.Infrastructure.Services
         {
             var maxWaitTime = TimeSpan.FromMinutes(30);
             var pollInterval = TimeSpan.FromSeconds(5);
-            var startTime = DateTime.UtcNow;
+            DateTime startTime = DateTime.UtcNow;
 
             while (DateTime.UtcNow - startTime < maxWaitTime)
             {
-                var status = await _reportGenerationService.GetReportStatusAsync(reportId, cancellationToken);
+                ReportStatusDto status = await _reportGenerationService.GetReportStatusAsync(reportId, cancellationToken);
                 if (status == null)
                 {
                     throw new InvalidOperationException($"Report {reportId} not found");
@@ -222,8 +222,8 @@ namespace CaixaSeguradora.Infrastructure.Services
         {
             _logger.LogInformation("Cancelling job execution {ExecutionId}", executionId);
 
-            var executions = await _batchJobRepository.GetRunningExecutionsAsync(cancellationToken);
-            var execution = executions.FirstOrDefault(e => e.ExecutionId == executionId);
+            IReadOnlyList<BatchJobExecution> executions = await _batchJobRepository.GetRunningExecutionsAsync(cancellationToken);
+            BatchJobExecution? execution = executions.FirstOrDefault(e => e.ExecutionId == executionId);
 
             if (execution == null)
             {
@@ -247,7 +247,7 @@ namespace CaixaSeguradora.Infrastructure.Services
             int executionId,
             CancellationToken cancellationToken = default)
         {
-            var executions = await _batchJobRepository.GetRunningExecutionsAsync(cancellationToken);
+            IReadOnlyList<BatchJobExecution> executions = await _batchJobRepository.GetRunningExecutionsAsync(cancellationToken);
             return executions.FirstOrDefault(e => e.ExecutionId == executionId);
         }
 
@@ -257,12 +257,12 @@ namespace CaixaSeguradora.Infrastructure.Services
         {
             _logger.LogInformation("Processing scheduled jobs at {Time}", DateTime.UtcNow);
 
-            var scheduledJobs = await _batchJobRepository.GetScheduledJobsAsync(DateTime.UtcNow, cancellationToken);
+            IReadOnlyList<BatchJob> scheduledJobs = await _batchJobRepository.GetScheduledJobsAsync(DateTime.UtcNow, cancellationToken);
 
             _logger.LogInformation("Found {Count} jobs ready for execution", scheduledJobs.Count);
 
             var executedCount = 0;
-            foreach (var job in scheduledJobs)
+            foreach (BatchJob job in scheduledJobs)
             {
                 try
                 {
@@ -286,7 +286,7 @@ namespace CaixaSeguradora.Infrastructure.Services
         {
             _logger.LogInformation("Updating job schedule for {JobId}", jobId);
 
-            var existingJob = await _batchJobRepository.GetByIdAsync(jobId, cancellationToken);
+            BatchJob? existingJob = await _batchJobRepository.GetByIdAsync(jobId, cancellationToken);
             if (existingJob == null)
             {
                 throw new InvalidOperationException($"Job {jobId} not found");
@@ -317,7 +317,7 @@ namespace CaixaSeguradora.Infrastructure.Services
         {
             _logger.LogInformation("Pausing job {JobId}", jobId);
 
-            var job = await _batchJobRepository.GetByIdAsync(jobId, cancellationToken);
+            BatchJob? job = await _batchJobRepository.GetByIdAsync(jobId, cancellationToken);
             if (job == null)
             {
                 throw new InvalidOperationException($"Job {jobId} not found");
@@ -336,7 +336,7 @@ namespace CaixaSeguradora.Infrastructure.Services
         {
             _logger.LogInformation("Resuming job {JobId}", jobId);
 
-            var job = await _batchJobRepository.GetByIdAsync(jobId, cancellationToken);
+            BatchJob? job = await _batchJobRepository.GetByIdAsync(jobId, cancellationToken);
             if (job == null)
             {
                 throw new InvalidOperationException($"Job {jobId} not found");
@@ -356,7 +356,7 @@ namespace CaixaSeguradora.Infrastructure.Services
         {
             _logger.LogInformation("Deleting job {JobId}", jobId);
 
-            var job = await _batchJobRepository.GetByIdAsync(jobId, cancellationToken);
+            BatchJob? job = await _batchJobRepository.GetByIdAsync(jobId, cancellationToken);
             if (job == null)
             {
                 throw new InvalidOperationException($"Job {jobId} not found");
@@ -369,7 +369,7 @@ namespace CaixaSeguradora.Infrastructure.Services
         /// <inheritdoc />
         public DateTime CalculateNextExecutionTime(BatchJob job, DateTime? fromTime = null)
         {
-            var baseTime = fromTime ?? DateTime.UtcNow;
+            DateTime baseTime = fromTime ?? DateTime.UtcNow;
             var executionHour = job.ExecutionHour ?? 0;
             var executionMinute = job.ExecutionMinute ?? 0;
 
@@ -439,8 +439,8 @@ namespace CaixaSeguradora.Infrastructure.Services
         {
             _logger.LogInformation("Retrying failed job execution {ExecutionId}", executionId);
 
-            var executions = await _batchJobRepository.GetRunningExecutionsAsync(cancellationToken);
-            var failedExecution = executions.FirstOrDefault(e => e.ExecutionId == executionId);
+            IReadOnlyList<BatchJobExecution> executions = await _batchJobRepository.GetRunningExecutionsAsync(cancellationToken);
+            BatchJobExecution? failedExecution = executions.FirstOrDefault(e => e.ExecutionId == executionId);
 
             if (failedExecution == null || failedExecution.Status != "FAILED")
             {

@@ -11,27 +11,46 @@ const Spinner: React.FC<SpinnerProps> = ({
   color = 'blue',
   className = '',
 }) => {
-  const sizeClasses = {
-    small: 'h-4 w-4',
-    medium: 'h-8 w-8',
-    large: 'h-12 w-12',
+  const getSizeStyle = () => {
+    const sizes = {
+      small: { width: '20px', height: '20px' },
+      medium: { width: '40px', height: '40px' },
+      large: { width: '60px', height: '60px' },
+    };
+    return sizes[size];
   };
 
-  const colorClasses = {
-    blue: 'text-caixa-blue',
-    white: 'text-white',
-    gray: 'text-gray-600',
+  const getColorStyle = () => {
+    const colors = {
+      blue: '#7ac0da',
+      white: '#fff',
+      gray: '#666',
+    };
+    return colors[color];
   };
 
   return (
     <svg
-      className={`animate-spin ${sizeClasses[size]} ${colorClasses[color]} ${className}`}
+      style={{
+        ...getSizeStyle(),
+        animation: 'spin 1s linear infinite',
+        color: getColorStyle(),
+      }}
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
     >
+      <style>
+        {`
+          @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+        `}
+      </style>
       <circle
-        className="opacity-25"
+        style={{ opacity: 0.25 }}
         cx="12"
         cy="12"
         r="10"
@@ -39,7 +58,7 @@ const Spinner: React.FC<SpinnerProps> = ({
         strokeWidth="4"
       ></circle>
       <path
-        className="opacity-75"
+        style={{ opacity: 0.75 }}
         fill="currentColor"
         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
       ></path>

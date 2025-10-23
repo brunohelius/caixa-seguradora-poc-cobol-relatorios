@@ -131,7 +131,7 @@ public class PremiumCalculationServiceTests
     public void CalculateGrossPremium_WithValidInputs_ReturnsCorrectGrossPremium()
     {
         // Arrange
-        decimal netPremium = 1000.00m;
+        var netPremium = 1000.00m;
         var taxRates = new TaxRates
         {
             IOFRate = 0.0738m,        // 7.38%
@@ -153,7 +153,7 @@ public class PremiumCalculationServiceTests
     public void CalculateGrossPremium_WithZeroTaxRates_ReturnsNetPremium()
     {
         // Arrange
-        decimal netPremium = 1500.50m;
+        var netPremium = 1500.50m;
         var taxRates = new TaxRates
         {
             IOFRate = 0m,
@@ -171,7 +171,7 @@ public class PremiumCalculationServiceTests
     public void CalculateGrossPremium_WithNullTaxRates_ThrowsArgumentNullException()
     {
         // Arrange
-        decimal netPremium = 1000m;
+        var netPremium = 1000m;
         TaxRates taxRates = null!;
 
         // Act
@@ -186,7 +186,7 @@ public class PremiumCalculationServiceTests
     public void CalculateGrossPremium_WithRoundingNeeded_UsesCobolRounding()
     {
         // Arrange
-        decimal netPremium = 1000.00m;
+        var netPremium = 1000.00m;
         var taxRates = new TaxRates
         {
             IOFRate = 0.07385m,
@@ -213,9 +213,9 @@ public class PremiumCalculationServiceTests
     public void CalculateIOF_WithAutoInsurance_ReturnsCorrectIOF()
     {
         // Arrange
-        decimal netPremium = 2000.00m;
-        decimal iofRate = 0.0738m;
-        int lineOfBusiness = 531; // Auto insurance
+        var netPremium = 2000.00m;
+        var iofRate = 0.0738m;
+        var lineOfBusiness = 531; // Auto insurance
 
         // Act
         var result = _service.CalculateIOF(netPremium, iofRate, lineOfBusiness);
@@ -229,9 +229,9 @@ public class PremiumCalculationServiceTests
     public void CalculateIOF_WithLifeInsurance_AppliesReducedRate()
     {
         // Arrange
-        decimal netPremium = 2000.00m;
-        decimal iofRate = 0.0738m;
-        int lineOfBusiness = 14; // Life insurance
+        var netPremium = 2000.00m;
+        var iofRate = 0.0738m;
+        var lineOfBusiness = 14; // Life insurance
 
         // Act
         var result = _service.CalculateIOF(netPremium, iofRate, lineOfBusiness);
@@ -245,9 +245,9 @@ public class PremiumCalculationServiceTests
     public void CalculateIOF_WithOtherLineOfBusiness_UsesStandardRate()
     {
         // Arrange
-        decimal netPremium = 1500.00m;
-        decimal iofRate = 0.0738m;
-        int lineOfBusiness = 100; // Other line
+        var netPremium = 1500.00m;
+        var iofRate = 0.0738m;
+        var lineOfBusiness = 100; // Other line
 
         // Act
         var result = _service.CalculateIOF(netPremium, iofRate, lineOfBusiness);
@@ -261,9 +261,9 @@ public class PremiumCalculationServiceTests
     public void CalculateIOF_WithZeroRate_ReturnsZero()
     {
         // Arrange
-        decimal netPremium = 1000.00m;
-        decimal iofRate = 0m;
-        int lineOfBusiness = 531;
+        var netPremium = 1000.00m;
+        var iofRate = 0m;
+        var lineOfBusiness = 531;
 
         // Act
         var result = _service.CalculateIOF(netPremium, iofRate, lineOfBusiness);
@@ -280,9 +280,9 @@ public class PremiumCalculationServiceTests
     public void CalculateCommission_WithValidInputs_ReturnsCorrectCommission()
     {
         // Arrange
-        decimal premium = 5000.00m;
-        decimal commissionRate = 0.15m; // 15%
-        int producerCode = 12345;
+        var premium = 5000.00m;
+        var commissionRate = 0.15m; // 15%
+        var producerCode = 12345;
 
         // Act
         var result = _service.CalculateCommission(premium, commissionRate, producerCode);
@@ -296,9 +296,9 @@ public class PremiumCalculationServiceTests
     public void CalculateCommission_WithZeroRate_ReturnsZero()
     {
         // Arrange
-        decimal premium = 5000.00m;
-        decimal commissionRate = 0m;
-        int producerCode = 12345;
+        var premium = 5000.00m;
+        var commissionRate = 0m;
+        var producerCode = 12345;
 
         // Act
         var result = _service.CalculateCommission(premium, commissionRate, producerCode);
@@ -311,9 +311,9 @@ public class PremiumCalculationServiceTests
     public void CalculateCommission_WithRounding_UsesCobolRounding()
     {
         // Arrange
-        decimal premium = 1000.00m;
-        decimal commissionRate = 0.155m; // 15.5%
-        int producerCode = 12345;
+        var premium = 1000.00m;
+        var commissionRate = 0.155m; // 15.5%
+        var producerCode = 12345;
 
         // Act
         var result = _service.CalculateCommission(premium, commissionRate, producerCode);
@@ -331,9 +331,9 @@ public class PremiumCalculationServiceTests
     public void CalculateInstallments_WithSingleInstallment_ReturnsFullAmount()
     {
         // Arrange
-        decimal totalPremium = 1200.00m;
-        int numberOfInstallments = 1;
-        decimal interestRate = 0m;
+        var totalPremium = 1200.00m;
+        var numberOfInstallments = 1;
+        var interestRate = 0m;
 
         // Act
         var result = _service.CalculateInstallments(totalPremium, numberOfInstallments, interestRate);
@@ -347,9 +347,9 @@ public class PremiumCalculationServiceTests
     public void CalculateInstallments_WithNoInterest_DividesEvenly()
     {
         // Arrange
-        decimal totalPremium = 1200.00m;
-        int numberOfInstallments = 4;
-        decimal interestRate = 0m;
+        var totalPremium = 1200.00m;
+        var numberOfInstallments = 4;
+        var interestRate = 0m;
 
         // Act
         var result = _service.CalculateInstallments(totalPremium, numberOfInstallments, interestRate);
@@ -364,9 +364,9 @@ public class PremiumCalculationServiceTests
     public void CalculateInstallments_WithRoundingNeeded_AdjustsFirstInstallment()
     {
         // Arrange
-        decimal totalPremium = 1000.00m;
-        int numberOfInstallments = 3;
-        decimal interestRate = 0m;
+        var totalPremium = 1000.00m;
+        var numberOfInstallments = 3;
+        var interestRate = 0m;
 
         // Act
         var result = _service.CalculateInstallments(totalPremium, numberOfInstallments, interestRate);
@@ -386,9 +386,9 @@ public class PremiumCalculationServiceTests
     public void CalculateInstallments_WithInterest_AppliesPriceFormula()
     {
         // Arrange
-        decimal totalPremium = 1200.00m;
-        int numberOfInstallments = 3;
-        decimal interestRate = 0.02m; // 2% per installment
+        var totalPremium = 1200.00m;
+        var numberOfInstallments = 3;
+        var interestRate = 0.02m; // 2% per installment
 
         // Act
         var result = _service.CalculateInstallments(totalPremium, numberOfInstallments, interestRate);
@@ -403,9 +403,9 @@ public class PremiumCalculationServiceTests
     public void CalculateInstallments_WithZeroInstallments_ThrowsArgumentException()
     {
         // Arrange
-        decimal totalPremium = 1000m;
-        int numberOfInstallments = 0;
-        decimal interestRate = 0m;
+        var totalPremium = 1000m;
+        var numberOfInstallments = 0;
+        var interestRate = 0m;
 
         // Act
         Action act = () => _service.CalculateInstallments(totalPremium, numberOfInstallments, interestRate);
@@ -419,9 +419,9 @@ public class PremiumCalculationServiceTests
     public void CalculateInstallments_WithNegativeInstallments_ThrowsArgumentException()
     {
         // Arrange
-        decimal totalPremium = 1000m;
-        int numberOfInstallments = -5;
-        decimal interestRate = 0m;
+        var totalPremium = 1000m;
+        var numberOfInstallments = -5;
+        var interestRate = 0m;
 
         // Act
         Action act = () => _service.CalculateInstallments(totalPremium, numberOfInstallments, interestRate);
@@ -566,9 +566,9 @@ public class PremiumCalculationServiceTests
     public void CalculateLifeInsurancePremium_WithValidInputs_ReturnsCorrectPremium()
     {
         // Arrange
-        decimal baseRate = 2.50m; // $2.50 per thousand
-        int numberOfLives = 5;
-        decimal coverageAmount = 100000m;
+        var baseRate = 2.50m; // $2.50 per thousand
+        var numberOfLives = 5;
+        var coverageAmount = 100000m;
 
         // Act
         var result = _service.CalculateLifeInsurancePremium(baseRate, numberOfLives, coverageAmount);
@@ -583,9 +583,9 @@ public class PremiumCalculationServiceTests
     public void CalculateLifeInsurancePremium_WithSingleLife_ReturnsCorrectPremium()
     {
         // Arrange
-        decimal baseRate = 3.00m;
-        int numberOfLives = 1;
-        decimal coverageAmount = 50000m;
+        var baseRate = 3.00m;
+        var numberOfLives = 1;
+        var coverageAmount = 50000m;
 
         // Act
         var result = _service.CalculateLifeInsurancePremium(baseRate, numberOfLives, coverageAmount);
@@ -599,9 +599,9 @@ public class PremiumCalculationServiceTests
     public void CalculateLifeInsurancePremium_WithZeroLives_ThrowsArgumentException()
     {
         // Arrange
-        decimal baseRate = 2.50m;
-        int numberOfLives = 0;
-        decimal coverageAmount = 100000m;
+        var baseRate = 2.50m;
+        var numberOfLives = 0;
+        var coverageAmount = 100000m;
 
         // Act
         Action act = () => _service.CalculateLifeInsurancePremium(baseRate, numberOfLives, coverageAmount);
@@ -615,9 +615,9 @@ public class PremiumCalculationServiceTests
     public void CalculateLifeInsurancePremium_WithNegativeLives_ThrowsArgumentException()
     {
         // Arrange
-        decimal baseRate = 2.50m;
-        int numberOfLives = -5;
-        decimal coverageAmount = 100000m;
+        var baseRate = 2.50m;
+        var numberOfLives = -5;
+        var coverageAmount = 100000m;
 
         // Act
         Action act = () => _service.CalculateLifeInsurancePremium(baseRate, numberOfLives, coverageAmount);
@@ -635,8 +635,8 @@ public class PremiumCalculationServiceTests
     public void ApplyMovementTypeAdjustment_WithEmission_ReturnsPositivePremium()
     {
         // Arrange
-        decimal premium = 1000.00m;
-        string movementType = "E";
+        var premium = 1000.00m;
+        var movementType = "E";
 
         // Act
         var result = _service.ApplyMovementTypeAdjustment(premium, movementType);
@@ -649,8 +649,8 @@ public class PremiumCalculationServiceTests
     public void ApplyMovementTypeAdjustment_WithCancellation_ReturnsNegativePremium()
     {
         // Arrange
-        decimal premium = 1000.00m;
-        string movementType = "C";
+        var premium = 1000.00m;
+        var movementType = "C";
 
         // Act
         var result = _service.ApplyMovementTypeAdjustment(premium, movementType);
@@ -663,8 +663,8 @@ public class PremiumCalculationServiceTests
     public void ApplyMovementTypeAdjustment_WithReversal_ReturnsNegativePremium()
     {
         // Arrange
-        decimal premium = 1500.50m;
-        string movementType = "R";
+        var premium = 1500.50m;
+        var movementType = "R";
 
         // Act
         var result = _service.ApplyMovementTypeAdjustment(premium, movementType);
@@ -677,8 +677,8 @@ public class PremiumCalculationServiceTests
     public void ApplyMovementTypeAdjustment_WithAdjustment_ReturnsOriginalPremium()
     {
         // Arrange
-        decimal premium = 750.25m;
-        string movementType = "A";
+        var premium = 750.25m;
+        var movementType = "A";
 
         // Act
         var result = _service.ApplyMovementTypeAdjustment(premium, movementType);
@@ -691,8 +691,8 @@ public class PremiumCalculationServiceTests
     public void ApplyMovementTypeAdjustment_WithLowercase_HandlesCorrectly()
     {
         // Arrange
-        decimal premium = 1000.00m;
-        string movementType = "c"; // lowercase
+        var premium = 1000.00m;
+        var movementType = "c"; // lowercase
 
         // Act
         var result = _service.ApplyMovementTypeAdjustment(premium, movementType);
@@ -705,8 +705,8 @@ public class PremiumCalculationServiceTests
     public void ApplyMovementTypeAdjustment_WithUnknownType_ReturnsOriginalPremium()
     {
         // Arrange
-        decimal premium = 1000.00m;
-        string movementType = "X";
+        var premium = 1000.00m;
+        var movementType = "X";
 
         // Act
         var result = _service.ApplyMovementTypeAdjustment(premium, movementType);
@@ -719,7 +719,7 @@ public class PremiumCalculationServiceTests
     public void ApplyMovementTypeAdjustment_WithNullOrEmpty_ReturnsOriginalPremium()
     {
         // Arrange
-        decimal premium = 1000.00m;
+        var premium = 1000.00m;
 
         // Act
         var resultNull = _service.ApplyMovementTypeAdjustment(premium, null!);

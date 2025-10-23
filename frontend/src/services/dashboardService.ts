@@ -15,7 +15,7 @@ class DashboardService {
    * Data sourced from COBOL analysis (FINAL-ANALYSIS-REPORT.md).
    */
   async getMetrics(): Promise<DashboardMetricsDto> {
-    const response = await apiClient.get<DashboardMetricsDto>('/api/Dashboard/metrics');
+    const response = await apiClient.get<DashboardMetricsDto>('/api/v1/dashboard/metrics');
     return response.data;
   }
 
@@ -24,7 +24,7 @@ class DashboardService {
    * Based on IFPUG counting practices for complexity assessment.
    */
   async getFunctionPoints(): Promise<FunctionPointsDto> {
-    const response = await apiClient.get<FunctionPointsDto>('/api/Dashboard/function-points');
+    const response = await apiClient.get<FunctionPointsDto>('/api/v1/dashboard/function-points');
     return response.data;
   }
 
@@ -33,7 +33,7 @@ class DashboardService {
    * Critical for understanding data access patterns and migration complexity.
    */
   async getDatabaseDependencies(): Promise<DatabaseDependenciesDto> {
-    const response = await apiClient.get<DatabaseDependenciesDto>('/api/Dashboard/database-dependencies');
+    const response = await apiClient.get<DatabaseDependenciesDto>('/api/v1/dashboard/database-dependencies');
     return response.data;
   }
 
@@ -41,7 +41,7 @@ class DashboardService {
    * Health check for dashboard service availability.
    */
   async healthCheck(): Promise<{ status: string; service: string; timestamp: string }> {
-    const response = await apiClient.get<{ status: string; service: string; timestamp: string }>('/api/Dashboard/health');
+    const response = await apiClient.get<{ status: string; service: string; timestamp: string }>('/api/v1/dashboard/health');
     return response.data;
   }
 }

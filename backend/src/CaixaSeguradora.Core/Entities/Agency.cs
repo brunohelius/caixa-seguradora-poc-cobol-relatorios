@@ -1,12 +1,12 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using CaixaSeguradora.Core.Attributes;
 
 namespace CaixaSeguradora.Core.Entities
 {
     public class Agency
     {
-        public int Id { get; set; }
-
+        [Key]
         [CobolField("WS-COD-AGENCIA", CobolFieldType.Numeric, 1, 6)]
         public int AgencyCode { get; set; }
 

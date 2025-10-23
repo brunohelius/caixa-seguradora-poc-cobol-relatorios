@@ -10,8 +10,9 @@ namespace CaixaSeguradora.Infrastructure.Services;
 
 /// <summary>
 /// Service for validating data integrity and foreign key relationships.
+/// Legacy implementation using DataValidationReport.
 /// </summary>
-public class DataValidationService : IDataValidationService
+public class DataValidationService
 {
     private readonly PremiumReportingDbContext _context;
     private readonly ILogger<DataValidationService> _logger;
@@ -146,11 +147,11 @@ public class DataValidationService : IDataValidationService
         try
         {
             // Run foreign key validation
-            var fkReport = await ValidateForeignKeysAsync(cancellationToken);
+            DataValidationReport fkReport = await ValidateForeignKeysAsync(cancellationToken);
             MergeReports(report, fkReport);
 
             // Run data integrity validation
-            var integrityReport = await ValidateDataIntegrityAsync(cancellationToken);
+            DataValidationReport integrityReport = await ValidateDataIntegrityAsync(cancellationToken);
             MergeReports(report, integrityReport);
 
             // Collect entity statistics
@@ -245,7 +246,7 @@ public class DataValidationService : IDataValidationService
     {
         report.TotalValidations++;
 
-        var orphanedPremiums = await _context.PremiumRecords
+        List<PremiumRecord> orphanedPremiums = await _context.PremiumRecords
             .Where(p => !_context.Policies.Any(pol => pol.PolicyNumber == p.PolicyNumber))
             .Take(100) // Limit to first 100 issues
             .ToListAsync(cancellationToken);
@@ -253,7 +254,7 @@ public class DataValidationService : IDataValidationService
         if (orphanedPremiums.Any())
         {
             report.FailedValidations++;
-            foreach (var premium in orphanedPremiums)
+            foreach (PremiumRecord? premium in orphanedPremiums)
             {
                 report.Issues.Add(new ValidationIssue
                 {
@@ -279,7 +280,7 @@ public class DataValidationService : IDataValidationService
     {
         report.TotalValidations++;
 
-        var orphanedPremiums = await _context.PremiumRecords
+        List<PremiumRecord> orphanedPremiums = await _context.PremiumRecords
             .Where(p => !_context.Clients.Any(c => c.ClientCode == p.ClientCode))
             .Take(100)
             .ToListAsync(cancellationToken);
@@ -287,7 +288,7 @@ public class DataValidationService : IDataValidationService
         if (orphanedPremiums.Any())
         {
             report.FailedValidations++;
-            foreach (var premium in orphanedPremiums)
+            foreach (PremiumRecord? premium in orphanedPremiums)
             {
                 report.Issues.Add(new ValidationIssue
                 {
@@ -313,7 +314,7 @@ public class DataValidationService : IDataValidationService
     {
         report.TotalValidations++;
 
-        var orphanedEndorsements = await _context.Endorsements
+        List<Endorsement> orphanedEndorsements = await _context.Endorsements
             .Where(e => !_context.Policies.Any(p => p.PolicyNumber == e.PolicyNumber))
             .Take(100)
             .ToListAsync(cancellationToken);
@@ -321,7 +322,7 @@ public class DataValidationService : IDataValidationService
         if (orphanedEndorsements.Any())
         {
             report.FailedValidations++;
-            foreach (var endorsement in orphanedEndorsements)
+            foreach (Endorsement? endorsement in orphanedEndorsements)
             {
                 report.Issues.Add(new ValidationIssue
                 {
@@ -347,7 +348,7 @@ public class DataValidationService : IDataValidationService
     {
         report.TotalValidations++;
 
-        var policiesWithInvalidProduct = await _context.Policies
+        List<Policy> policiesWithInvalidProduct = await _context.Policies
             .Where(p => !_context.Products.Any(pr => pr.ProductCode == p.ProductCode))
             .Take(100)
             .ToListAsync(cancellationToken);
@@ -355,12 +356,12 @@ public class DataValidationService : IDataValidationService
         if (policiesWithInvalidProduct.Any())
         {
             report.FailedValidations++;
-            foreach (var policy in policiesWithInvalidProduct)
+            foreach (Policy? policy in policiesWithInvalidProduct)
             {
                 report.Issues.Add(new ValidationIssue
                 {
                     EntityType = "Policy",
-                    EntityId = policy.PolicyId.ToString(),
+                    EntityId = policy.PolicyNumber.ToString(),
                     FieldName = "ProductCode",
                     ValidationRule = "ForeignKeyConstraint",
                     Description = $"Policy references non-existent product: {policy.ProductCode}",
@@ -381,7 +382,7 @@ public class DataValidationService : IDataValidationService
     {
         report.TotalValidations++;
 
-        var policiesWithInvalidClient = await _context.Policies
+        List<Policy> policiesWithInvalidClient = await _context.Policies
             .Where(p => !_context.Clients.Any(c => c.ClientCode == p.InsuredClientCode))
             .Take(100)
             .ToListAsync(cancellationToken);
@@ -389,12 +390,12 @@ public class DataValidationService : IDataValidationService
         if (policiesWithInvalidClient.Any())
         {
             report.FailedValidations++;
-            foreach (var policy in policiesWithInvalidClient)
+            foreach (Policy? policy in policiesWithInvalidClient)
             {
                 report.Issues.Add(new ValidationIssue
                 {
                     EntityType = "Policy",
-                    EntityId = policy.PolicyId.ToString(),
+                    EntityId = policy.PolicyNumber.ToString(),
                     FieldName = "InsuredClientCode",
                     ValidationRule = "ForeignKeyConstraint",
                     Description = $"Policy references non-existent client: {policy.InsuredClientCode}",
@@ -415,7 +416,7 @@ public class DataValidationService : IDataValidationService
     {
         report.TotalValidations++;
 
-        var addressesWithInvalidClient = await _context.Addresses
+        List<Address> addressesWithInvalidClient = await _context.Addresses
             .Where(a => !_context.Clients.Any(c => c.ClientCode == a.ClientCode))
             .Take(100)
             .ToListAsync(cancellationToken);
@@ -423,7 +424,7 @@ public class DataValidationService : IDataValidationService
         if (addressesWithInvalidClient.Any())
         {
             report.FailedValidations++;
-            foreach (var address in addressesWithInvalidClient)
+            foreach (Address? address in addressesWithInvalidClient)
             {
                 report.Issues.Add(new ValidationIssue
                 {
@@ -449,7 +450,7 @@ public class DataValidationService : IDataValidationService
     {
         report.TotalValidations++;
 
-        var invalidCossured = await _context.CossuredPolicies
+        List<CossuredPolicy> invalidCossured = await _context.CossuredPolicies
             .Where(cp => !_context.Policies.Any(p => p.PolicyNumber == cp.PolicyNumber))
             .Take(100)
             .ToListAsync(cancellationToken);
@@ -457,7 +458,7 @@ public class DataValidationService : IDataValidationService
         if (invalidCossured.Any())
         {
             report.FailedValidations++;
-            foreach (var cossured in invalidCossured)
+            foreach (CossuredPolicy? cossured in invalidCossured)
             {
                 report.Issues.Add(new ValidationIssue
                 {
@@ -484,7 +485,7 @@ public class DataValidationService : IDataValidationService
         report.TotalValidations++;
 
         // Validate policies have required fields
-        var invalidPolicies = await _context.Policies
+        List<Policy> invalidPolicies = await _context.Policies
             .Where(p => string.IsNullOrEmpty(p.PolicyStatusCode) || p.PolicyNumber == 0)
             .Take(100)
             .ToListAsync(cancellationToken);
@@ -492,12 +493,12 @@ public class DataValidationService : IDataValidationService
         if (invalidPolicies.Any())
         {
             report.FailedValidations++;
-            foreach (var policy in invalidPolicies)
+            foreach (Policy? policy in invalidPolicies)
             {
                 report.Issues.Add(new ValidationIssue
                 {
                     EntityType = "Policy",
-                    EntityId = policy.PolicyId.ToString(),
+                    EntityId = policy.PolicyNumber.ToString(),
                     ValidationRule = "RequiredField",
                     Description = "Policy missing required fields (PolicyStatusCode or PolicyNumber)",
                     Severity = ValidationSeverity.Error
@@ -517,7 +518,7 @@ public class DataValidationService : IDataValidationService
         report.TotalValidations++;
 
         // Validate premium amounts are positive
-        var invalidPremiums = await _context.PremiumRecords
+        List<PremiumRecord> invalidPremiums = await _context.PremiumRecords
             .Where(p => p.NetPremiumAmount < 0 || p.GrossPremiumAmount < 0)
             .Take(100)
             .ToListAsync(cancellationToken);
@@ -525,7 +526,7 @@ public class DataValidationService : IDataValidationService
         if (invalidPremiums.Any())
         {
             report.FailedValidations++;
-            foreach (var premium in invalidPremiums)
+            foreach (PremiumRecord? premium in invalidPremiums)
             {
                 report.Issues.Add(new ValidationIssue
                 {
@@ -553,7 +554,7 @@ public class DataValidationService : IDataValidationService
         // Validate policy end date is after start date
         // Note: PolicyStartDate and PolicyEndDate are strings in format "yyyy-MM-dd"
         // String comparison works for ISO date format
-        var invalidDatePolicies = await _context.Policies
+        List<Policy> invalidDatePolicies = await _context.Policies
             .Where(p => string.Compare(p.PolicyEndDate, p.PolicyStartDate) < 0)
             .Take(100)
             .ToListAsync(cancellationToken);
@@ -561,12 +562,12 @@ public class DataValidationService : IDataValidationService
         if (invalidDatePolicies.Any())
         {
             report.FailedValidations++;
-            foreach (var policy in invalidDatePolicies)
+            foreach (Policy? policy in invalidDatePolicies)
             {
                 report.Issues.Add(new ValidationIssue
                 {
                     EntityType = "Policy",
-                    EntityId = policy.PolicyId.ToString(),
+                    EntityId = policy.PolicyNumber.ToString(),
                     ValidationRule = "BusinessRule",
                     Description = "Policy end date must be after start date",
                     Severity = ValidationSeverity.Error,
@@ -636,7 +637,7 @@ public class DataValidationService : IDataValidationService
         DataValidationReport report,
         CancellationToken cancellationToken)
     {
-        var entityTypes = new[]
+        (string, int)[] entityTypes = new[]
         {
             ("PremiumRecord", await _context.PremiumRecords.CountAsync(cancellationToken)),
             ("Policy", await _context.Policies.CountAsync(cancellationToken)),
@@ -653,7 +654,7 @@ public class DataValidationService : IDataValidationService
             ("CossuranceCalculation", await _context.CossuranceCalculations.CountAsync(cancellationToken))
         };
 
-        foreach (var (entityType, count) in entityTypes)
+        foreach ((string entityType, int count) in entityTypes)
         {
             if (!report.EntityStats.ContainsKey(entityType))
             {
@@ -666,9 +667,9 @@ public class DataValidationService : IDataValidationService
         }
 
         // Count issues per entity type
-        foreach (var issue in report.Issues)
+        foreach (ValidationIssue issue in report.Issues)
         {
-            if (report.EntityStats.TryGetValue(issue.EntityType, out var stats))
+            if (report.EntityStats.TryGetValue(issue.EntityType, out EntityValidationStats? stats))
             {
                 if (issue.Severity == ValidationSeverity.Error)
                 {
@@ -691,11 +692,11 @@ public class DataValidationService : IDataValidationService
         target.WarningCount += source.WarningCount;
         target.Issues.AddRange(source.Issues);
 
-        foreach (var (key, value) in source.EntityStats)
+        foreach ((string key, EntityValidationStats value) in source.EntityStats)
         {
             if (target.EntityStats.ContainsKey(key))
             {
-                var targetStats = target.EntityStats[key];
+                EntityValidationStats targetStats = target.EntityStats[key];
                 targetStats.ErrorCount += value.ErrorCount;
                 targetStats.WarningCount += value.WarningCount;
                 targetStats.RecordsWithIssues += value.RecordsWithIssues;
@@ -716,7 +717,7 @@ public class DataValidationService : IDataValidationService
         if (report.EntityStats.Any())
         {
             sb.AppendLine($"Validated {report.EntityStats.Count} entity types:");
-            foreach (var (entityType, stats) in report.EntityStats)
+            foreach ((string entityType, EntityValidationStats stats) in report.EntityStats)
             {
                 sb.AppendLine($"  - {entityType}: {stats.TotalRecords} records, {stats.ErrorCount} errors, {stats.WarningCount} warnings");
             }

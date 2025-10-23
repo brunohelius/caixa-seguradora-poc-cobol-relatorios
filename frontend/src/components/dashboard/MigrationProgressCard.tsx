@@ -6,27 +6,6 @@ interface MigrationProgressCardProps {
 }
 
 export const MigrationProgressCard: React.FC<MigrationProgressCardProps> = ({ migrationProgress }) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Complete': return 'bg-green-500';
-      case 'In Progress': return 'bg-blue-500';
-      case 'Testing': return 'bg-yellow-500';
-      case 'Not Started': return 'bg-gray-500';
-      default: return 'bg-gray-500';
-    }
-  };
-
-  const getPhaseIcon = (phase: string) => {
-    if (phase.includes('Setup')) return '🔧';
-    if (phase.includes('Foundation')) return '🏗️';
-    if (phase.includes('Dashboard')) return '📊';
-    if (phase.includes('Report')) return '📄';
-    if (phase.includes('Query')) return '🔍';
-    if (phase.includes('Batch')) return '⚙️';
-    if (phase.includes('Testing')) return '🧪';
-    return '🚀';
-  };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('pt-BR', {
       day: '2-digit',
@@ -45,42 +24,48 @@ export const MigrationProgressCard: React.FC<MigrationProgressCardProps> = ({ mi
       <div className="space-y-6">
         {/* Overall Progress */}
         <div>
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xl font-bold" style={{ color: '#000' }}>
               Progresso Geral
             </span>
-            <span className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+            <span className="text-4xl font-black" style={{ color: '#0047BB' }}>
               {completionPercentage.toFixed(1)}%
             </span>
           </div>
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4">
+          <div className="w-full rounded-full h-6" style={{ backgroundColor: '#e2e2e2' }}>
             <div
-              className="bg-gradient-to-r from-blue-500 to-blue-600 h-4 rounded-full transition-all duration-500"
-              style={{ width: `${completionPercentage}%` }}
+              className="h-6 rounded-full transition-all duration-500"
+              style={{
+                width: `${completionPercentage}%`,
+                background: 'linear-gradient(to right, #0047BB, #003380)',
+              }}
             />
           </div>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+          <p className="text-base mt-3 font-medium" style={{ color: '#333' }}>
             {migrationProgress.tasksCompleted} de {migrationProgress.totalTasks} tarefas concluídas
           </p>
         </div>
 
         {/* Validation Progress */}
         <div>
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xl font-bold" style={{ color: '#000' }}>
               Validação Byte-a-Byte
             </span>
-            <span className="text-3xl font-bold text-green-600 dark:text-green-400">
+            <span className="text-4xl font-black" style={{ color: '#28A745' }}>
               {validationPercentage.toFixed(1)}%
             </span>
           </div>
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-4">
+          <div className="w-full rounded-full h-6" style={{ backgroundColor: '#e2e2e2' }}>
             <div
-              className="bg-gradient-to-r from-green-500 to-green-600 h-4 rounded-full transition-all duration-500"
-              style={{ width: `${validationPercentage}%` }}
+              className="h-6 rounded-full transition-all duration-500"
+              style={{
+                width: `${validationPercentage}%`,
+                background: 'linear-gradient(to right, #28A745, #1e7e34)',
+              }}
             />
           </div>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+          <p className="text-base mt-3 font-medium" style={{ color: '#333' }}>
             {validationPercentage > 0
               ? `Saída compatível com COBOL em ${validationPercentage}% dos casos de teste`
               : 'Validação ainda não iniciada'}
@@ -89,39 +74,39 @@ export const MigrationProgressCard: React.FC<MigrationProgressCardProps> = ({ mi
 
         {/* Status Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg border border-blue-200 dark:border-blue-800">
-            <div className="flex items-center gap-3 mb-2">
-              <div className={`w-3 h-3 rounded-full ${getStatusColor(migrationProgress.status)}`} />
-              <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">Status</p>
+          <div className="p-6 rounded-xl shadow-lg" style={{ background: 'linear-gradient(135deg, #0047BB 0%, #003380 100%)', color: '#fff' }}>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-4 h-4 rounded-full animate-pulse" style={{ backgroundColor: '#FFB81C' }} />
+              <p className="text-sm font-semibold uppercase tracking-wide">Status</p>
             </div>
-            <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">
+            <p className="text-3xl font-black">
               {migrationProgress.status}
             </p>
           </div>
 
-          <div className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-lg border border-purple-200 dark:border-purple-800">
-            <div className="flex items-center gap-3 mb-2">
-              <span className="text-2xl">{getPhaseIcon(migrationProgress.currentPhase)}</span>
-              <p className="text-sm text-purple-600 dark:text-purple-400 font-medium">Fase Atual</p>
+          <div className="p-6 rounded-xl shadow-lg" style={{ background: 'linear-gradient(135deg, #7ac0da 0%, #5a9cb8 100%)', color: '#fff' }}>
+            <div className="flex items-center gap-3 mb-3">
+              <span className="text-3xl">✨</span>
+              <p className="text-sm font-semibold uppercase tracking-wide">Fase Atual</p>
             </div>
-            <p className="text-lg font-bold text-purple-900 dark:text-purple-100">
+            <p className="text-xl font-bold">
               {migrationProgress.currentPhase}
             </p>
           </div>
         </div>
 
         {/* Timeline */}
-        <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+        <div className="p-6 rounded-xl shadow-lg" style={{ background: 'linear-gradient(135deg, #333 0%, #1a1a1a 100%)', color: '#fff' }}>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Última Atualização</p>
-              <p className="text-base font-semibold text-gray-900 dark:text-white">
+              <p className="text-sm font-medium mb-1" style={{ color: '#ccc' }}>Última Atualização</p>
+              <p className="text-xl font-bold">
                 {formatDate(migrationProgress.lastUpdated)}
               </p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-gray-600 dark:text-gray-400">Tarefas Restantes</p>
-              <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+              <p className="text-sm font-medium mb-1" style={{ color: '#ccc' }}>Tarefas Restantes</p>
+              <p className="text-4xl font-black" style={{ color: '#FFB81C' }}>
                 {migrationProgress.totalTasks - migrationProgress.tasksCompleted}
               </p>
             </div>
@@ -129,31 +114,127 @@ export const MigrationProgressCard: React.FC<MigrationProgressCardProps> = ({ mi
         </div>
 
         {/* Milestone Indicators */}
-        <div className="space-y-2">
-          <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Marcos Principais</p>
-          <div className="grid grid-cols-5 gap-2">
-            {['Setup', 'Foundation', 'Dashboard', 'Reports', 'Complete'].map((milestone, index) => {
-              const milestoneProgress = ((index + 1) / 5) * 100;
-              const isCompleted = completionPercentage >= milestoneProgress;
-              const isCurrent = completionPercentage >= (index / 5) * 100 && completionPercentage < milestoneProgress;
+        <div className="space-y-3">
+          <p className="text-lg font-bold" style={{ color: '#000' }}>Marcos Principais (8 Fases)</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { name: 'Setup', progress: 12.5, icon: '🔧' },
+              { name: 'Foundation', progress: 25, icon: '🏗️' },
+              { name: 'US1', progress: 37.5, icon: '📊' },
+              { name: 'US2', progress: 50, icon: '📄' },
+              { name: 'US3', progress: 62.5, icon: '🔍' },
+              { name: 'US4', progress: 75, icon: '⚙️' },
+              { name: 'US5', progress: 87.5, icon: '📦' },
+              { name: 'Polish', progress: 100, icon: '✨' }
+            ].map((milestone) => {
+              const isCompleted = completionPercentage >= milestone.progress;
+              const isCurrent = completionPercentage >= (milestone.progress - 12.5) && completionPercentage < milestone.progress;
+
+              let bgStyle = {};
+              let textColor = '#666';
+
+              if (isCompleted) {
+                bgStyle = { background: 'linear-gradient(135deg, #28A745 0%, #1e7e34 100%)' };
+                textColor = '#fff';
+              } else if (isCurrent) {
+                bgStyle = { background: 'linear-gradient(135deg, #FFB81C 0%, #E6A519 100%)', border: '3px solid #0047BB' };
+                textColor = '#000';
+              } else {
+                bgStyle = { backgroundColor: '#e2e2e2' };
+                textColor = '#666';
+              }
 
               return (
                 <div
-                  key={milestone}
-                  className={`p-2 rounded text-center text-xs font-medium transition-all ${
-                    isCompleted
-                      ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
-                      : isCurrent
-                      ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 ring-2 ring-blue-500'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
-                  }`}
+                  key={milestone.name}
+                  className="p-4 rounded-xl text-center font-bold shadow-md"
+                  style={bgStyle}
                 >
-                  {isCompleted ? '✓' : isCurrent ? '▶' : '○'} {milestone}
+                  <div className="text-2xl mb-1">{milestone.icon}</div>
+                  <div className="text-xs font-bold" style={{ color: textColor }}>{milestone.name}</div>
+                  {isCompleted && <div className="text-xl mt-1">✓</div>}
+                  {isCurrent && <div className="text-xl mt-1 animate-pulse">▶</div>}
                 </div>
               );
             })}
           </div>
         </div>
+
+        {/* Build & Test Status */}
+        {(migrationProgress.buildStatus || migrationProgress.testsCreated) && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {migrationProgress.buildStatus && (
+              <div className="p-6 rounded-xl shadow-lg" style={{ background: 'linear-gradient(135deg, #28A745 0%, #1e7e34 100%)', color: '#fff' }}>
+                <p className="text-sm font-semibold mb-3 uppercase tracking-wide">Build Status</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl">✓</span>
+                  <span className="text-2xl font-black">{migrationProgress.buildStatus}</span>
+                </div>
+              </div>
+            )}
+
+            {migrationProgress.testsCreated && (
+              <div className="p-6 rounded-xl shadow-lg" style={{ background: 'linear-gradient(135deg, #0047BB 0%, #003380 100%)', color: '#fff' }}>
+                <p className="text-sm font-semibold mb-3 uppercase tracking-wide">Testes Criados</p>
+                <p className="text-5xl font-black">
+                  {migrationProgress.testsCreated}
+                </p>
+                <p className="text-xs mt-2 font-medium">
+                  Unit + Integration + E2E + Performance
+                </p>
+              </div>
+            )}
+
+            {migrationProgress.codeCoveragePercentage !== undefined && (
+              <div className="p-6 rounded-xl shadow-lg" style={{ background: 'linear-gradient(135deg, #7ac0da 0%, #5a9cb8 100%)', color: '#fff' }}>
+                <p className="text-sm font-semibold mb-3 uppercase tracking-wide">Cobertura de Código</p>
+                <p className="text-5xl font-black mb-2">
+                  {migrationProgress.codeCoveragePercentage.toFixed(0)}%
+                </p>
+                <div className="w-full rounded-full h-3" style={{ backgroundColor: 'rgba(255,255,255,0.3)' }}>
+                  <div
+                    className="h-3 rounded-full"
+                    style={{ width: `${migrationProgress.codeCoveragePercentage}%`, backgroundColor: '#FFB81C' }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Production Readiness */}
+        {migrationProgress.productionReadinessPercentage !== undefined && (
+          <div className="p-8 rounded-2xl shadow-2xl" style={{ background: 'linear-gradient(to right, #FFB81C 0%, #E6A519 100%)' }}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <span className="text-5xl">🎯</span>
+                <h4 className="text-2xl font-black" style={{ color: '#000' }}>
+                  Prontidão para Produção
+                </h4>
+              </div>
+              <span className="text-6xl font-black" style={{ color: '#0047BB' }}>
+                {migrationProgress.productionReadinessPercentage.toFixed(0)}%
+              </span>
+            </div>
+            <div className="w-full bg-white rounded-full h-8 shadow-inner">
+              <div
+                className="h-8 rounded-full transition-all duration-500 flex items-center justify-end pr-4"
+                style={{
+                  width: `${migrationProgress.productionReadinessPercentage}%`,
+                  background: 'linear-gradient(to right, #0047BB, #003380)',
+                }}
+              >
+                <span className="text-white text-sm font-black tracking-wider">PRONTO</span>
+              </div>
+            </div>
+            <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-2 text-sm font-bold" style={{ color: '#000' }}>
+              <div>✓ User Stories</div>
+              <div>✓ Build OK</div>
+              <div>✓ Testes Passando</div>
+              <div>✓ Documentação</div>
+            </div>
+          </div>
+        )}
       </div>
     </Card>
   );

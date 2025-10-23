@@ -30,12 +30,12 @@ public class CossuranceCalculationRepository : Repository<CossuranceCalculation>
         // SELECT * FROM GE399 WHERE COD_CIA = :companyCode [AND other criteria]
         // Note: calculationCriteria would be parsed/interpreted based on business rules
 
-        var query = _premiumContext.CossuranceCalculations
+        IOrderedQueryable<CossuranceCalculation> query = _premiumContext.CossuranceCalculations
             .AsNoTracking()
             .OrderBy(cc => cc.PolicyNumber)
             .ThenBy(cc => cc.CossuranceCode);
 
-        await foreach (var calculation in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        await foreach (CossuranceCalculation? calculation in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             yield return calculation;
         }
@@ -77,17 +77,17 @@ public class CossuranceCalculationRepository : Repository<CossuranceCalculation>
         // Implements COBOL logic from R5500-00-CALCULA-COSG-CED
         // This is a business logic calculation, not just data retrieval
 
-        var calculationRecords = await _premiumContext.CossuranceCalculations
+        List<CossuranceCalculation> calculationRecords = await _premiumContext.CossuranceCalculations
             .AsNoTracking()
             .Where(cc => cc.PolicyNumber == policyNumber)
             .ToListAsync(cancellationToken);
 
-        decimal cededPremium = totalPremium * cossurancePercentage;
-        decimal retainedPremium = totalPremium - cededPremium;
+        var cededPremium = totalPremium * cossurancePercentage;
+        var retainedPremium = totalPremium - cededPremium;
 
         var companyShares = new List<CompanyShare>();
 
-        foreach (var record in calculationRecords)
+        foreach (CossuranceCalculation? record in calculationRecords)
         {
             var sharePremium = totalPremium * record.QuotaPercentage;
             companyShares.Add(new CompanyShare

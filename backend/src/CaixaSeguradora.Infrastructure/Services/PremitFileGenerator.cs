@@ -27,7 +27,9 @@ public static class PremitFileGenerator
     public static string GenerateRecord(PremiumRecord premium)
     {
         if (premium == null)
+        {
             throw new ArgumentNullException(nameof(premium));
+        }
 
         var record = new StringBuilder(500); // Pre-allocate estimated size for performance
 
@@ -139,13 +141,15 @@ public static class PremitFileGenerator
     public static byte[] GenerateFile(IEnumerable<PremiumRecord> premiums, Encoding? encoding = null)
     {
         if (premiums == null)
+        {
             throw new ArgumentNullException(nameof(premiums));
+        }
 
         encoding ??= Encoding.GetEncoding("ISO-8859-1"); // COBOL default encoding
 
         var fileContent = new StringBuilder();
 
-        foreach (var premium in premiums)
+        foreach (PremiumRecord premium in premiums)
         {
             var recordLine = GenerateRecord(premium);
             fileContent.AppendLine(recordLine); // Adds CRLF line terminator matching COBOL WRITE
@@ -166,7 +170,9 @@ public static class PremitFileGenerator
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(filePath))
+        {
             throw new ArgumentException("File path cannot be null or empty", nameof(filePath));
+        }
 
         var fileBytes = GenerateFile(premiums);
         await File.WriteAllBytesAsync(filePath, fileBytes, cancellationToken);

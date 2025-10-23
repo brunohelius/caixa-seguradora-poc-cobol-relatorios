@@ -3,9 +3,9 @@ import type { AxiosInstance, AxiosError, InternalAxiosRequestConfig, AxiosRespon
 
 /**
  * Base URL for the API.
- * Configured via environment variable or defaults to localhost:5001.
+ * Configured via environment variable or defaults to localhost:5555 (HTTP only in development).
  */
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://localhost:5001';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5555';
 
 /**
  * Configured Axios instance for API communication.

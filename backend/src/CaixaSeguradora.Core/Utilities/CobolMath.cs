@@ -31,7 +31,9 @@ public static class CobolMath
     public static decimal RoundHalfUp(decimal value, int decimalPlaces)
     {
         if (decimalPlaces < 0)
+        {
             throw new ArgumentException("Decimal places cannot be negative", nameof(decimalPlaces));
+        }
 
         return Math.Round(value, decimalPlaces, MidpointRounding.AwayFromZero);
     }
@@ -51,7 +53,9 @@ public static class CobolMath
     public static decimal RoundHalfEven(decimal value, int decimalPlaces)
     {
         if (decimalPlaces < 0)
+        {
             throw new ArgumentException("Decimal places cannot be negative", nameof(decimalPlaces));
+        }
 
         return Math.Round(value, decimalPlaces, MidpointRounding.ToEven);
     }
@@ -71,7 +75,9 @@ public static class CobolMath
     public static decimal TruncateDecimal(decimal value, int decimalPlaces)
     {
         if (decimalPlaces < 0)
+        {
             throw new ArgumentException("Decimal places cannot be negative", nameof(decimalPlaces));
+        }
 
         var multiplier = (decimal)Math.Pow(10, decimalPlaces);
         return Math.Truncate(value * multiplier) / multiplier;
@@ -153,7 +159,9 @@ public static class CobolMath
     public static decimal Divide(decimal dividend, decimal divisor, int? decimalPlaces = null, CobolRoundMode roundMode = CobolRoundMode.HalfUp)
     {
         if (divisor == 0)
+        {
             throw new DivideByZeroException("Division by zero is not allowed");
+        }
 
         var result = dividend / divisor;
 

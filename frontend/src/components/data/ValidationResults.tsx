@@ -58,7 +58,7 @@ const ValidationResults: React.FC<ValidationResultsProps> = ({ report, loading }
       issue.rowNumber?.toString() || '',
       issue.fieldName || '',
       issue.message,
-      new Date(issue.timestamp).toLocaleString('pt-BR'),
+      issue.timestamp ? new Date(issue.timestamp).toLocaleString('pt-BR') : '',
     ]);
 
     const csvContent = [

@@ -48,6 +48,10 @@ export interface MigrationProgressDto {
   currentPhase: string;
   lastUpdated: string;
   validationMatchPercentage: number;
+  buildStatus?: string;
+  testsCreated?: number;
+  codeCoveragePercentage?: number;
+  productionReadinessPercentage?: number;
 }
 
 export interface FunctionPointsDto {

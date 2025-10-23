@@ -33,7 +33,7 @@ public class PremiumCalculationService : IPremiumCalculationService
         ArgumentNullException.ThrowIfNull(product);
 
         // Start with base premium from record
-        decimal netPremium = premium.NetPremium;
+        var netPremium = premium.NetPremium;
 
         // Apply product-specific multiplier if applicable
         // COBOL: IF V0PROD-MULTIPLICADOR NOT = ZEROS
@@ -74,15 +74,15 @@ public class PremiumCalculationService : IPremiumCalculationService
         ArgumentNullException.ThrowIfNull(taxRates);
 
         // Calculate IOF
-        decimal iof = netPremium * taxRates.IOFRate;
+        var iof = netPremium * taxRates.IOFRate;
         iof = RoundCobol(iof, 2);
 
         // Calculate additional fees
-        decimal additionalFees = netPremium * taxRates.AdditionalFeesRate;
+        var additionalFees = netPremium * taxRates.AdditionalFeesRate;
         additionalFees = RoundCobol(additionalFees, 2);
 
         // COBOL: COMPUTE WS-PREMIO-TOTAL = WS-PREMIO-LIQ + WS-IOF + WS-TAXAS
-        decimal grossPremium = netPremium + iof + additionalFees;
+        var grossPremium = netPremium + iof + additionalFees;
 
         return RoundCobol(grossPremium, 2);
     }
@@ -127,7 +127,7 @@ public class PremiumCalculationService : IPremiumCalculationService
         //        (assuming commission rate stored as percentage like 15.00 for 15%)
         //
         // For C# we assume rate is decimal (0.15 for 15%)
-        decimal commission = premium * commissionRate;
+        var commission = premium * commissionRate;
 
         // Commission may have special rules by producer tier
         // This is simplified - actual COBOL may have complex logic
@@ -154,7 +154,7 @@ public class PremiumCalculationService : IPremiumCalculationService
             return new[] { totalPremium };
         }
 
-        decimal[] installments = new decimal[numberOfInstallments];
+        var installments = new decimal[numberOfInstallments];
 
         // Calculate installment with interest if applicable
         // COBOL: IF WS-TAXA-JUROS NOT = ZEROS
@@ -169,7 +169,7 @@ public class PremiumCalculationService : IPremiumCalculationService
         if (interestRate > 0)
         {
             // Price formula (French amortization system)
-            decimal factor = (decimal)Math.Pow((double)(1 + interestRate), numberOfInstallments);
+            var factor = (decimal)Math.Pow((double)(1 + interestRate), numberOfInstallments);
             installmentAmount = totalPremium * (factor * interestRate) / (factor - 1);
             installmentAmount = RoundCobol(installmentAmount, 2);
         }
@@ -181,7 +181,7 @@ public class PremiumCalculationService : IPremiumCalculationService
         }
 
         // Fill all installments with same value
-        for (int i = 0; i < numberOfInstallments; i++)
+        for (var i = 0; i < numberOfInstallments; i++)
         {
             installments[i] = installmentAmount;
         }
@@ -189,7 +189,7 @@ public class PremiumCalculationService : IPremiumCalculationService
         // Adjust first installment to handle rounding differences
         // COBOL: COMPUTE WS-PARCELA(1) = WS-TOTAL-PREM -
         //          (WS-VLR-PARCELA * (WS-NR-PARC - 1))
-        decimal sumOfRest = installmentAmount * (numberOfInstallments - 1);
+        var sumOfRest = installmentAmount * (numberOfInstallments - 1);
         installments[0] = totalPremium - sumOfRest;
 
         return installments;
@@ -247,8 +247,8 @@ public class PremiumCalculationService : IPremiumCalculationService
         //          (WS-IMPORTANCIA-SEG / 1000) * WS-TAXA-BASE * WS-QTD-VIDAS
         //
         // Base rate typically per thousand of coverage
-        decimal premiumPerLife = (coverageAmount / 1000m) * baseRate;
-        decimal totalPremium = premiumPerLife * numberOfLives;
+        var premiumPerLife = (coverageAmount / 1000m) * baseRate;
+        var totalPremium = premiumPerLife * numberOfLives;
 
         return RoundCobol(totalPremium, 2);
     }
@@ -310,8 +310,8 @@ public class PremiumCalculationService : IPremiumCalculationService
         //
         // COBOL: DIVIDE A BY B GIVING C (no ROUNDED)
         //        Result is truncated, not rounded
-        decimal multiplier = (decimal)Math.Pow(10, decimalPlaces);
-        decimal truncated = Math.Truncate(value * multiplier) / multiplier;
+        var multiplier = (decimal)Math.Pow(10, decimalPlaces);
+        var truncated = Math.Truncate(value * multiplier) / multiplier;
         return truncated;
     }
 }

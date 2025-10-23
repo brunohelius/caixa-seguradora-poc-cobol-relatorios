@@ -1,12 +1,12 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using CaixaSeguradora.Core.Attributes;
 
 namespace CaixaSeguradora.Core.Entities
 {
     public class Producer
     {
-        public int Id { get; set; }
-
+        [Key]
         [CobolField("WS-COD-PRODUTOR", CobolFieldType.Numeric, 1, 10)]
         public int ProducerCode { get; set; }
 

@@ -10,15 +10,12 @@ namespace CaixaSeguradora.Infrastructure.Data.Configurations
         {
             builder.ToTable("Producers");
 
-            builder.HasKey(p => p.Id);
+            builder.HasKey(p => p.ProducerCode);
 
-            builder.Property(p => p.ProducerCode).IsRequired();
             builder.Property(p => p.ProducerName).IsRequired().HasMaxLength(60);
             builder.Property(p => p.TaxId).HasMaxLength(11);
             builder.Property(p => p.DefaultCommissionPercentage).HasColumnType("decimal(5,2)");
             builder.Property(p => p.Status).HasMaxLength(1).HasDefaultValue("A");
-
-            builder.HasIndex(p => p.ProducerCode).IsUnique();
 
             builder.HasOne(p => p.Agency)
                 .WithMany(a => a.Producers)

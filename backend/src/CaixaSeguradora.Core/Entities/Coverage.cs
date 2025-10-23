@@ -24,8 +24,8 @@ namespace CaixaSeguradora.Core.Entities
         [CobolField("WS-STAT-COBERTURA", CobolFieldType.Alphanumeric, 92, 1)]
         public string Status { get; set; } = "A"; // A=Ativo, I=Inativo
 
-        public int PolicyId { get; set; }
-        public int ProductId { get; set; }
+        public long PolicyId { get; set; }
+        public int ProductCode { get; set; }
 
         // Additional properties for repository compatibility
         [System.ComponentModel.DataAnnotations.Schema.NotMapped]

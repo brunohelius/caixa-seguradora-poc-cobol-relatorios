@@ -29,17 +29,21 @@ public static class PremcedFileGenerator
     public static string? GenerateRecord(PremiumRecord premium)
     {
         if (premium == null)
+        {
             throw new ArgumentNullException(nameof(premium));
+        }
 
         // Only generate PREMCED record if there is cossurance or reinsurance data
         // This matches COBOL logic that checks for non-zero cossurance amounts
-        bool hasCossuranceData = premium.InsuredAmountCossurance != 0 ||
+        var hasCossuranceData = premium.InsuredAmountCossurance != 0 ||
                                   premium.NetPremiumCossurance != 0 ||
                                   premium.InsuredAmountReinsurance != 0 ||
                                   premium.NetPremiumReinsurance != 0;
 
         if (!hasCossuranceData)
+        {
             return null; // Skip record - no cossurance/reinsurance to report
+        }
 
         var record = new StringBuilder(400); // Pre-allocate estimated size
 
@@ -98,14 +102,16 @@ public static class PremcedFileGenerator
     public static byte[] GenerateFile(IEnumerable<PremiumRecord> premiums, Encoding? encoding = null)
     {
         if (premiums == null)
+        {
             throw new ArgumentNullException(nameof(premiums));
+        }
 
         encoding ??= Encoding.GetEncoding("ISO-8859-1"); // COBOL default encoding
 
         var fileContent = new StringBuilder();
-        int recordCount = 0;
+        var recordCount = 0;
 
-        foreach (var premium in premiums)
+        foreach (PremiumRecord premium in premiums)
         {
             var recordLine = GenerateRecord(premium);
 
@@ -134,13 +140,15 @@ public static class PremcedFileGenerator
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(filePath))
+        {
             throw new ArgumentException("File path cannot be null or empty", nameof(filePath));
+        }
 
         var encoding = Encoding.GetEncoding("ISO-8859-1");
         var fileContent = new StringBuilder();
-        int recordCount = 0;
+        var recordCount = 0;
 
-        foreach (var premium in premiums)
+        foreach (PremiumRecord premium in premiums)
         {
             var recordLine = GenerateRecord(premium);
             if (recordLine != null)
@@ -195,7 +203,9 @@ public static class PremcedFileGenerator
     public static bool ShouldIncludeInPremced(PremiumRecord premium)
     {
         if (premium == null)
+        {
             return false;
+        }
 
         return premium.InsuredAmountCossurance != 0 ||
                premium.NetPremiumCossurance != 0 ||

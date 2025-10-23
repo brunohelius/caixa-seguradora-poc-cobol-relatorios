@@ -21,12 +21,14 @@ namespace CaixaSeguradora.Infrastructure.Data.Configurations
 
             builder.HasOne(c => c.Policy)
                 .WithMany(p => p.Coverages)
-                .HasForeignKey(c => c.PolicyId)
+                .HasForeignKey(c => c.PolicyNumber)
+                .HasPrincipalKey(p => p.PolicyNumber)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(c => c.Product)
                 .WithMany(p => p.Coverages)
-                .HasForeignKey(c => c.ProductId)
+                .HasForeignKey(c => c.ProductCode)
+                .HasPrincipalKey(p => p.ProductCode)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

@@ -47,10 +47,14 @@ public class CossuranceService : ICossuranceService
     public decimal CalculateCededPremium(decimal totalPremium, decimal cededPercentage)
     {
         if (totalPremium < 0)
+        {
             throw new ArgumentException("Total premium cannot be negative", nameof(totalPremium));
+        }
 
         if (cededPercentage < 0 || cededPercentage > 1)
+        {
             throw new ArgumentException("Ceded percentage must be between 0 and 1", nameof(cededPercentage));
+        }
 
         // COBOL: COMPUTE WS-PREMIO-CEDIDO = WS-PREMIO-TOTAL * WS-PERC-CESSAO ROUNDED
         // Maps to section R5500-00-CALCULA-COSG-CED
@@ -64,13 +68,19 @@ public class CossuranceService : ICossuranceService
     public decimal CalculateRetainedPremium(decimal totalPremium, decimal cededPremium)
     {
         if (totalPremium < 0)
+        {
             throw new ArgumentException("Total premium cannot be negative", nameof(totalPremium));
+        }
 
         if (cededPremium < 0)
+        {
             throw new ArgumentException("Ceded premium cannot be negative", nameof(cededPremium));
+        }
 
         if (cededPremium > totalPremium)
+        {
             throw new ArgumentException("Ceded premium cannot exceed total premium", nameof(cededPremium));
+        }
 
         // COBOL: COMPUTE WS-PREMIO-RETIDO = WS-PREMIO-TOTAL - WS-PREMIO-CEDIDO ROUNDED
         var retainedPremium = totalPremium - cededPremium;
@@ -86,19 +96,23 @@ public class CossuranceService : ICossuranceService
         ArgumentNullException.ThrowIfNull(participants);
 
         if (participants.Count == 0)
+        {
             throw new ArgumentException("At least one participant is required", nameof(participants));
+        }
 
         if (!ValidateCossurancePercentages(participants))
+        {
             throw new ArgumentException("Invalid cossurance percentages: sum must equal 100%", nameof(participants));
+        }
 
         // Maps to COBOL section R5100-00-PROCESSA-COSG-COBT
         var distribution = new Dictionary<int, decimal>();
-        decimal totalDistributed = 0m;
+        var totalDistributed = 0m;
 
         // Distribute to all participants except the last one
-        for (int i = 0; i < participants.Count - 1; i++)
+        for (var i = 0; i < participants.Count - 1; i++)
         {
-            var participant = participants[i];
+            CossuranceParticipant participant = participants[i];
             var participantShare = cededPremium * participant.QuotaPercentage;
             participantShare = CobolMath.RoundHalfUp(participantShare, 2);
 
@@ -108,7 +122,7 @@ public class CossuranceService : ICossuranceService
 
         // Last participant gets the remainder to ensure exact total
         // This handles rounding differences - CRITICAL for regulatory compliance
-        var lastParticipant = participants[^1];
+        CossuranceParticipant lastParticipant = participants[^1];
         var lastParticipantShare = cededPremium - totalDistributed;
         distribution[lastParticipant.CompanyCode] = lastParticipantShare;
 
@@ -119,10 +133,14 @@ public class CossuranceService : ICossuranceService
     public decimal CalculateAcquisitionCommission(decimal acquiredPremium, decimal commissionRate)
     {
         if (acquiredPremium < 0)
+        {
             throw new ArgumentException("Acquired premium cannot be negative", nameof(acquiredPremium));
+        }
 
         if (commissionRate < 0 || commissionRate > 1)
+        {
             throw new ArgumentException("Commission rate must be between 0 and 1", nameof(commissionRate));
+        }
 
         // COBOL: COMPUTE WS-COMISSAO-COSG = WS-PREMIO-OBTIDO * WS-TAXA-COMISSAO ROUNDED
         var commission = acquiredPremium * commissionRate;
@@ -202,13 +220,17 @@ public class CossuranceService : ICossuranceService
         ArgumentNullException.ThrowIfNull(participants);
 
         if (participants.Count == 0)
+        {
             return false;
+        }
 
         // Validate individual percentages
-        foreach (var participant in participants)
+        foreach (CossuranceParticipant participant in participants)
         {
             if (participant.QuotaPercentage < 0 || participant.QuotaPercentage > 1)
+            {
                 return false;
+            }
         }
 
         // Validate sum equals 1.0 (100%) within tolerance
@@ -224,10 +246,14 @@ public class CossuranceService : ICossuranceService
         // 'A' = Acquired (Aceito/Obtido) - company is acquiring risk from others
 
         if (companyCode == cedingCompanyCode)
+        {
             return 'C'; // This company is ceding the risk
+        }
 
         if (companyCode == acquiringCompanyCode)
+        {
             return 'A'; // This company is acquiring the risk
+        }
 
         return 'U'; // Unknown - company is neither ceding nor acquiring
     }
@@ -247,20 +273,28 @@ public class CossuranceService : ICossuranceService
         accumulator.TotalRetainedPremium += retainedPremium;
 
         if (cededPremium > 0)
+        {
             accumulator.CededRecordCount++;
+        }
     }
 
     /// <inheritdoc />
     public decimal CalculateQuotaAdjustment(decimal originalPremium, decimal originalQuota, decimal newQuota)
     {
         if (originalPremium < 0)
+        {
             throw new ArgumentException("Original premium cannot be negative", nameof(originalPremium));
+        }
 
         if (originalQuota < 0 || originalQuota > 1)
+        {
             throw new ArgumentException("Original quota must be between 0 and 1", nameof(originalQuota));
+        }
 
         if (newQuota < 0 || newQuota > 1)
+        {
             throw new ArgumentException("New quota must be between 0 and 1", nameof(newQuota));
+        }
 
         // Calculate adjustment amount when quota changes mid-policy
         // COBOL: COMPUTE WS-AJUSTE-QUOTA = WS-PREMIO * (WS-NOVA-QUOTA - WS-QUOTA-ORIG) ROUNDED
@@ -284,12 +318,12 @@ public class CossuranceService : ICossuranceService
         // Determines if a policy participates in cossurance
 
         // Check if policy has any cossurance records
-        await foreach (var cossuredPolicy in _cossuredPolicyRepository
+        await foreach (CossuredPolicy cossuredPolicy in _cossuredPolicyRepository
             .GetCossuredPoliciesAsync(premium.PolicyNumber, cancellationToken))
         {
             // If we get at least one record, check for calculation data
             // Note: CompanyCode is not in PremiumRecord, using 0 as placeholder
-            var calculationData = await _cossuranceCalculationRepository
+            CossuranceCalculation? calculationData = await _cossuranceCalculationRepository
                 .GetCalculationParametersAsync(premium.PolicyNumber, 0, cancellationToken);
 
             return calculationData != null;
@@ -307,7 +341,7 @@ public class CossuranceService : ICossuranceService
 
         var participants = new List<CossuranceParticipant>();
 
-        await foreach (var cossuredPolicy in _cossuredPolicyRepository
+        await foreach (CossuredPolicy cossuredPolicy in _cossuredPolicyRepository
             .GetCossuredPoliciesAsync(policyNumber, cancellationToken))
         {
             var participant = new CossuranceParticipant
@@ -365,15 +399,21 @@ public class CossuranceService : ICossuranceService
     {
         // Handle null or empty strings
         if (string.IsNullOrEmpty(value))
+        {
             return new string(' ', totalWidth);
+        }
 
         // Truncate if needed and allowed
         if (value.Length > totalWidth)
         {
             if (truncate)
+            {
                 return value.Substring(0, totalWidth);
+            }
             else
+            {
                 throw new ArgumentException($"Value length ({value.Length}) exceeds total width ({totalWidth})", nameof(value));
+            }
         }
 
         // Pad with spaces on the right (COBOL PIC X behavior)

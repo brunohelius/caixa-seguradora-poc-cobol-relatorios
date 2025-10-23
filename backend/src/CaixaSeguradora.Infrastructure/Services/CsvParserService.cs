@@ -89,11 +89,11 @@ public class CsvParserService : ICsvParserService
                 return result;
             }
 
-            var headers = ParseCsvLine(headerLine);
+            List<string> headers = ParseCsvLine(headerLine);
             _logger.LogDebug("CSV headers: {Headers}", string.Join(", ", headers));
 
             // Parse data rows
-            int rowNumber = 2; // Start at 2 (1 is header)
+            var rowNumber = 2; // Start at 2 (1 is header)
             string? line;
             while ((line = await reader.ReadLineAsync(cancellationToken)) != null)
             {
@@ -106,11 +106,11 @@ public class CsvParserService : ICsvParserService
 
                 try
                 {
-                    var values = ParseCsvLine(line);
+                    List<string> values = ParseCsvLine(line);
                     var rowData = headers.Zip(values, (h, v) => new { Header = h, Value = v })
                         .ToDictionary(x => x.Header, x => x.Value);
 
-                    var mappingResult = await MapToEntityAsync<T>(rowData, rowNumber);
+                    EntityMappingResult<T> mappingResult = await MapToEntityAsync<T>(rowData, rowNumber);
 
                     if (mappingResult.Success && mappingResult.Entity != null)
                     {
@@ -192,14 +192,14 @@ public class CsvParserService : ICsvParserService
         try
         {
             // Validate entity type
-            if (!_entityTypeMap.TryGetValue(entityType, out var type))
+            if (!_entityTypeMap.TryGetValue(entityType, out Type? type))
             {
                 result.Message = $"Entity type '{entityType}' is not supported.";
                 return result;
             }
 
             // Get expected headers from entity properties
-            var expectedHeaders = GetExpectedHeaders(type);
+            List<string> expectedHeaders = GetExpectedHeaders(type);
             result.ExpectedHeaders = expectedHeaders;
 
             // Reset stream position
@@ -218,7 +218,7 @@ public class CsvParserService : ICsvParserService
                 return result;
             }
 
-            var actualHeaders = ParseCsvLine(headerLine);
+            List<string> actualHeaders = ParseCsvLine(headerLine);
             result.ActualHeaders = actualHeaders;
 
             // Find missing and extra headers
@@ -259,12 +259,12 @@ public class CsvParserService : ICsvParserService
         try
         {
             var entity = new T();
-            var entityType = typeof(T);
+            Type entityType = typeof(T);
             var properties = entityType.GetProperties()
                 .Where(p => p.CanWrite)
                 .ToList();
 
-            foreach (var property in properties)
+            foreach (System.Reflection.PropertyInfo? property in properties)
             {
                 // Skip primary keys (auto-generated)
                 if (property.Name.EndsWith("Id") && property.PropertyType == typeof(long))
@@ -296,7 +296,7 @@ public class CsvParserService : ICsvParserService
                     }
 
                     // Type conversion
-                    object? convertedValue = ConvertValue(value, property.PropertyType);
+                    var convertedValue = ConvertValue(value, property.PropertyType);
                     property.SetValue(entity, convertedValue);
                 }
                 catch (Exception ex)
@@ -335,9 +335,9 @@ public class CsvParserService : ICsvParserService
         var inQuotes = false;
         var currentField = new StringBuilder();
 
-        for (int i = 0; i < line.Length; i++)
+        for (var i = 0; i < line.Length; i++)
         {
-            char c = line[i];
+            var c = line[i];
 
             if (c == '"')
             {
@@ -383,7 +383,7 @@ public class CsvParserService : ICsvParserService
     private object? ConvertValue(string value, Type targetType)
     {
         // Handle nullable types
-        var underlyingType = Nullable.GetUnderlyingType(targetType) ?? targetType;
+        Type underlyingType = Nullable.GetUnderlyingType(targetType) ?? targetType;
 
         if (underlyingType == typeof(string))
         {

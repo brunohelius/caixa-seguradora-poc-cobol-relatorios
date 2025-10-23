@@ -52,7 +52,7 @@ public class ExternalModuleService : IExternalModuleService
         // Mock reinsurance calculation logic
         // Typical reinsurance treaty: 30% ceded, 70% retained
         // More conservative for high-risk lines (e.g., auto insurance)
-        decimal cededPercentage = request.LineOfBusiness switch
+        var cededPercentage = request.LineOfBusiness switch
         {
             531 => 0.40m, // Auto insurance - higher risk, more ceded
             541 => 0.35m, // Transportation - higher risk
@@ -60,8 +60,8 @@ public class ExternalModuleService : IExternalModuleService
             _ => 0.30m    // Default 30% ceded
         };
 
-        decimal cededPremium = Math.Round(request.PremiumAmount * cededPercentage, 2, MidpointRounding.AwayFromZero);
-        decimal retainedPremium = request.PremiumAmount - cededPremium;
+        var cededPremium = Math.Round(request.PremiumAmount * cededPercentage, 2, MidpointRounding.AwayFromZero);
+        var retainedPremium = request.PremiumAmount - cededPremium;
 
         var result = new ReinsuranceResult
         {

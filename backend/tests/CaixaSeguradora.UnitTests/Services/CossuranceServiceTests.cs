@@ -31,8 +31,8 @@ public class CossuranceServiceTests
     public void CalculateCededPremium_WithValidInputs_ReturnsCorrectAmount()
     {
         // Arrange
-        decimal totalPremium = 10000.00m;
-        decimal cededPercentage = 0.30m; // 30%
+        var totalPremium = 10000.00m;
+        var cededPercentage = 0.30m; // 30%
 
         // Act
         var result = _service.CalculateCededPremium(totalPremium, cededPercentage);
@@ -46,8 +46,8 @@ public class CossuranceServiceTests
     public void CalculateCededPremium_WithRounding_UsesCobolRounding()
     {
         // Arrange
-        decimal totalPremium = 10000.00m;
-        decimal cededPercentage = 0.333m; // 33.3%
+        var totalPremium = 10000.00m;
+        var cededPercentage = 0.333m; // 33.3%
 
         // Act
         var result = _service.CalculateCededPremium(totalPremium, cededPercentage);
@@ -61,8 +61,8 @@ public class CossuranceServiceTests
     public void CalculateCededPremium_WithZeroPercentage_ReturnsZero()
     {
         // Arrange
-        decimal totalPremium = 10000.00m;
-        decimal cededPercentage = 0m;
+        var totalPremium = 10000.00m;
+        var cededPercentage = 0m;
 
         // Act
         var result = _service.CalculateCededPremium(totalPremium, cededPercentage);
@@ -75,8 +75,8 @@ public class CossuranceServiceTests
     public void CalculateCededPremium_WithFullPercentage_ReturnsTotalPremium()
     {
         // Arrange
-        decimal totalPremium = 10000.00m;
-        decimal cededPercentage = 1.0m; // 100%
+        var totalPremium = 10000.00m;
+        var cededPercentage = 1.0m; // 100%
 
         // Act
         var result = _service.CalculateCededPremium(totalPremium, cededPercentage);
@@ -89,8 +89,8 @@ public class CossuranceServiceTests
     public void CalculateCededPremium_WithNegativePremium_ThrowsArgumentException()
     {
         // Arrange
-        decimal totalPremium = -10000.00m;
-        decimal cededPercentage = 0.30m;
+        var totalPremium = -10000.00m;
+        var cededPercentage = 0.30m;
 
         // Act
         Action act = () => _service.CalculateCededPremium(totalPremium, cededPercentage);
@@ -105,8 +105,8 @@ public class CossuranceServiceTests
     public void CalculateCededPremium_WithNegativePercentage_ThrowsArgumentException()
     {
         // Arrange
-        decimal totalPremium = 10000.00m;
-        decimal cededPercentage = -0.30m;
+        var totalPremium = 10000.00m;
+        var cededPercentage = -0.30m;
 
         // Act
         Action act = () => _service.CalculateCededPremium(totalPremium, cededPercentage);
@@ -121,8 +121,8 @@ public class CossuranceServiceTests
     public void CalculateCededPremium_WithPercentageAboveOne_ThrowsArgumentException()
     {
         // Arrange
-        decimal totalPremium = 10000.00m;
-        decimal cededPercentage = 1.5m; // 150% - invalid
+        var totalPremium = 10000.00m;
+        var cededPercentage = 1.5m; // 150% - invalid
 
         // Act
         Action act = () => _service.CalculateCededPremium(totalPremium, cededPercentage);
@@ -140,8 +140,8 @@ public class CossuranceServiceTests
     public void CalculateRetainedPremium_WithValidInputs_ReturnsCorrectAmount()
     {
         // Arrange
-        decimal totalPremium = 10000.00m;
-        decimal cededPremium = 3000.00m;
+        var totalPremium = 10000.00m;
+        var cededPremium = 3000.00m;
 
         // Act
         var result = _service.CalculateRetainedPremium(totalPremium, cededPremium);
@@ -155,8 +155,8 @@ public class CossuranceServiceTests
     public void CalculateRetainedPremium_WithNoCeded_ReturnsTotalPremium()
     {
         // Arrange
-        decimal totalPremium = 10000.00m;
-        decimal cededPremium = 0m;
+        var totalPremium = 10000.00m;
+        var cededPremium = 0m;
 
         // Act
         var result = _service.CalculateRetainedPremium(totalPremium, cededPremium);
@@ -169,8 +169,8 @@ public class CossuranceServiceTests
     public void CalculateRetainedPremium_WithFullyCeded_ReturnsZero()
     {
         // Arrange
-        decimal totalPremium = 10000.00m;
-        decimal cededPremium = 10000.00m;
+        var totalPremium = 10000.00m;
+        var cededPremium = 10000.00m;
 
         // Act
         var result = _service.CalculateRetainedPremium(totalPremium, cededPremium);
@@ -183,8 +183,8 @@ public class CossuranceServiceTests
     public void CalculateRetainedPremium_WithRounding_UsesCobolRounding()
     {
         // Arrange
-        decimal totalPremium = 10000.00m;
-        decimal cededPremium = 3333.33m;
+        var totalPremium = 10000.00m;
+        var cededPremium = 3333.33m;
 
         // Act
         var result = _service.CalculateRetainedPremium(totalPremium, cededPremium);
@@ -198,8 +198,8 @@ public class CossuranceServiceTests
     public void CalculateRetainedPremium_WithNegativeTotalPremium_ThrowsArgumentException()
     {
         // Arrange
-        decimal totalPremium = -10000.00m;
-        decimal cededPremium = 3000.00m;
+        var totalPremium = -10000.00m;
+        var cededPremium = 3000.00m;
 
         // Act
         Action act = () => _service.CalculateRetainedPremium(totalPremium, cededPremium);
@@ -213,8 +213,8 @@ public class CossuranceServiceTests
     public void CalculateRetainedPremium_WithNegativeCededPremium_ThrowsArgumentException()
     {
         // Arrange
-        decimal totalPremium = 10000.00m;
-        decimal cededPremium = -3000.00m;
+        var totalPremium = 10000.00m;
+        var cededPremium = -3000.00m;
 
         // Act
         Action act = () => _service.CalculateRetainedPremium(totalPremium, cededPremium);
@@ -228,8 +228,8 @@ public class CossuranceServiceTests
     public void CalculateRetainedPremium_WithCededExceedingTotal_ThrowsArgumentException()
     {
         // Arrange
-        decimal totalPremium = 10000.00m;
-        decimal cededPremium = 15000.00m; // Exceeds total
+        var totalPremium = 10000.00m;
+        var cededPremium = 15000.00m; // Exceeds total
 
         // Act
         Action act = () => _service.CalculateRetainedPremium(totalPremium, cededPremium);
@@ -248,7 +248,7 @@ public class CossuranceServiceTests
     public void DistributeCededPremium_WithTwoParticipants_DistributesCorrectly()
     {
         // Arrange
-        decimal cededPremium = 3000.00m;
+        var cededPremium = 3000.00m;
         var participants = new List<CossuranceParticipant>
         {
             new() { CompanyCode = 101, QuotaPercentage = 0.60m }, // 60%
@@ -256,7 +256,7 @@ public class CossuranceServiceTests
         };
 
         // Act
-        var result = _service.DistributeCededPremium(cededPremium, participants);
+        Dictionary<int, decimal> result = _service.DistributeCededPremium(cededPremium, participants);
 
         // Assert
         result.Should().HaveCount(2);
@@ -269,7 +269,7 @@ public class CossuranceServiceTests
     public void DistributeCededPremium_WithThreeParticipants_HandlesRoundingCorrectly()
     {
         // Arrange
-        decimal cededPremium = 10000.00m;
+        var cededPremium = 10000.00m;
         var participants = new List<CossuranceParticipant>
         {
             new() { CompanyCode = 101, QuotaPercentage = 0.333m }, // 33.3%
@@ -278,7 +278,7 @@ public class CossuranceServiceTests
         };
 
         // Act
-        var result = _service.DistributeCededPremium(cededPremium, participants);
+        Dictionary<int, decimal> result = _service.DistributeCededPremium(cededPremium, participants);
 
         // Assert
         result.Should().HaveCount(3);
@@ -294,14 +294,14 @@ public class CossuranceServiceTests
     public void DistributeCededPremium_WithSingleParticipant_GivesFullAmount()
     {
         // Arrange
-        decimal cededPremium = 5000.00m;
+        var cededPremium = 5000.00m;
         var participants = new List<CossuranceParticipant>
         {
             new() { CompanyCode = 101, QuotaPercentage = 1.0m } // 100%
         };
 
         // Act
-        var result = _service.DistributeCededPremium(cededPremium, participants);
+        Dictionary<int, decimal> result = _service.DistributeCededPremium(cededPremium, participants);
 
         // Assert
         result.Should().HaveCount(1);
@@ -312,7 +312,7 @@ public class CossuranceServiceTests
     public void DistributeCededPremium_WithInvalidPercentages_ThrowsArgumentException()
     {
         // Arrange
-        decimal cededPremium = 10000.00m;
+        var cededPremium = 10000.00m;
         var participants = new List<CossuranceParticipant>
         {
             new() { CompanyCode = 101, QuotaPercentage = 0.50m }, // 50%
@@ -332,7 +332,7 @@ public class CossuranceServiceTests
     public void DistributeCededPremium_WithEmptyList_ThrowsArgumentException()
     {
         // Arrange
-        decimal cededPremium = 10000.00m;
+        var cededPremium = 10000.00m;
         var participants = new List<CossuranceParticipant>();
 
         // Act
@@ -348,7 +348,7 @@ public class CossuranceServiceTests
     public void DistributeCededPremium_WithNullList_ThrowsArgumentNullException()
     {
         // Arrange
-        decimal cededPremium = 10000.00m;
+        var cededPremium = 10000.00m;
         List<CossuranceParticipant> participants = null!;
 
         // Act
@@ -482,8 +482,8 @@ public class CossuranceServiceTests
     public void CalculateAcquisitionCommission_WithValidInputs_ReturnsCorrectCommission()
     {
         // Arrange
-        decimal acquiredPremium = 5000.00m;
-        decimal commissionRate = 0.10m; // 10%
+        var acquiredPremium = 5000.00m;
+        var commissionRate = 0.10m; // 10%
 
         // Act
         var result = _service.CalculateAcquisitionCommission(acquiredPremium, commissionRate);
@@ -497,8 +497,8 @@ public class CossuranceServiceTests
     public void CalculateAcquisitionCommission_WithZeroRate_ReturnsZero()
     {
         // Arrange
-        decimal acquiredPremium = 5000.00m;
-        decimal commissionRate = 0m;
+        var acquiredPremium = 5000.00m;
+        var commissionRate = 0m;
 
         // Act
         var result = _service.CalculateAcquisitionCommission(acquiredPremium, commissionRate);
@@ -511,8 +511,8 @@ public class CossuranceServiceTests
     public void CalculateAcquisitionCommission_WithNegativePremium_ThrowsArgumentException()
     {
         // Arrange
-        decimal acquiredPremium = -5000.00m;
-        decimal commissionRate = 0.10m;
+        var acquiredPremium = -5000.00m;
+        var commissionRate = 0.10m;
 
         // Act
         Action act = () => _service.CalculateAcquisitionCommission(acquiredPremium, commissionRate);
@@ -526,8 +526,8 @@ public class CossuranceServiceTests
     public void CalculateAcquisitionCommission_WithInvalidRate_ThrowsArgumentException()
     {
         // Arrange
-        decimal acquiredPremium = 5000.00m;
-        decimal commissionRate = 1.5m; // 150% - invalid
+        var acquiredPremium = 5000.00m;
+        var commissionRate = 1.5m; // 150% - invalid
 
         // Act
         Action act = () => _service.CalculateAcquisitionCommission(acquiredPremium, commissionRate);
@@ -545,9 +545,9 @@ public class CossuranceServiceTests
     public void GetCossuranceType_WhenCeding_ReturnsC()
     {
         // Arrange
-        int companyCode = 100;
-        int cedingCompanyCode = 100; // Same as company
-        int acquiringCompanyCode = 200;
+        var companyCode = 100;
+        var cedingCompanyCode = 100; // Same as company
+        var acquiringCompanyCode = 200;
 
         // Act
         var result = _service.GetCossuranceType(companyCode, cedingCompanyCode, acquiringCompanyCode);
@@ -560,9 +560,9 @@ public class CossuranceServiceTests
     public void GetCossuranceType_WhenAcquiring_ReturnsA()
     {
         // Arrange
-        int companyCode = 200;
-        int cedingCompanyCode = 100;
-        int acquiringCompanyCode = 200; // Same as company
+        var companyCode = 200;
+        var cedingCompanyCode = 100;
+        var acquiringCompanyCode = 200; // Same as company
 
         // Act
         var result = _service.GetCossuranceType(companyCode, cedingCompanyCode, acquiringCompanyCode);
@@ -575,9 +575,9 @@ public class CossuranceServiceTests
     public void GetCossuranceType_WhenNeither_ReturnsU()
     {
         // Arrange
-        int companyCode = 300;
-        int cedingCompanyCode = 100;
-        int acquiringCompanyCode = 200;
+        var companyCode = 300;
+        var cedingCompanyCode = 100;
+        var acquiringCompanyCode = 200;
 
         // Act
         var result = _service.GetCossuranceType(companyCode, cedingCompanyCode, acquiringCompanyCode);
@@ -594,8 +594,8 @@ public class CossuranceServiceTests
     public void AccumulateCossuranceValues_WithValidInputs_UpdatesAccumulator()
     {
         // Arrange
-        decimal cededPremium = 3000.00m;
-        decimal retainedPremium = 7000.00m;
+        var cededPremium = 3000.00m;
+        var retainedPremium = 7000.00m;
         var accumulator = new CossuranceAccumulator();
 
         // Act
@@ -611,8 +611,8 @@ public class CossuranceServiceTests
     public void AccumulateCossuranceValues_WithZeroCeded_DoesNotIncrementCount()
     {
         // Arrange
-        decimal cededPremium = 0m;
-        decimal retainedPremium = 10000.00m;
+        var cededPremium = 0m;
+        var retainedPremium = 10000.00m;
         var accumulator = new CossuranceAccumulator();
 
         // Act
@@ -662,9 +662,9 @@ public class CossuranceServiceTests
     public void CalculateQuotaAdjustment_WithIncreasedQuota_ReturnsPositiveAdjustment()
     {
         // Arrange
-        decimal originalPremium = 10000.00m;
-        decimal originalQuota = 0.30m; // 30%
-        decimal newQuota = 0.40m;      // 40%
+        var originalPremium = 10000.00m;
+        var originalQuota = 0.30m; // 30%
+        var newQuota = 0.40m;      // 40%
 
         // Act
         var result = _service.CalculateQuotaAdjustment(originalPremium, originalQuota, newQuota);
@@ -678,9 +678,9 @@ public class CossuranceServiceTests
     public void CalculateQuotaAdjustment_WithDecreasedQuota_ReturnsNegativeAdjustment()
     {
         // Arrange
-        decimal originalPremium = 10000.00m;
-        decimal originalQuota = 0.40m; // 40%
-        decimal newQuota = 0.30m;      // 30%
+        var originalPremium = 10000.00m;
+        var originalQuota = 0.40m; // 40%
+        var newQuota = 0.30m;      // 30%
 
         // Act
         var result = _service.CalculateQuotaAdjustment(originalPremium, originalQuota, newQuota);
@@ -694,9 +694,9 @@ public class CossuranceServiceTests
     public void CalculateQuotaAdjustment_WithNoChange_ReturnsZero()
     {
         // Arrange
-        decimal originalPremium = 10000.00m;
-        decimal originalQuota = 0.30m;
-        decimal newQuota = 0.30m;
+        var originalPremium = 10000.00m;
+        var originalQuota = 0.30m;
+        var newQuota = 0.30m;
 
         // Act
         var result = _service.CalculateQuotaAdjustment(originalPremium, originalQuota, newQuota);
@@ -709,7 +709,7 @@ public class CossuranceServiceTests
     public void CalculateQuotaAdjustment_WithInvalidQuotas_ThrowsArgumentException()
     {
         // Arrange
-        decimal originalPremium = 10000.00m;
+        var originalPremium = 10000.00m;
 
         // Act & Assert - invalid original quota
         Action act1 = () => _service.CalculateQuotaAdjustment(originalPremium, -0.1m, 0.3m);

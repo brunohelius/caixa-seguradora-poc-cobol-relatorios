@@ -1,4 +1,4 @@
-﻿namespace CaixaSeguradora.IntegrationTests;
+namespace CaixaSeguradora.IntegrationTests;
 
 public class UnitTest1
 {

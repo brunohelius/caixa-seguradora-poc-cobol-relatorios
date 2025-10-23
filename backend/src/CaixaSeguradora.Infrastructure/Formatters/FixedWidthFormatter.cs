@@ -23,10 +23,14 @@ public static class FixedWidthFormatter
     public static string FormatNumeric(decimal value, int totalWidth, int decimalPlaces = 0, bool includeDecimalPoint = false)
     {
         if (totalWidth <= 0)
+        {
             throw new ArgumentException("Total width must be greater than zero", nameof(totalWidth));
+        }
 
         if (decimalPlaces < 0)
+        {
             throw new ArgumentException("Decimal places cannot be negative", nameof(decimalPlaces));
+        }
 
         // Handle negative values by converting to absolute value
         // COBOL uses separate sign indicators, not minus signs in numeric fields
@@ -65,7 +69,9 @@ public static class FixedWidthFormatter
     public static string FormatNumeric(int value, int totalWidth)
     {
         if (totalWidth <= 0)
+        {
             throw new ArgumentException("Total width must be greater than zero", nameof(totalWidth));
+        }
 
         var absoluteValue = Math.Abs(value);
         return absoluteValue.ToString(CultureInfo.InvariantCulture).PadLeft(totalWidth, '0');
@@ -85,19 +91,27 @@ public static class FixedWidthFormatter
     public static string FormatAlphanumeric(string? value, int totalWidth, bool truncate = true)
     {
         if (totalWidth <= 0)
+        {
             throw new ArgumentException("Total width must be greater than zero", nameof(totalWidth));
+        }
 
         // Handle null or empty strings
         if (string.IsNullOrEmpty(value))
+        {
             return new string(' ', totalWidth);
+        }
 
         // Truncate if needed and allowed
         if (value.Length > totalWidth)
         {
             if (truncate)
+            {
                 return value.Substring(0, totalWidth);
+            }
             else
+            {
                 throw new ArgumentException($"Value length ({value.Length}) exceeds total width ({totalWidth})", nameof(value));
+            }
         }
 
         // Pad with spaces on the right
@@ -137,7 +151,9 @@ public static class FixedWidthFormatter
     public static string FormatDate(DateTime date, string pattern)
     {
         if (string.IsNullOrWhiteSpace(pattern))
+        {
             throw new ArgumentException("Pattern cannot be null or empty", nameof(pattern));
+        }
 
         return date.ToString(pattern, CultureInfo.InvariantCulture);
     }
@@ -152,7 +168,9 @@ public static class FixedWidthFormatter
     public static string FormatDate(DateTime? date, DateFormat format = DateFormat.YYYYMMDD, int totalWidth = 10)
     {
         if (!date.HasValue)
+        {
             return new string(' ', totalWidth);
+        }
 
         return FormatDate(date.Value, format);
     }
@@ -180,7 +198,9 @@ public static class FixedWidthFormatter
     public static string FormatBoolean(bool? value, char trueChar = 'S', char falseChar = 'N', char nullChar = ' ')
     {
         if (!value.HasValue)
+        {
             return nullChar.ToString();
+        }
 
         return FormatBoolean(value.Value, trueChar, falseChar);
     }
@@ -194,7 +214,9 @@ public static class FixedWidthFormatter
     public static string BuildRecord(params string[] fields)
     {
         if (fields == null || fields.Length == 0)
+        {
             return string.Empty;
+        }
 
         return string.Concat(fields);
     }
@@ -209,7 +231,9 @@ public static class FixedWidthFormatter
     public static void ValidateWidth(string formattedValue, int expectedWidth, string fieldName = "field")
     {
         if (formattedValue == null)
+        {
             throw new ArgumentNullException(nameof(formattedValue));
+        }
 
         if (formattedValue.Length != expectedWidth)
         {

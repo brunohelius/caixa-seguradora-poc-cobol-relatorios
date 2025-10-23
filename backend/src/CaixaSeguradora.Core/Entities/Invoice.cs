@@ -29,7 +29,7 @@ namespace CaixaSeguradora.Core.Entities
         [CobolField("WS-NUM-PARCELAS", CobolFieldType.Numeric, 64, 3)]
         public int NumberOfInstallments { get; set; }
 
-        public int PolicyId { get; set; }
+        public long PolicyNumber { get; set; }
 
         // Navigation properties
         public Policy Policy { get; set; } = null!;

@@ -1,5 +1,6 @@
 using CaixaSeguradora.Core.DTOs;
 using CaixaSeguradora.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CaixaSeguradora.Api.Controllers;
@@ -49,6 +50,7 @@ public class ReportsController : ControllerBase
     /// After receiving report ID, poll GET /api/reports/{reportId} for status updates.
     /// </remarks>
     [HttpPost("generate")]
+    [Authorize] // Require authentication for report generation
     [ProducesResponseType(typeof(ReportGenerationResponseDto), StatusCodes.Status202Accepted)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
@@ -65,7 +67,7 @@ public class ReportsController : ControllerBase
                 request.EndDate,
                 request.ReportType);
 
-            var reportId = await _reportService.GenerateReportAsync(request, cancellationToken);
+            Guid reportId = await _reportService.GenerateReportAsync(request, cancellationToken);
 
             var response = new ReportGenerationResponseDto
             {
@@ -124,7 +126,7 @@ public class ReportsController : ControllerBase
         try
         {
             _logger.LogInformation("Fetching status for report: {ReportId}", reportId);
-            var status = await _reportService.GetReportStatusAsync(reportId, cancellationToken);
+            ReportStatusDto status = await _reportService.GetReportStatusAsync(reportId, cancellationToken);
             return Ok(status);
         }
         catch (KeyNotFoundException ex)
@@ -164,6 +166,7 @@ public class ReportsController : ControllerBase
     /// <response code="410">File has expired and is no longer available</response>
     /// <response code="500">Internal server error</response>
     [HttpGet("{reportId}/download/{fileType}")]
+    [Authorize] // Require authentication for file download
     [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status410Gone)]
@@ -177,7 +180,7 @@ public class ReportsController : ControllerBase
         {
             _logger.LogInformation("Download requested: Report {ReportId}, FileType {FileType}", reportId, fileType);
 
-            var (fileStream, fileName, contentType) = await _reportService.DownloadReportAsync(
+            (Stream fileStream, string fileName, string contentType) = await _reportService.DownloadReportAsync(
                 reportId,
                 fileType,
                 cancellationToken);
@@ -272,7 +275,7 @@ public class ReportsController : ControllerBase
                 reportId,
                 request.CobolFilePath);
 
-            var comparison = await _reportService.CompareWithCobolOutputAsync(
+            ReportComparisonDto comparison = await _reportService.CompareWithCobolOutputAsync(
                 reportId,
                 request.CobolFilePath,
                 cancellationToken);
@@ -350,17 +353,21 @@ public class ReportsController : ControllerBase
         try
         {
             if (pageSize > 100)
+            {
                 pageSize = 100;
+            }
 
             if (pageNumber < 1)
+            {
                 pageNumber = 1;
+            }
 
             _logger.LogInformation(
                 "Fetching report history: Page {PageNumber}, Size {PageSize}",
                 pageNumber,
                 pageSize);
 
-            var (reports, totalCount) = await _reportService.GetReportHistoryAsync(
+            (List<ReportStatusDto> reports, int totalCount) = await _reportService.GetReportHistoryAsync(
                 startDate,
                 endDate,
                 systemId,

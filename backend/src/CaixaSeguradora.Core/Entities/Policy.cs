@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using CaixaSeguradora.Core.Attributes;
 
 namespace CaixaSeguradora.Core.Entities
 {
     public class Policy
     {
-        public int Id { get; set; }
-
+        [Key]
         [CobolField("WS-NUM-APOLICE", CobolFieldType.Numeric, 1, 15)]
         public long PolicyNumber { get; set; }
 
@@ -35,17 +35,16 @@ namespace CaixaSeguradora.Core.Entities
         [CobolField("WS-STAT-APOLICE", CobolFieldType.Alphanumeric, 78, 1)]
         public string PolicyStatus { get; set; } = string.Empty;
 
-        public int ClientId { get; set; }
-        public int AgencyId { get; set; }
-        public int ProducerId { get; set; }
-
-        // Additional properties for repository compatibility
-        public long PolicyId => PolicyNumber;  // Alias
-
         [CobolField("WS-COD-CLIENTE", CobolFieldType.Numeric, 80, 9)]
         public int ClientCode { get; set; }  // Main client/policyholder code
 
-        [CobolField("WS-COD-SEGURADO", CobolFieldType.Numeric, 89, 9)]
+        [CobolField("WS-COD-AGENCIA", CobolFieldType.Numeric, 89, 4)]
+        public int AgencyCode { get; set; }  // Agency/Branch code
+
+        [CobolField("WS-COD-PRODUTOR", CobolFieldType.Numeric, 93, 9)]
+        public int ProducerCode { get; set; }  // Producer/Broker code
+
+        [CobolField("WS-COD-SEGURADO", CobolFieldType.Numeric, 102, 9)]
         public int InsuredClientCode { get; set; }  // Insured party code
 
         [CobolField("WS-COD-SEGURADO-ALIAS", CobolFieldType.Numeric, 98, 9)]

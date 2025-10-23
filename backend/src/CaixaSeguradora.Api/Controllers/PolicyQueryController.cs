@@ -43,7 +43,7 @@ public class PolicyQueryController : ControllerBase
             _logger.LogInformation("Querying policies - Page: {Page}, PageSize: {PageSize}",
                 query.Page, query.PageSize);
 
-            if (!query.IsValid(out var errors))
+            if (!query.IsValid(out List<string>? errors))
             {
                 return BadRequest(new ErrorResponse
                 {
@@ -54,7 +54,7 @@ public class PolicyQueryController : ControllerBase
                 });
             }
 
-            var result = await _queryService.QueryPoliciesAsync(query, cancellationToken);
+            PolicyQueryResponseDto result = await _queryService.QueryPoliciesAsync(query, cancellationToken);
 
             _logger.LogInformation("Query completed - TotalRecords: {Total}, Page: {Page}/{TotalPages}",
                 result.Pagination.TotalRecords,
@@ -94,7 +94,7 @@ public class PolicyQueryController : ControllerBase
         {
             _logger.LogInformation("Fetching policy: {PolicyNumber}", policyNumber);
 
-            var policy = await _queryService.GetPolicyByNumberAsync(policyNumber, cancellationToken);
+            PolicyRecordDto? policy = await _queryService.GetPolicyByNumberAsync(policyNumber, cancellationToken);
 
             if (policy == null)
             {
@@ -138,7 +138,7 @@ public class PolicyQueryController : ControllerBase
     {
         try
         {
-            var statistics = await _queryService.GetPolicyStatisticsAsync(query, cancellationToken);
+            PolicyStatisticsDto statistics = await _queryService.GetPolicyStatisticsAsync(query, cancellationToken);
             return Ok(statistics);
         }
         catch (Exception ex)
@@ -169,7 +169,7 @@ public class PolicyQueryController : ControllerBase
     {
         try
         {
-            var policies = await _queryService.SearchPoliciesByClientAsync(searchTerm, cancellationToken);
+            List<PolicyRecordDto> policies = await _queryService.SearchPoliciesByClientAsync(searchTerm, cancellationToken);
             return Ok(policies);
         }
         catch (Exception ex)

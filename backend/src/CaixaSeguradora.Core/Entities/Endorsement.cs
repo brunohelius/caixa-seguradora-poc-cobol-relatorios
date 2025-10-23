@@ -32,7 +32,7 @@ namespace CaixaSeguradora.Core.Entities
         [CobolField("WS-STAT-ENDOSSO", CobolFieldType.Alphanumeric, 244, 1)]
         public string Status { get; set; } = "A"; // A=Ativo, C=Cancelado
 
-        public int PolicyId { get; set; }
+        public long PolicyId { get; set; }
 
         // Additional properties for repository compatibility
         [CobolField("WS-NUM-APOLICE-END", CobolFieldType.Numeric, 250, 15)]

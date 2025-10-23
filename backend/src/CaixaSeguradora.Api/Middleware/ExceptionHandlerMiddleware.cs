@@ -45,7 +45,7 @@ public class ExceptionHandlerMiddleware
         var traceId = context.TraceIdentifier;
 
         // Build error response based on exception type
-        var errorResponse = exception switch
+        ErrorResponse errorResponse = exception switch
         {
             ArgumentNullException => ErrorResponse.CreateBadRequest(
                 "Parâmetro obrigatório não informado.", traceId),

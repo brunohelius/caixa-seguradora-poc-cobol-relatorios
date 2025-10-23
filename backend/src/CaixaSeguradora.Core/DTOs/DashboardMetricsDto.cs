@@ -179,4 +179,24 @@ public class MigrationProgressDto
     /// Byte-match validation status (percentage of output files matching COBOL)
     /// </summary>
     public decimal ValidationMatchPercentage { get; set; }
+
+    /// <summary>
+    /// Build status (SUCCESS, FAILED, or NOT_RUN)
+    /// </summary>
+    public string BuildStatus { get; set; } = "NOT_RUN";
+
+    /// <summary>
+    /// Total number of tests created (unit + integration + E2E + performance)
+    /// </summary>
+    public int TestsCreated { get; set; }
+
+    /// <summary>
+    /// Code coverage percentage from test runs
+    /// </summary>
+    public decimal CodeCoveragePercentage { get; set; }
+
+    /// <summary>
+    /// Overall production readiness score (0-100)
+    /// </summary>
+    public decimal ProductionReadinessPercentage { get; set; }
 }

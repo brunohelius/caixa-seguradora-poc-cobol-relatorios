@@ -10,32 +10,39 @@ namespace CaixaSeguradora.Infrastructure.Data.Configurations
         {
             builder.ToTable("Policies");
 
-            builder.HasKey(p => p.Id);
+            builder.HasKey(p => p.PolicyNumber);
 
-            builder.Property(p => p.PolicyNumber).IsRequired();
             builder.Property(p => p.SystemCode).IsRequired().HasMaxLength(2);
             builder.Property(p => p.ProductCode).IsRequired();
             builder.Property(p => p.TotalPremium).HasColumnType("decimal(15,2)").IsRequired();
             builder.Property(p => p.NetPremium).HasColumnType("decimal(15,2)").IsRequired();
             builder.Property(p => p.PolicyStatus).HasMaxLength(1);
 
-            builder.HasIndex(p => p.PolicyNumber).IsUnique();
             builder.HasIndex(p => new { p.PolicyNumber, p.EndorsementNumber });
 
-            // Relationships
+            // Relationships using COBOL business keys
             builder.HasOne(p => p.Client)
                 .WithMany(c => c.Policies)
-                .HasForeignKey(p => p.ClientId)
+                .HasForeignKey(p => p.ClientCode)
+                .HasPrincipalKey(c => c.ClientCode)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(p => p.Agency)
                 .WithMany(a => a.Policies)
-                .HasForeignKey(p => p.AgencyId)
+                .HasForeignKey(p => p.AgencyCode)
+                .HasPrincipalKey(a => a.AgencyCode)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(p => p.Producer)
                 .WithMany(pr => pr.Policies)
-                .HasForeignKey(p => p.ProducerId)
+                .HasForeignKey(p => p.ProducerCode)
+                .HasPrincipalKey(pr => pr.ProducerCode)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(p => p.Product)
+                .WithMany()
+                .HasForeignKey(p => p.ProductCode)
+                .HasPrincipalKey(pr => pr.ProductCode)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

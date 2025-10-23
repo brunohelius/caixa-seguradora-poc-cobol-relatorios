@@ -48,7 +48,7 @@ public class PremiumQueryController : ControllerBase
             _logger.LogInformation("Querying premiums with filters - Page: {Page}, PageSize: {PageSize}, SortBy: {SortBy}",
                 query.Page, query.PageSize, query.SortBy);
 
-            if (!query.IsValid(out var errors))
+            if (!query.IsValid(out List<string>? errors))
             {
                 _logger.LogWarning("Invalid query parameters: {Errors}", string.Join(", ", errors));
                 return BadRequest(new ErrorResponse
@@ -60,7 +60,7 @@ public class PremiumQueryController : ControllerBase
                 });
             }
 
-            var result = await _queryService.QueryPremiumsAsync(query, cancellationToken);
+            PremiumQueryResponseDto result = await _queryService.QueryPremiumsAsync(query, cancellationToken);
 
             _logger.LogInformation("Query completed successfully - TotalRecords: {Total}, Page: {Page}/{TotalPages}",
                 result.Pagination.TotalRecords,
@@ -104,7 +104,7 @@ public class PremiumQueryController : ControllerBase
         {
             _logger.LogInformation("Fetching premium record with ID: {PremiumId}", id);
 
-            var premium = await _queryService.GetPremiumByIdAsync(id, cancellationToken);
+            PremiumRecordDto? premium = await _queryService.GetPremiumByIdAsync(id, cancellationToken);
 
             if (premium == null)
             {
@@ -158,7 +158,7 @@ public class PremiumQueryController : ControllerBase
         {
             _logger.LogInformation("Fetching premium statistics with filters");
 
-            if (!query.IsValid(out var errors))
+            if (!query.IsValid(out List<string>? errors))
             {
                 return BadRequest(new ErrorResponse
                 {
@@ -169,7 +169,7 @@ public class PremiumQueryController : ControllerBase
                 });
             }
 
-            var statistics = await _queryService.GetPremiumStatisticsAsync(query, cancellationToken);
+            PremiumStatisticsDto statistics = await _queryService.GetPremiumStatisticsAsync(query, cancellationToken);
 
             _logger.LogInformation("Statistics retrieved successfully - TotalRecords: {Total}, TotalNetPremium: {TotalNet}",
                 statistics.TotalRecords, statistics.TotalNetPremium);
@@ -209,7 +209,7 @@ public class PremiumQueryController : ControllerBase
         {
             _logger.LogInformation("Fetching premiums for policy: {PolicyNumber}", policyNumber);
 
-            var premiums = await _queryService.GetPremiumsByPolicyAsync(policyNumber, cancellationToken);
+            List<PremiumRecordDto> premiums = await _queryService.GetPremiumsByPolicyAsync(policyNumber, cancellationToken);
 
             _logger.LogInformation("Retrieved {Count} premium records for policy {PolicyNumber}",
                 premiums.Count, policyNumber);
@@ -252,7 +252,7 @@ public class PremiumQueryController : ControllerBase
         {
             _logger.LogInformation("Exporting premiums to CSV with filters");
 
-            if (!query.IsValid(out var errors))
+            if (!query.IsValid(out List<string>? errors))
             {
                 return BadRequest(new ErrorResponse
                 {
@@ -303,7 +303,7 @@ public class PremiumQueryController : ControllerBase
         {
             _logger.LogInformation("Fetching premium filter options");
 
-            var options = await _queryService.GetFilterOptionsAsync(cancellationToken);
+            PremiumFilterOptionsDto options = await _queryService.GetFilterOptionsAsync(cancellationToken);
 
             _logger.LogInformation("Filter options retrieved successfully - Products: {ProductCount}, MovementTypes: {MovementTypeCount}",
                 options.Products.Count, options.MovementTypes.Count);

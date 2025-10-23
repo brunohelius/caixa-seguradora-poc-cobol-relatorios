@@ -37,28 +37,28 @@ export const FunctionPointsChart: React.FC<FunctionPointsChartProps> = ({ functi
       <div className="space-y-6">
         {/* Summary Metrics */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <p className="text-sm text-blue-600 dark:text-blue-400 mb-1">PF Não Ajustados</p>
-            <p className="text-3xl font-bold text-blue-700 dark:text-blue-300">
+          <div className="p-4 rounded-lg" style={{ backgroundColor: '#E3F2FD', border: '2px solid #0047BB' }}>
+            <p className="text-sm font-semibold mb-1" style={{ color: '#1565C0' }}>PF Não Ajustados</p>
+            <p className="text-3xl font-black" style={{ color: '#0D47A1' }}>
               {functionPoints.totalUnadjustedFunctionPoints}
             </p>
           </div>
-          <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-            <p className="text-sm text-green-600 dark:text-green-400 mb-1">PF Ajustados</p>
-            <p className="text-3xl font-bold text-green-700 dark:text-green-300">
+          <div className="p-4 rounded-lg" style={{ backgroundColor: '#E8F5E9', border: '2px solid #28A745' }}>
+            <p className="text-sm font-semibold mb-1" style={{ color: '#2E7D32' }}>PF Ajustados</p>
+            <p className="text-3xl font-black" style={{ color: '#1B5E20' }}>
               {Math.round(functionPoints.totalAdjustedFunctionPoints)}
             </p>
           </div>
-          <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-            <p className="text-sm text-purple-600 dark:text-purple-400 mb-1">Esforço Estimado</p>
-            <p className="text-3xl font-bold text-purple-700 dark:text-purple-300">
+          <div className="p-4 rounded-lg" style={{ backgroundColor: '#F3E5F5', border: '2px solid #7B1FA2' }}>
+            <p className="text-sm font-semibold mb-1" style={{ color: '#7B1FA2' }}>Esforço Estimado</p>
+            <p className="text-3xl font-black" style={{ color: '#4A148C' }}>
               {functionPoints.estimatedEffortMonths.toFixed(1)}
               <span className="text-sm font-normal ml-1">meses</span>
             </p>
           </div>
-          <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-            <p className="text-sm text-orange-600 dark:text-orange-400 mb-1">Complexidade</p>
-            <p className="text-2xl font-bold text-orange-700 dark:text-orange-300">
+          <div className="p-4 rounded-lg" style={{ backgroundColor: '#FFF3E0', border: '2px solid #FF9800' }}>
+            <p className="text-sm font-semibold mb-1" style={{ color: '#E65100' }}>Complexidade</p>
+            <p className="text-2xl font-black" style={{ color: '#BF360C' }}>
               {functionPoints.complexityRating}
             </p>
           </div>
@@ -67,7 +67,7 @@ export const FunctionPointsChart: React.FC<FunctionPointsChartProps> = ({ functi
         {/* Function Points Breakdown */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300 mb-3">
+            <h4 className="text-md font-semibold mb-3" style={{ color: '#333' }}>
               Distribuição de Pontos de Função
             </h4>
             <ResponsiveContainer width="100%" height={250}>
@@ -87,7 +87,7 @@ export const FunctionPointsChart: React.FC<FunctionPointsChartProps> = ({ functi
           </div>
 
           <div>
-            <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300 mb-3">
+            <h4 className="text-md font-semibold mb-3" style={{ color: '#333' }}>
               Visão Radar - Complexidade
             </h4>
             <ResponsiveContainer width="100%" height={250}>
@@ -110,21 +110,25 @@ export const FunctionPointsChart: React.FC<FunctionPointsChartProps> = ({ functi
 
         {/* Module Breakdown */}
         <div>
-          <h4 className="text-md font-semibold text-gray-700 dark:text-gray-300 mb-3">
+          <h4 className="text-md font-semibold mb-3" style={{ color: '#333' }}>
             Breakdown por Módulo COBOL
           </h4>
           <div className="space-y-2 max-h-[300px] overflow-y-auto">
             {functionPoints.moduleBreakdown.map((module, index) => (
               <div
                 key={index}
-                className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
+                className="p-4 rounded-lg hover:shadow-md transition-shadow"
+                style={{
+                  backgroundColor: '#F5F5F5',
+                  border: '1px solid #e2e2e2'
+                }}
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex-1">
-                    <p className="font-semibold text-gray-900 dark:text-white">
+                    <p className="font-semibold" style={{ color: '#000' }}>
                       {module.moduleName}
                     </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm" style={{ color: '#666' }}>
                       {module.functionPoints} PF • {module.estimatedHours.toFixed(0)}h estimadas
                     </p>
                   </div>
@@ -135,11 +139,17 @@ export const FunctionPointsChart: React.FC<FunctionPointsChartProps> = ({ functi
                     >
                       {module.complexity}
                     </span>
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      module.status === 'Complete' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
-                      module.status === 'In Progress' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' :
-                      'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
-                    }`}>
+                    <span
+                      className="px-3 py-1 rounded-full text-xs font-semibold"
+                      style={{
+                        backgroundColor:
+                          module.status === 'Complete' ? '#C8E6C9' :
+                          module.status === 'In Progress' ? '#FFF9C4' : '#EEEEEE',
+                        color:
+                          module.status === 'Complete' ? '#1B5E20' :
+                          module.status === 'In Progress' ? '#F57F17' : '#616161'
+                      }}
+                    >
                       {module.status}
                     </span>
                   </div>

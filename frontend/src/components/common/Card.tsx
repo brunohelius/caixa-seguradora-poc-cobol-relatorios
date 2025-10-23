@@ -6,8 +6,6 @@ export interface CardProps {
   children: React.ReactNode;
   className?: string;
   padding?: 'none' | 'small' | 'medium' | 'large';
-  shadow?: boolean;
-  hover?: boolean;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -16,28 +14,31 @@ const Card: React.FC<CardProps> = ({
   children,
   className = '',
   padding = 'medium',
-  shadow = true,
-  hover = false,
 }) => {
   const paddingClasses = {
-    none: '',
-    small: 'p-3',
-    medium: 'p-4',
-    large: 'p-6',
+    none: 'p-0',
+    small: 'p-4',
+    medium: 'p-6',
+    large: 'p-8',
   };
 
-  const shadowClass = shadow ? 'shadow-md' : '';
-  const hoverClass = hover ? 'hover:shadow-lg transition-shadow duration-200' : '';
-
   return (
-    <div className={`bg-white rounded-lg ${shadowClass} ${hoverClass} ${className}`}>
+    <div className={`bg-white rounded-xl shadow-lg border-2 border-gray-200 ${paddingClasses[padding]} ${className}`}>
       {(title || subtitle) && (
-        <div className={`border-b border-gray-200 ${padding === 'none' ? 'p-4' : paddingClasses[padding]}`}>
-          {title && <h3 className="text-lg font-semibold text-gray-900">{title}</h3>}
-          {subtitle && <p className="text-sm text-gray-600 mt-1">{subtitle}</p>}
+        <div className="mb-6">
+          {title && (
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              {title}
+            </h3>
+          )}
+          {subtitle && (
+            <p className="text-base text-gray-600">
+              {subtitle}
+            </p>
+          )}
         </div>
       )}
-      <div className={paddingClasses[padding]}>{children}</div>
+      <div>{children}</div>
     </div>
   );
 };

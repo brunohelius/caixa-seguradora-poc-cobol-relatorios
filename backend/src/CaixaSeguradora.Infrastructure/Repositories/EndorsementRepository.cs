@@ -37,12 +37,12 @@ public class EndorsementRepository : Repository<Endorsement>, IEndorsementReposi
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         // Maps to COBOL: SELECT * FROM V0ENDOSSO WHERE NUM_APOLICE = :policyNumber ORDER BY NUM_ENDOS
-        var query = _premiumContext.Endorsements
+        IOrderedQueryable<Endorsement> query = _premiumContext.Endorsements
             .AsNoTracking()
             .Where(e => e.PolicyNumber == policyNumber)
             .OrderBy(e => e.EndorsementNumber);
 
-        await foreach (var endorsement in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        await foreach (Endorsement? endorsement in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             yield return endorsement;
         }
@@ -55,12 +55,12 @@ public class EndorsementRepository : Repository<Endorsement>, IEndorsementReposi
     {
         // Maps to COBOL sections R0780, R0840:
         // SELECT * FROM V0ENDOSSO WHERE NUM_APOLICE = :policyNumber AND IND_CANCELM = 'S'
-        var query = _premiumContext.Endorsements
+        IOrderedQueryable<Endorsement> query = _premiumContext.Endorsements
             .AsNoTracking()
             .Where(e => e.PolicyNumber == policyNumber && e.CancellationFlag == "S")
             .OrderBy(e => e.EndorsementNumber);
 
-        await foreach (var endorsement in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        await foreach (Endorsement? endorsement in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             yield return endorsement;
         }

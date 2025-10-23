@@ -40,7 +40,7 @@ public class Repository<T> : IRepository<T> where T : class
     {
         // AsNoTracking for read-only queries improves performance
         // AsAsyncEnumerable enables COBOL-style cursor processing
-        await foreach (var entity in _dbSet.AsNoTracking().AsAsyncEnumerable().WithCancellation(cancellationToken))
+        await foreach (T? entity in _dbSet.AsNoTracking().AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             yield return entity;
         }
@@ -60,7 +60,7 @@ public class Repository<T> : IRepository<T> where T : class
         Expression<Func<T, bool>> predicate,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        await foreach (var entity in _dbSet
+        await foreach (T? entity in _dbSet
             .AsNoTracking()
             .Where(predicate)
             .AsAsyncEnumerable()

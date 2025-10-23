@@ -18,11 +18,12 @@ namespace CaixaSeguradora.Infrastructure.Data.Configurations
             builder.Property(e => e.Reason).HasMaxLength(200);
             builder.Property(e => e.Status).HasMaxLength(1).HasDefaultValue("A");
 
-            builder.HasIndex(e => new { e.PolicyId, e.EndorsementNumber });
+            builder.HasIndex(e => new { e.PolicyNumber, e.EndorsementNumber });
 
             builder.HasOne(e => e.Policy)
                 .WithMany(p => p.Endorsements)
-                .HasForeignKey(e => e.PolicyId)
+                .HasForeignKey(e => e.PolicyNumber)
+                .HasPrincipalKey(p => p.PolicyNumber)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

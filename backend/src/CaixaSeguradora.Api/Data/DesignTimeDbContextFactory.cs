@@ -8,14 +8,14 @@ namespace CaixaSeguradora.Api
     {
         public PremiumReportingDbContext CreateDbContext(string[] args)
         {
-            var configuration = new ConfigurationBuilder()
+            IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.Development.json", optional: true)
                 .AddEnvironmentVariables()
                 .Build();
 
-            var connectionString = configuration.GetConnectionString("DefaultConnection") 
+            var connectionString = configuration.GetConnectionString("DefaultConnection")
                 ?? "Data Source=premium_reporting.db";
 
             var optionsBuilder = new DbContextOptionsBuilder<PremiumReportingDbContext>();

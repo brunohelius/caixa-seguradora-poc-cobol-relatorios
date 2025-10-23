@@ -35,12 +35,12 @@ public class ProductRepository : Repository<Product>, IProductRepository
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         // Maps to COBOL: SELECT * FROM V0PRODUTO WHERE RAMO_SUSEP = :lineOfBusiness
-        var query = _premiumContext.Products
+        IOrderedQueryable<Product> query = _premiumContext.Products
             .AsNoTracking()
             .Where(p => p.LineOfBusiness == lineOfBusiness)
             .OrderBy(p => p.ProductCode);
 
-        await foreach (var product in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        await foreach (Product? product in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             yield return product;
         }
@@ -52,12 +52,12 @@ public class ProductRepository : Repository<Product>, IProductRepository
     {
         // Maps to COBOL section R1020-00-SELECT-V0PRODUTOSVG:
         // SELECT * FROM V0PRODUTOSVG WHERE IND_VIDA_GRUPO = 'S'
-        var query = _premiumContext.Products
+        IOrderedQueryable<Product> query = _premiumContext.Products
             .AsNoTracking()
             .Where(p => p.IsLifeInsurance == "S")
             .OrderBy(p => p.ProductCode);
 
-        await foreach (var product in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
+        await foreach (Product? product in query.AsAsyncEnumerable().WithCancellation(cancellationToken))
         {
             yield return product;
         }

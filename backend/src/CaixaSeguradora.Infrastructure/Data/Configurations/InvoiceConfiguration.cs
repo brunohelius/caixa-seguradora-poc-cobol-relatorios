@@ -22,7 +22,8 @@ namespace CaixaSeguradora.Infrastructure.Data.Configurations
 
             builder.HasOne(i => i.Policy)
                 .WithMany(p => p.Invoices)
-                .HasForeignKey(i => i.PolicyId)
+                .HasForeignKey(i => i.PolicyNumber)
+                .HasPrincipalKey(p => p.PolicyNumber)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

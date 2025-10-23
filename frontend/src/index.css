@@ -1,12 +1,82 @@
-@tailwind base;
-@tailwind components;
+/* Import Site.css - PRIORITY STYLING */
+@import './styles/Site.css';
+
+/* Minimal Tailwind utilities only - do NOT override Site.css */
 @tailwind utilities;
 
-:root {
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+/* Additional utility classes for compatibility */
+.container-caixa {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 15px;
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
+@media only screen and (min-width: 1200px) {
+  .container-caixa {
+    max-width: 1140px;
+  }
+}
+
+/* Dashboard card styling using Site.css patterns */
+.dashboard-card {
+  background-color: #fff;
+  border: 1px solid #e2e2e2;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.dashboard-card h3 {
+  color: #000;
+  font-size: 1.2em;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e2e2e2;
+}
+
+.dashboard-stat {
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.dashboard-stat:last-child {
+  border-bottom: none;
+}
+
+.dashboard-label {
+  font-weight: 600;
+  color: #666;
+  display: inline-block;
+  width: 60%;
+}
+
+.dashboard-value {
+  font-weight: 700;
+  color: #333;
+  display: inline-block;
+  width: 38%;
+  text-align: right;
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 0.85em;
+  font-weight: 600;
+}
+
+.status-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-warning {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-info {
+  background-color: #d1ecf1;
+  color: #0c5460;
 }
