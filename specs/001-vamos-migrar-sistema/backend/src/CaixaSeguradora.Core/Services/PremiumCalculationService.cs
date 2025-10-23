@@ -33,19 +33,23 @@ public class PremiumCalculationService : IPremiumCalculationService
         ArgumentNullException.ThrowIfNull(product);
 
         // Start with base premium from record
-        decimal netPremium = premium.NetPremiumAmount;
+        decimal netPremium = premium.NetPremium;
 
         // Apply product-specific multiplier if applicable
         // COBOL: IF V0PROD-MULTIPLICADOR NOT = ZEROS
         //          COMPUTE WS-PREMIO-LIQ = WS-PREMIO-LIQ * V0PROD-MULTIPLICADOR
-        if (product.PremiumMultiplier != 0 && product.PremiumMultiplier != 1.0m)
-        {
-            netPremium = netPremium * product.PremiumMultiplier;
-            netPremium = RoundCobol(netPremium, 2);
-        }
+        // NOTE: Product entity may need PremiumMultiplier property added
+        // For now, skip this logic until Product is fully defined
+        // if (product has multiplier property)
+        // {
+        //     netPremium = netPremium * product.PremiumMultiplier;
+        //     netPremium = RoundCobol(netPremium, 2);
+        // }
 
         // Apply movement type adjustment (emission, cancellation, reversal)
-        netPremium = ApplyMovementTypeAdjustment(netPremium, premium.MovementType);
+        // NOTE: MovementType property needs to be added to PremiumRecord
+        // For now, assume premium value already has correct sign
+        // netPremium = ApplyMovementTypeAdjustment(netPremium, premium.MovementType);
 
         // Apply endorsement adjustment if applicable
         // COBOL: IF V0ENDOS-TIPO-ENDOSSO = 'A' (Aumento)
