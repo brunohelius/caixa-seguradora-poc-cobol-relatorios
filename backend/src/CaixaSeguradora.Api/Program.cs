@@ -20,19 +20,19 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using AspNetCoreRateLimit;
 
-// Configure Serilog for structured logging
+// Configure Serilog for structured logging (T194 - Phase 10)
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
     .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
     .Enrich.FromLogContext()
     .WriteTo.Console(
-        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+        outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {CorrelationId} {Message:lj}{NewLine}{Exception}")
     .WriteTo.File(
-        path: "logs/caixa-seguradora-.log",
+        path: "logs/premiumreporting-.log",
         rollingInterval: RollingInterval.Day,
-        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
-        retainedFileCountLimit: 30)
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] CorrelationId={CorrelationId} {Message:lj}{NewLine}{Exception}",
+        retainedFileCountLimit: 7) // 7 days retention as per T194
     .CreateLogger();
 
 try
@@ -251,10 +251,35 @@ try
             sp.GetRequiredService<ILogger<ReadOnlyDbCommandInterceptor>>(),
             isReadOnlyEnabled));
 
-    // Configure DbContext with SQLite
+    // Configure DbContext with SQLite and connection pooling (T155 - US5)
     builder.Services.AddDbContext<PremiumReportingDbContext>((sp, options) =>
     {
-        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+        // Configure SQLite connection string with pooling and performance optimizations
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+        // SQLite connection string builder for pooling configuration
+        var sqliteConnectionStringBuilder = new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder(connectionString!)
+        {
+            // Connection pooling configuration (T155)
+            Pooling = true,                    // Enable connection pooling
+            Mode = Microsoft.Data.Sqlite.SqliteOpenMode.ReadWriteCreate,
+            Cache = Microsoft.Data.Sqlite.SqliteCacheMode.Shared, // Shared cache for better concurrency
+
+            // Performance optimizations for large datasets (US5)
+            // These pragmas improve throughput for cursor-based streaming
+            DefaultTimeout = 30                // 30 second timeout for busy database
+        };
+
+        options.UseSqlite(
+            sqliteConnectionStringBuilder.ToString(),
+            sqliteOptions =>
+            {
+                // Enable command timeout for long-running queries (15k records)
+                sqliteOptions.CommandTimeout(300); // 5 minutes for large reports
+
+                // Optimize batch size for bulk operations
+                sqliteOptions.MaxBatchSize(100);
+            });
 
         // Add read-only interceptor (SC-007)
         ReadOnlyDbCommandInterceptor readOnlyInterceptor = sp.GetRequiredService<ReadOnlyDbCommandInterceptor>();
@@ -266,6 +291,13 @@ try
             options.EnableSensitiveDataLogging();
             options.EnableDetailedErrors();
         }
+
+        // Query optimization for streaming scenarios (US5)
+        options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking); // Default to no-tracking for read operations
+
+        Log.Information(
+            "SQLite DbContext configured with connection pooling (Pooling={Pooling}, Cache={Cache}, CommandTimeout={Timeout}s)",
+            true, "Shared", 300);
     });
 
     // Note: DbContextFactory removed to avoid scoped/singleton DI conflicts
@@ -298,13 +330,25 @@ try
     builder.Services.AddScoped<ICossuredPolicyRepository, CossuredPolicyRepository>();
     builder.Services.AddScoped<ICossuranceCalculationRepository, CossuranceCalculationRepository>();
 
+    // Register Phase 7 (US5) repositories for nested cursor patterns
+    builder.Services.AddScoped<ICossuranceRepository, CossuranceRepository>();
+
+    // Register Phase 3 repositories (US1 - T051-T055)
+    builder.Services.AddScoped<IReportExecutionRepository, ReportExecutionRepository>();
+
     // Register business logic services (User Story 2)
     builder.Services.AddScoped<IPremiumCalculationService, PremiumCalculationService>();
     builder.Services.AddScoped<ICossuranceService, CossuranceService>();
     builder.Services.AddScoped<IExternalModuleService, ExternalModuleService>();
+    builder.Services.AddScoped<IBusinessRuleValidationService, BusinessRuleValidationService>();
 
     // Register report generation service (User Story 2)
     builder.Services.AddScoped<IReportGenerationService, ReportGenerationService>();
+
+    // Register Phase 3 services (US1 - T062-T063)
+    builder.Services.AddScoped<ReportOrchestrationService>();
+    builder.Services.AddScoped<IExecutionTrackingService, ExecutionTrackingService>();
+    builder.Services.AddScoped<IFileWriterService, FileWriterService>(); // Stub for Phase 3, full impl in Phase 6
 
     // Register dashboard service (User Story 1)
     builder.Services.AddScoped<IDashboardService, DashboardService>();
@@ -336,6 +380,11 @@ try
     // Register authentication service (User Story 6 - T228)
     builder.Services.AddScoped<IAuthService, AuthService>();
 
+    // Register external service integration (Phase 8 - US6 - T159-T172)
+    builder.Services.AddScoped<IReinsuranceCalculationService, ReinsuranceCalculationService>();
+    builder.Services.AddScoped<IFormattingService, FormattingService>();
+    builder.Services.AddScoped<IExternalValidationService, ExternalValidationService>();
+
     // Configure Hangfire for batch job scheduling (User Story 4 - T181, T182)
     builder.Services.AddHangfire(config => config
         .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
@@ -348,9 +397,29 @@ try
 
     WebApplication app = builder.Build();
 
+    // CLI Command: Seed sample data (T074 - Phase 3)
+    // Usage: dotnet run --seed-data
+    if (args.Contains("--seed-data"))
+    {
+        Log.Information("CLI: Seeding sample data");
+        using (var scope = app.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<PremiumReportingDbContext>();
+            var seederLogger = scope.ServiceProvider.GetRequiredService<ILogger<DataSeeder>>();
+            var seeder = new DataSeeder(context, seederLogger);
+
+            await seeder.SeedSampleDataAsync();
+        }
+        Log.Information("CLI: Data seeding completed");
+        return; // Exit after seeding
+    }
+
     // Configure the HTTP request pipeline
 
-    // Global exception handler MUST be first in the pipeline
+    // Correlation ID MUST be first to track all requests
+    app.UseCorrelationId();
+
+    // Global exception handler MUST be early in the pipeline
     app.UseGlobalExceptionHandler();
 
     // Serilog request logging

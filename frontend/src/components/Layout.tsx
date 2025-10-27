@@ -66,11 +66,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
       </header>
 
-      <div id="body">
+      <main id="body">
         <section className="content-wrapper main-content clear-fix">
           {children}
         </section>
-      </div>
+      </main>
 
       <footer>
         <div className="content-wrapper">
