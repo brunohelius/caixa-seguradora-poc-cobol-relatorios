@@ -47,13 +47,20 @@ try
     {
         var config = context.Configuration;
 
-        // Get ports from environment variables or configuration
-        var httpPort = int.TryParse(config["BACKEND_HTTP_PORT"] ?? config["Ports:Http"], out var port)
-            ? port
+        // Evaluate port precedence: explicit env > config > default
+        string? httpPortValue = config["BACKEND_HTTP_PORT"]
+                                ?? config["Ports:Http"]
+                                ?? Environment.GetEnvironmentVariable("PORT");
+
+        string? httpsPortValue = config["BACKEND_HTTPS_PORT"]
+                                 ?? config["Ports:Https"];
+
+        var httpPort = int.TryParse(httpPortValue, out var parsedHttpPort)
+            ? parsedHttpPort
             : 5555; // Default to 5555 (avoiding macOS Control Center on 5000)
 
-        var httpsPort = int.TryParse(config["BACKEND_HTTPS_PORT"] ?? config["Ports:Https"], out var sslPort)
-            ? sslPort
+        var httpsPort = int.TryParse(httpsPortValue, out var parsedHttpsPort)
+            ? parsedHttpsPort
             : 5556;
 
         var certPath = config["Certificate:Path"];
