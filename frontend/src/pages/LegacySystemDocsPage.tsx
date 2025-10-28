@@ -5,16 +5,27 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  FileText,
-  Database,
-  Layers,
-  Code2,
-  Settings,
-  Activity,
-  History,
-  Map,
+  AlertCircle,
+  AlertTriangle,
+  BarChart,
   BookOpen,
-  BarChart
+  CheckCircle2,
+  Clock,
+  Cloud,
+  Code2,
+  Database,
+  FileSearch,
+  FileText,
+  GitBranch,
+  History,
+  Layers,
+  Map,
+  Settings,
+  TrendingUp,
+  Trophy,
+  Users,
+  Workflow,
+  Zap
 } from 'lucide-react';
 
 export default function LegacySystemDocsPage() {
@@ -1037,101 +1048,1900 @@ public class ReinsuranceService : IReinsuranceService
 
         <TabsContent value="maintenance" className="space-y-6">
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Histórico de Manutenção - 35+ Alterações em 8 Anos</h2>
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-              <p className="text-gray-700">
-                Consulte o arquivo completo em <code className="bg-gray-200 px-2 py-1 rounded">docs/legacy-system/08-maintenance-history.md</code> para detalhes de todas as 35+ manutenções realizadas entre 2014-2022.
-              </p>
-            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">Histórico de Manutenção - 37 Alterações em 8 Anos</h2>
+
+            {/* Statistics Overview */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Estatísticas de Manutenção</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-4 text-white">
+                  <div className="text-3xl font-bold">8</div>
+                  <div className="text-sm opacity-90">Anos em Produção</div>
+                  <div className="text-xs opacity-75 mt-1">2014-2022</div>
+                </div>
+                <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-4 text-white">
+                  <div className="text-3xl font-bold">37</div>
+                  <div className="text-sm opacity-90">Total de Alterações</div>
+                  <div className="text-xs opacity-75 mt-1">4.6 alterações/ano</div>
+                </div>
+                <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-4 text-white">
+                  <div className="text-3xl font-bold">12</div>
+                  <div className="text-sm opacity-90">Desenvolvedores</div>
+                  <div className="text-xs opacity-75 mt-1">Envolvidos</div>
+                </div>
+                <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg p-4 text-white">
+                  <div className="text-3xl font-bold">+2.134</div>
+                  <div className="text-sm opacity-90">Linhas Adicionadas</div>
+                  <div className="text-xs opacity-75 mt-1">-876 removidas</div>
+                </div>
+              </div>
+            </section>
+
+            {/* Distribution by Type */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Distribuição por Tipo de Manutenção</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="border border-red-200 rounded-lg p-6 bg-red-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-xl font-bold text-red-900">Corretivas</h4>
+                    <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold">48.6%</span>
+                  </div>
+                  <div className="text-4xl font-bold text-red-700 mb-2">18</div>
+                  <div className="text-sm text-red-800">Correções de bugs e problemas</div>
+                  <div className="mt-3 h-3 bg-red-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-red-600" style={{ width: '48.6%' }}></div>
+                  </div>
+                </div>
+                <div className="border border-blue-200 rounded-lg p-6 bg-blue-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-xl font-bold text-blue-900">Evolutivas</h4>
+                    <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold">40.5%</span>
+                  </div>
+                  <div className="text-4xl font-bold text-blue-700 mb-2">15</div>
+                  <div className="text-sm text-blue-800">Novos recursos e melhorias</div>
+                  <div className="mt-3 h-3 bg-blue-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-blue-600" style={{ width: '40.5%' }}></div>
+                  </div>
+                </div>
+                <div className="border border-yellow-200 rounded-lg p-6 bg-yellow-50">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-xl font-bold text-yellow-900">Adaptativas</h4>
+                    <span className="bg-yellow-600 text-white px-3 py-1 rounded-full text-sm font-bold">10.9%</span>
+                  </div>
+                  <div className="text-4xl font-bold text-yellow-700 mb-2">4</div>
+                  <div className="text-sm text-yellow-800">Adaptações de ambiente</div>
+                  <div className="mt-3 h-3 bg-yellow-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-yellow-600" style={{ width: '10.9%' }}></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Top 5 Most Impactful Changes */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Top 5 Alterações Mais Impactantes</h3>
+              <div className="space-y-4">
+                <div className="border-l-4 border-red-500 bg-gray-50 p-4 rounded-r-lg">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">#1</span>
+                        <h4 className="text-lg font-bold text-gray-900">v1.2.0 - Cosseguro Automático</h4>
+                        <span className="text-sm text-gray-600">Agosto 2015</span>
+                      </div>
+                      <p className="text-gray-700 mb-2">Implementação de processamento automático de cosseguro com integração à view GE399</p>
+                      <div className="flex gap-4 text-sm">
+                        <span className="text-green-700 font-semibold">+423 linhas</span>
+                        <span className="text-red-700 font-semibold">-87 linhas</span>
+                        <span className="bg-red-100 text-red-800 px-2 py-1 rounded">Impacto: ALTO</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-l-4 border-orange-500 bg-gray-50 p-4 rounded-r-lg">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-bold">#2</span>
+                        <h4 className="text-lg font-bold text-gray-900">v1.7.1 - Otimização de Performance</h4>
+                        <span className="text-sm text-gray-600">Junho 2020</span>
+                      </div>
+                      <p className="text-gray-700 mb-2">Redução de 40% no tempo de execução (de 75min para 45min) com parallel processing</p>
+                      <div className="flex gap-4 text-sm">
+                        <span className="text-green-700 font-semibold">+178 linhas</span>
+                        <span className="text-red-700 font-semibold">-123 linhas</span>
+                        <span className="bg-red-100 text-red-800 px-2 py-1 rounded">Impacto: CRÍTICO</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-l-4 border-yellow-500 bg-gray-50 p-4 rounded-r-lg">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-bold">#3</span>
+                        <h4 className="text-lg font-bold text-gray-900">v1.6.1 - Resseguro Facultativo</h4>
+                        <span className="text-sm text-gray-600">Abril 2019</span>
+                      </div>
+                      <p className="text-gray-700 mb-2">Suporte a 3 tipos de resseguro incluindo facultativo e excedente</p>
+                      <div className="flex gap-4 text-sm">
+                        <span className="text-green-700 font-semibold">+234 linhas</span>
+                        <span className="text-red-700 font-semibold">-78 linhas</span>
+                        <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Impacto: MÉDIO</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-l-4 border-green-500 bg-gray-50 p-4 rounded-r-lg">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-bold">#4</span>
+                        <h4 className="text-lg font-bold text-gray-900">v1.3.0 - Novos Ramos SUSEP</h4>
+                        <span className="text-sm text-gray-600">Junho 2016</span>
+                      </div>
+                      <p className="text-gray-700 mb-2">Suporte a ramos 0553 (Acidentes Pessoais) e 0561 (Ramos Elementares)</p>
+                      <div className="flex gap-4 text-sm">
+                        <span className="text-green-700 font-semibold">+198 linhas</span>
+                        <span className="text-red-700 font-semibold">-45 linhas</span>
+                        <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Impacto: MÉDIO</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-l-4 border-blue-500 bg-gray-50 p-4 rounded-r-lg">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-bold">#5</span>
+                        <h4 className="text-lg font-bold text-gray-900">v1.5.0 - LGPD Preparação</h4>
+                        <span className="text-sm text-gray-600">Fevereiro 2018</span>
+                      </div>
+                      <p className="text-gray-700 mb-2">Mascaramento de CPF, auditoria de acesso e conformidade LGPD</p>
+                      <div className="flex gap-4 text-sm">
+                        <span className="text-green-700 font-semibold">+134 linhas</span>
+                        <span className="text-red-700 font-semibold">-89 linhas</span>
+                        <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Impacto: MÉDIO</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Timeline by Year */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Histórico Cronológico por Ano</h3>
+              <div className="space-y-6">
+
+                {/* 2014 */}
+                <div className="border border-gray-200 rounded-lg overflow-hidden">
+                  <div className="bg-blue-600 text-white p-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xl font-bold">2014 - Criação e Implantação Inicial</h4>
+                      <span className="bg-white text-blue-600 px-3 py-1 rounded-full text-sm font-bold">2 versões</span>
+                    </div>
+                  </div>
+                  <div className="p-4 bg-gray-50 space-y-4">
+                    <div className="bg-white p-4 rounded border border-gray-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-gray-900">v1.0.0 - 15/03/2014</span>
+                        <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-sm">Impacto: ALTO</span>
+                      </div>
+                      <p className="text-gray-700 mb-2">Criação inicial do programa RG1866B (4.821 linhas) - Primeiro deploy em produção</p>
+                      <p className="text-sm text-gray-600">👤 João Silva | 📦 Projeto C97168 | 🏷️ Criação inicial</p>
+                    </div>
+                    <div className="bg-white p-4 rounded border border-gray-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-gray-900">v1.0.1 - 28/04/2014</span>
+                        <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm">Impacto: MÉDIO</span>
+                      </div>
+                      <p className="text-gray-700 mb-2">Correção de validação CPF/CNPJ e cálculo IOF proporcional em endossos</p>
+                      <p className="text-sm text-gray-600">👤 João Silva | 🐛 Bug #2014-001 | ✏️ +42/-18 linhas</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2015 */}
+                <div className="border border-gray-200 rounded-lg overflow-hidden">
+                  <div className="bg-purple-600 text-white p-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xl font-bold">2015 - Melhorias e Ajustes</h4>
+                      <span className="bg-white text-purple-600 px-3 py-1 rounded-full text-sm font-bold">3 versões</span>
+                    </div>
+                  </div>
+                  <div className="p-4 bg-gray-50 space-y-4">
+                    <div className="bg-white p-4 rounded border border-gray-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-gray-900">v1.1.0 - 12/02/2015</span>
+                        <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm">Impacto: MÉDIO</span>
+                      </div>
+                      <p className="text-gray-700 mb-2">Otimização de performance - Redução de 25% no tempo de execução (60min → 45min)</p>
+                      <p className="text-sm text-gray-600">👤 Maria Santos | 🚀 Evolutiva | ✏️ +87/-34 linhas</p>
+                    </div>
+                    <div className="bg-white p-4 rounded border border-gray-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-gray-900">v1.1.1 - 05/05/2015</span>
+                        <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm">Impacto: MÉDIO</span>
+                      </div>
+                      <p className="text-gray-700 mb-2">Suporte a moeda estrangeira (USD, EUR) com conversão para BRL via taxa de câmbio</p>
+                      <p className="text-sm text-gray-600">👤 Carlos Oliveira | 🚀 Evolutiva | ✏️ +156/-12 linhas</p>
+                    </div>
+                    <div className="bg-white p-4 rounded border border-gray-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-gray-900">v1.2.0 - 18/08/2015</span>
+                        <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-sm">Impacto: ALTO</span>
+                      </div>
+                      <p className="text-gray-700 mb-2">Cosseguro automático - Integração com GE399 e geração PREMCED.TXT</p>
+                      <p className="text-sm text-gray-600">👤 Ana Paula | 🚀 Evolutiva | ✏️ +423/-87 linhas</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2016 */}
+                <div className="border border-gray-200 rounded-lg overflow-hidden">
+                  <div className="bg-green-600 text-white p-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xl font-bold">2016 - Adaptações Regulatórias</h4>
+                      <span className="bg-white text-green-600 px-3 py-1 rounded-full text-sm font-bold">3 versões</span>
+                    </div>
+                  </div>
+                  <div className="p-4 bg-gray-50 space-y-4">
+                    <div className="bg-white p-4 rounded border border-gray-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-gray-900">v1.2.1 - 22/01/2016</span>
+                        <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-sm">Impacto: ALTO</span>
+                      </div>
+                      <p className="text-gray-700 mb-2">Correção validação ramo SUSEP 0571 (Previdência) - Bloqueio corrigido</p>
+                      <p className="text-sm text-gray-600">👤 Roberto Lima | 🐛 Bug #2016-003 | ✏️ +34/-28 linhas</p>
+                    </div>
+                    <div className="bg-white p-4 rounded border border-gray-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-gray-900">v1.3.0 - 14/06/2016</span>
+                        <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm">Impacto: MÉDIO</span>
+                      </div>
+                      <p className="text-gray-700 mb-2">Novos ramos SUSEP 0553 (Acidentes Pessoais) e 0561 (Ramos Elementares)</p>
+                      <p className="text-sm text-gray-600">👤 Fernanda Costa | 🚀 Evolutiva | ✏️ +198/-45 linhas</p>
+                    </div>
+                    <div className="bg-white p-4 rounded border border-gray-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-gray-900">v1.3.1 - 09/09/2016</span>
+                        <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-sm">Impacto: CRÍTICO</span>
+                      </div>
+                      <p className="text-gray-700 mb-2">Correção arredondamento COMP-3 - Divergência SUSEP resolvida</p>
+                      <p className="text-sm text-gray-600">👤 Paulo Mendes | 🐛 Bug #2016-008 | ✏️ +67/-54 linhas</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2017 */}
+                <div className="border border-gray-200 rounded-lg overflow-hidden">
+                  <div className="bg-orange-600 text-white p-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xl font-bold">2017 - Estabilização e Melhorias</h4>
+                      <span className="bg-white text-orange-600 px-3 py-1 rounded-full text-sm font-bold">3 versões</span>
+                    </div>
+                  </div>
+                  <div className="p-4 bg-gray-50 space-y-4">
+                    <div className="bg-white p-4 rounded border border-gray-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-gray-900">v1.4.0 - 23/03/2017</span>
+                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">Impacto: BAIXO</span>
+                      </div>
+                      <p className="text-gray-700 mb-2">Logs estruturados e relatório de totalizadores para auditoria</p>
+                      <p className="text-sm text-gray-600">👤 Juliana Alves | 🚀 Evolutiva | ✏️ +112/-23 linhas</p>
+                    </div>
+                    <div className="bg-white p-4 rounded border border-gray-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-gray-900">v1.4.1 - 17/07/2017</span>
+                        <span className="bg-red-100 text-red-800 px-2 py-1 rounded text-sm">Impacto: ALTO</span>
+                      </div>
+                      <p className="text-gray-700 mb-2">Correção timeout SQL e retry automático em deadlock (-911)</p>
+                      <p className="text-sm text-gray-600">👤 Ricardo Ferreira | 🐛 Bug #2017-005 | ✏️ +89/-67 linhas</p>
+                    </div>
+                    <div className="bg-white p-4 rounded border border-gray-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-gray-900">v1.4.2 - 30/11/2017</span>
+                        <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm">Impacto: MÉDIO</span>
+                      </div>
+                      <p className="text-gray-700 mb-2">Validação de datas futuras e retroativas corrigida</p>
+                      <p className="text-sm text-gray-600">👤 Mariana Rocha | 🐛 Bug #2017-011 | ✏️ +76/-41 linhas</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2018-2022 Summary Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="bg-indigo-600 text-white p-4">
+                      <h4 className="text-xl font-bold">2018 - Conformidade e Segurança</h4>
+                      <span className="text-sm opacity-90">2 versões | LGPD e correções financeiras</span>
+                    </div>
+                    <div className="p-4 bg-gray-50">
+                      <ul className="space-y-2 text-sm">
+                        <li className="flex items-center gap-2">
+                          <span className="w-2 h-2 bg-indigo-600 rounded-full"></span>
+                          <span>v1.5.0 - LGPD preparação (mascaramento CPF)</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="w-2 h-2 bg-indigo-600 rounded-full"></span>
+                          <span>v1.5.1 - Correção regra cancelamento (impacto financeiro)</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="bg-teal-600 text-white p-4">
+                      <h4 className="text-xl font-bold">2019 - Expansão e Otimização</h4>
+                      <span className="text-sm opacity-90">3 versões | Resseguro e monitoring</span>
+                    </div>
+                    <div className="p-4 bg-gray-50">
+                      <ul className="space-y-2 text-sm">
+                        <li className="flex items-center gap-2">
+                          <span className="w-2 h-2 bg-teal-600 rounded-full"></span>
+                          <span>v1.6.0 - Batch job monitoring (BMC Control-M)</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="w-2 h-2 bg-teal-600 rounded-full"></span>
+                          <span>v1.6.1 - Resseguro facultativo (+234 linhas)</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="w-2 h-2 bg-teal-600 rounded-full"></span>
+                          <span>v1.6.2 - Correção cálculo pro-rata die</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="bg-red-600 text-white p-4">
+                      <h4 className="text-xl font-bold">2020 - Pandemia e Resiliência</h4>
+                      <span className="text-sm opacity-90">3 versões | COVID-19 adaptações</span>
+                    </div>
+                    <div className="p-4 bg-gray-50">
+                      <ul className="space-y-2 text-sm">
+                        <li className="flex items-center gap-2">
+                          <span className="w-2 h-2 bg-red-600 rounded-full"></span>
+                          <span>v1.7.0 - Contingência COVID-19 (modo remoto)</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="w-2 h-2 bg-red-600 rounded-full"></span>
+                          <span>v1.7.1 - Performance crítica (40% mais rápido)</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="w-2 h-2 bg-red-600 rounded-full"></span>
+                          <span>v1.7.2 - Validação reforçada</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="bg-cyan-600 text-white p-4">
+                      <h4 className="text-xl font-bold">2021 - Modernização Preparatória</h4>
+                      <span className="text-sm opacity-90">3 versões | Preparação migração</span>
+                    </div>
+                    <div className="p-4 bg-gray-50">
+                      <ul className="space-y-2 text-sm">
+                        <li className="flex items-center gap-2">
+                          <span className="w-2 h-2 bg-cyan-600 rounded-full"></span>
+                          <span>v1.8.0 - Documentação técnica (+891 linhas)</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="w-2 h-2 bg-cyan-600 rounded-full"></span>
+                          <span>v1.8.1 - Refatoração módulos (-15% código)</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="w-2 h-2 bg-cyan-600 rounded-full"></span>
+                          <span>v1.8.2 - Melhoria mensagens de erro</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2022 - Final Version */}
+                <div className="border border-gray-200 rounded-lg overflow-hidden">
+                  <div className="bg-gray-800 text-white p-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xl font-bold">2022 - Última Versão e Descontinuação</h4>
+                      <span className="bg-white text-gray-800 px-3 py-1 rounded-full text-sm font-bold">2 versões</span>
+                    </div>
+                  </div>
+                  <div className="p-4 bg-gray-50 space-y-4">
+                    <div className="bg-white p-4 rounded border border-gray-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-gray-900">v1.9.0 - 14/04/2022</span>
+                        <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm">Impacto: BAIXO</span>
+                      </div>
+                      <p className="text-gray-700 mb-2">Modo compatibilidade .NET e geração de checksums SHA-256 para validação</p>
+                      <p className="text-sm text-gray-600">👤 Eduardo Pereira | 🚀 Evolutiva | ✏️ +189/-23 linhas</p>
+                    </div>
+                    <div className="bg-white p-4 rounded border border-yellow-200 bg-yellow-50">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-gray-900">v1.9.1 - 30/09/2022 ⭐ ÚLTIMA VERSÃO</span>
+                        <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm">Impacto: MÉDIO</span>
+                      </div>
+                      <p className="text-gray-700 mb-2">Correção overflow em valores grandes e validação COBOL Enterprise 6.3</p>
+                      <p className="text-sm text-gray-600">👤 Juliana Cardoso | 🐛 Bug #2022-012 | ✏️ +45/-32 linhas</p>
+                      <div className="mt-3 p-3 bg-yellow-100 rounded border border-yellow-300">
+                        <p className="text-sm font-bold text-yellow-900">🏁 Programa descontinuado após migração para .NET 9.0</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Code Evolution Chart */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Evolução do Tamanho do Código</h3>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full">
+                    <thead className="bg-gray-100">
+                      <tr>
+                        <th className="py-3 px-4 text-left font-semibold text-gray-700">Ano</th>
+                        <th className="py-3 px-4 text-left font-semibold text-gray-700">Linhas de Código</th>
+                        <th className="py-3 px-4 text-left font-semibold text-gray-700">Variação</th>
+                        <th className="py-3 px-4 text-left font-semibold text-gray-700">Tendência</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      <tr>
+                        <td className="py-3 px-4 font-bold">2014</td>
+                        <td className="py-3 px-4">4.821</td>
+                        <td className="py-3 px-4 text-gray-600">Baseline</td>
+                        <td className="py-3 px-4"><span className="text-2xl">📊</span></td>
+                      </tr>
+                      <tr className="bg-green-50">
+                        <td className="py-3 px-4 font-bold">2015</td>
+                        <td className="py-3 px-4 font-semibold">5.134</td>
+                        <td className="py-3 px-4 text-green-700 font-bold">+313 (+6.5%)</td>
+                        <td className="py-3 px-4"><span className="text-2xl">📈</span></td>
+                      </tr>
+                      <tr className="bg-green-50">
+                        <td className="py-3 px-4 font-bold">2016</td>
+                        <td className="py-3 px-4 font-semibold">5.289</td>
+                        <td className="py-3 px-4 text-green-700 font-bold">+155 (+3.0%)</td>
+                        <td className="py-3 px-4"><span className="text-2xl">📈</span></td>
+                      </tr>
+                      <tr className="bg-green-50">
+                        <td className="py-3 px-4 font-bold">2017</td>
+                        <td className="py-3 px-4 font-semibold">5.412</td>
+                        <td className="py-3 px-4 text-green-700 font-bold">+123 (+2.3%)</td>
+                        <td className="py-3 px-4"><span className="text-2xl">📈</span></td>
+                      </tr>
+                      <tr className="bg-green-50">
+                        <td className="py-3 px-4 font-bold">2018</td>
+                        <td className="py-3 px-4 font-semibold">5.523</td>
+                        <td className="py-3 px-4 text-green-700 font-bold">+111 (+2.1%)</td>
+                        <td className="py-3 px-4"><span className="text-2xl">📈</span></td>
+                      </tr>
+                      <tr className="bg-green-50">
+                        <td className="py-3 px-4 font-bold">2019</td>
+                        <td className="py-3 px-4 font-semibold">5.734</td>
+                        <td className="py-3 px-4 text-green-700 font-bold">+211 (+3.8%)</td>
+                        <td className="py-3 px-4"><span className="text-2xl">📈</span></td>
+                      </tr>
+                      <tr className="bg-blue-50">
+                        <td className="py-3 px-4 font-bold">2020</td>
+                        <td className="py-3 px-4 font-semibold">5.678</td>
+                        <td className="py-3 px-4 text-blue-700 font-bold">-56 (-1.0%) [refatoração]</td>
+                        <td className="py-3 px-4"><span className="text-2xl">📉</span></td>
+                      </tr>
+                      <tr className="bg-blue-50">
+                        <td className="py-3 px-4 font-bold">2021</td>
+                        <td className="py-3 px-4 font-semibold">5.234</td>
+                        <td className="py-3 px-4 text-blue-700 font-bold">-444 (-7.8%) [código morto removido]</td>
+                        <td className="py-3 px-4"><span className="text-2xl">📉</span></td>
+                      </tr>
+                      <tr className="bg-blue-50">
+                        <td className="py-3 px-4 font-bold">2022</td>
+                        <td className="py-3 px-4 font-semibold">5.046</td>
+                        <td className="py-3 px-4 text-blue-700 font-bold">-188 (-3.6%) [otimização]</td>
+                        <td className="py-3 px-4"><span className="text-2xl">📉</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div className="mt-4 p-4 bg-blue-50 rounded border border-blue-200">
+                  <p className="text-sm text-blue-900">
+                    <strong>Observação:</strong> Crescimento até 2019 (pico: 5.734 linhas), seguido de refatoração e limpeza (2020-2022).
+                    Versão final ficou próxima do tamanho inicial, porém com funcionalidades significativamente expandidas.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            {/* Top Developers */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Desenvolvedores Mais Ativos</h3>
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="py-3 px-4 text-left font-semibold text-gray-700">Rank</th>
+                      <th className="py-3 px-4 text-left font-semibold text-gray-700">Desenvolvedor</th>
+                      <th className="py-3 px-4 text-left font-semibold text-gray-700">Alterações</th>
+                      <th className="py-3 px-4 text-left font-semibold text-gray-700">Linhas Modificadas</th>
+                      <th className="py-3 px-4 text-left font-semibold text-gray-700">Contribuição</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    <tr className="bg-yellow-50">
+                      <td className="py-3 px-4"><span className="text-2xl">🥇</span></td>
+                      <td className="py-3 px-4 font-bold">João Silva</td>
+                      <td className="py-3 px-4 font-semibold">5</td>
+                      <td className="py-3 px-4">+1.234 / -456</td>
+                      <td className="py-3 px-4">
+                        <div className="h-3 bg-blue-200 rounded-full overflow-hidden">
+                          <div className="h-full bg-blue-600" style={{ width: '24.3%' }}></div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr className="bg-gray-50">
+                      <td className="py-3 px-4"><span className="text-2xl">🥈</span></td>
+                      <td className="py-3 px-4 font-bold">Maria Santos</td>
+                      <td className="py-3 px-4 font-semibold">4</td>
+                      <td className="py-3 px-4">+876 / -234</td>
+                      <td className="py-3 px-4">
+                        <div className="h-3 bg-purple-200 rounded-full overflow-hidden">
+                          <div className="h-full bg-purple-600" style={{ width: '17.2%' }}></div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4"><span className="text-2xl">🥉</span></td>
+                      <td className="py-3 px-4 font-bold">Carlos Oliveira</td>
+                      <td className="py-3 px-4 font-semibold">3</td>
+                      <td className="py-3 px-4">+654 / -123</td>
+                      <td className="py-3 px-4">
+                        <div className="h-3 bg-green-200 rounded-full overflow-hidden">
+                          <div className="h-full bg-green-600" style={{ width: '12.8%' }}></div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr className="bg-gray-50">
+                      <td className="py-3 px-4">4</td>
+                      <td className="py-3 px-4 font-bold">Ana Paula</td>
+                      <td className="py-3 px-4 font-semibold">3</td>
+                      <td className="py-3 px-4">+543 / -187</td>
+                      <td className="py-3 px-4">
+                        <div className="h-3 bg-orange-200 rounded-full overflow-hidden">
+                          <div className="h-full bg-orange-600" style={{ width: '10.6%' }}></div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4">-</td>
+                      <td className="py-3 px-4 text-gray-600">Outros (8 desenvolvedores)</td>
+                      <td className="py-3 px-4 font-semibold">22</td>
+                      <td className="py-3 px-4">+1.827 / -876</td>
+                      <td className="py-3 px-4">
+                        <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+                          <div className="h-full bg-gray-600" style={{ width: '35.1%' }}></div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            {/* Lessons Learned */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Lições Aprendidas</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="border border-blue-200 rounded-lg p-6 bg-blue-50">
+                  <h4 className="text-xl font-bold text-blue-900 mb-3">💡 Manutenibilidade</h4>
+                  <p className="text-gray-700 mb-3">
+                    <strong>Problema:</strong> Código sem documentação dificultava manutenções
+                  </p>
+                  <p className="text-gray-700 mb-3">
+                    <strong>Solução:</strong> Documentação inline obrigatória desde 2021
+                  </p>
+                  <div className="bg-blue-100 border border-blue-300 rounded p-3">
+                    <p className="text-sm text-blue-900 font-semibold">
+                      ✅ Resultado: Redução de 40% no tempo médio de correção
+                    </p>
+                  </div>
+                </div>
+
+                <div className="border border-green-200 rounded-lg p-6 bg-green-50">
+                  <h4 className="text-xl font-bold text-green-900 mb-3">🧪 Testes de Regressão</h4>
+                  <p className="text-gray-700 mb-3">
+                    <strong>Problema:</strong> 6 incidentes de regressão em 2016
+                  </p>
+                  <p className="text-gray-700 mb-3">
+                    <strong>Solução:</strong> Suíte de testes input/output implementada
+                  </p>
+                  <div className="bg-green-100 border border-green-300 rounded p-3">
+                    <p className="text-sm text-green-900 font-semibold">
+                      ✅ Resultado: Zero incidentes desde 2019
+                    </p>
+                  </div>
+                </div>
+
+                <div className="border border-purple-200 rounded-lg p-6 bg-purple-50">
+                  <h4 className="text-xl font-bold text-purple-900 mb-3">📊 Performance Monitoring</h4>
+                  <p className="text-gray-700 mb-3">
+                    <strong>Problema:</strong> Degradação não detectada proativamente
+                  </p>
+                  <p className="text-gray-700 mb-3">
+                    <strong>Solução:</strong> Métricas no log (v1.6.0)
+                  </p>
+                  <div className="bg-purple-100 border border-purple-300 rounded p-3">
+                    <p className="text-sm text-purple-900 font-semibold">
+                      ✅ Resultado: 3 incidentes evitados
+                    </p>
+                  </div>
+                </div>
+
+                <div className="border border-orange-200 rounded-lg p-6 bg-orange-50">
+                  <h4 className="text-xl font-bold text-orange-900 mb-3">📚 Gestão de Conhecimento</h4>
+                  <p className="text-gray-700 mb-3">
+                    <strong>Problema:</strong> Rotatividade causava perda de conhecimento
+                  </p>
+                  <p className="text-gray-700 mb-3">
+                    <strong>Solução:</strong> Wiki interna e doc completa (v1.8.0)
+                  </p>
+                  <div className="bg-orange-100 border border-orange-300 rounded p-3">
+                    <p className="text-sm text-orange-900 font-semibold">
+                      ✅ Resultado: Onboarding reduzido de 3 meses para 2 semanas
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Maintenance Motives */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Motivos de Manutenção</h3>
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="py-3 px-4 text-left font-semibold text-gray-700">Motivo</th>
+                      <th className="py-3 px-4 text-left font-semibold text-gray-700">Quantidade</th>
+                      <th className="py-3 px-4 text-left font-semibold text-gray-700">Percentual</th>
+                      <th className="py-3 px-4 text-left font-semibold text-gray-700">Distribuição</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    <tr>
+                      <td className="py-3 px-4 font-semibold">Correção de Bugs</td>
+                      <td className="py-3 px-4 font-bold text-red-700">18</td>
+                      <td className="py-3 px-4 font-bold">48.6%</td>
+                      <td className="py-3 px-4">
+                        <div className="h-4 bg-red-200 rounded-full overflow-hidden">
+                          <div className="h-full bg-red-600" style={{ width: '48.6%' }}></div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr className="bg-gray-50">
+                      <td className="py-3 px-4 font-semibold">Novos Requisitos de Negócio</td>
+                      <td className="py-3 px-4 font-bold text-blue-700">10</td>
+                      <td className="py-3 px-4 font-bold">27.0%</td>
+                      <td className="py-3 px-4">
+                        <div className="h-4 bg-blue-200 rounded-full overflow-hidden">
+                          <div className="h-full bg-blue-600" style={{ width: '27%' }}></div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4 font-semibold">Conformidade Regulatória</td>
+                      <td className="py-3 px-4 font-bold text-purple-700">5</td>
+                      <td className="py-3 px-4 font-bold">13.5%</td>
+                      <td className="py-3 px-4">
+                        <div className="h-4 bg-purple-200 rounded-full overflow-hidden">
+                          <div className="h-full bg-purple-600" style={{ width: '13.5%' }}></div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr className="bg-gray-50">
+                      <td className="py-3 px-4 font-semibold">Otimização de Performance</td>
+                      <td className="py-3 px-4 font-bold text-green-700">3</td>
+                      <td className="py-3 px-4 font-bold">8.1%</td>
+                      <td className="py-3 px-4">
+                        <div className="h-4 bg-green-200 rounded-full overflow-hidden">
+                          <div className="h-full bg-green-600" style={{ width: '8.1%' }}></div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4 font-semibold">Preparação para Migração</td>
+                      <td className="py-3 px-4 font-bold text-orange-700">1</td>
+                      <td className="py-3 px-4 font-bold">2.7%</td>
+                      <td className="py-3 px-4">
+                        <div className="h-4 bg-orange-200 rounded-full overflow-hidden">
+                          <div className="h-full bg-orange-600" style={{ width: '2.7%' }}></div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            {/* Reference */}
+            <section className="bg-gray-100 border border-gray-300 rounded-lg p-6">
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">Referências Completas</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-bold text-gray-700 mb-2">Documentação Relacionada:</h4>
+                  <ul className="space-y-1 text-sm text-gray-700">
+                    <li>• Lógica de Negócio: <code className="bg-gray-200 px-2 py-1 rounded">05-business-logic.md</code></li>
+                    <li>• Guia de Operações: <code className="bg-gray-200 px-2 py-1 rounded">07-operations-guide.md</code></li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-700 mb-2">Sistemas de Rastreamento:</h4>
+                  <ul className="space-y-1 text-sm text-gray-700">
+                    <li>• Controle de Versão: CADMUS (Caixa Seguradora)</li>
+                    <li>• Bugs 2016-2022: JIRA</li>
+                    <li>• Bugs 2014-2015: BMC Remedy</li>
+                  </ul>
+                </div>
+              </div>
+            </section>
           </div>
         </TabsContent>
 
         <TabsContent value="migration" className="space-y-6">
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Guia de Migração COBOL → .NET</h2>
-            <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-              <p className="text-gray-700">
-                Consulte o arquivo completo em <code className="bg-gray-200 px-2 py-1 rounded">docs/legacy-system/09-migration-guide.md</code> para estratégias completas de migração, riscos e mitigações.
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">Guia de Migração COBOL → .NET 9.0</h2>
+
+            {/* Migration Overview */}
+            <section className="mb-8">
+              <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-6 text-white mb-6">
+                <div className="flex items-center gap-4 mb-3">
+                  <Workflow className="h-12 w-12" />
+                  <div>
+                    <h3 className="text-2xl font-bold">Estratégia de Migração: Reescrita Completa</h3>
+                    <p className="text-blue-100 text-lg">Abordagem Clean Architecture + Validação Byte-Level</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-4 mt-4">
+                  <div className="bg-white/20 backdrop-blur rounded-lg p-3">
+                    <div className="text-2xl font-bold">100%</div>
+                    <div className="text-sm opacity-90">Compatibilidade Byte-Level</div>
+                  </div>
+                  <div className="bg-white/20 backdrop-blur rounded-lg p-3">
+                    <div className="text-2xl font-bold">6 meses</div>
+                    <div className="text-sm opacity-90">Prazo Estimado</div>
+                  </div>
+                  <div className="bg-white/20 backdrop-blur rounded-lg p-3">
+                    <div className="text-2xl font-bold">3 fases</div>
+                    <div className="text-sm opacity-90">Planejamento → Implementação → Validação</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Migration Phases */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Fases da Migração</h3>
+              <div className="space-y-4">
+                <div className="border-l-4 border-blue-500 bg-blue-50 p-6 rounded-r-lg">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold">1</div>
+                    <h4 className="text-xl font-bold text-gray-900">Fase 1: Análise e Planejamento (2 meses)</h4>
+                  </div>
+                  <ul className="space-y-2 ml-13">
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700"><strong>Análise Estática do COBOL:</strong> Parser completo de 5.046 linhas (687 variáveis, 26+ tabelas)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700"><strong>Mapeamento de Tipos:</strong> COBOL PIC → C# types (COMP-3 → decimal, X(n) → string)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700"><strong>Modelagem de Dados:</strong> 15 entidades EF Core mapeadas para views DB2</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700"><strong>Arquitetura .NET:</strong> Clean Architecture (API + Core + Infrastructure)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700"><strong>Coleta de Amostras:</strong> 10.000+ registros reais PREMIT/PREMCED para validação</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="border-l-4 border-purple-500 bg-purple-50 p-6 rounded-r-lg">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="bg-purple-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold">2</div>
+                    <h4 className="text-xl font-bold text-gray-900">Fase 2: Implementação (3 meses)</h4>
+                  </div>
+                  <ul className="space-y-2 ml-13">
+                    <li className="flex items-start gap-2">
+                      <Code2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700"><strong>Backend .NET 9:</strong> ASP.NET Core Web API + EF Core 9.0</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Code2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700"><strong>Lógica de Cálculo:</strong> Migração seção-por-seção (R0700-R5500)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Code2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700"><strong>FixedWidthFormatter:</strong> Geração de arquivos texto compatíveis SUSEP</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Code2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700"><strong>Frontend React:</strong> Dashboard, geração de relatórios, consulta de dados</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Code2 className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700"><strong>Testes Unitários:</strong> Cobertura 90%+ para lógica de negócio crítica</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="border-l-4 border-green-500 bg-green-50 p-6 rounded-r-lg">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold">3</div>
+                    <h4 className="text-xl font-bold text-gray-900">Fase 3: Validação e Deploy (1 mês)</h4>
+                  </div>
+                  <ul className="space-y-2 ml-13">
+                    <li className="flex items-start gap-2">
+                      <Trophy className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700"><strong>Testes de Comparação:</strong> Validação byte-a-byte COBOL vs .NET</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Trophy className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700"><strong>Testes de Performance:</strong> Execução paralela 50%+ mais rápida</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Trophy className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700"><strong>Homologação:</strong> 3 meses em paralelo (COBOL + .NET)</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Trophy className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700"><strong>Auditoria SUSEP:</strong> Certificação byte-level de conformidade</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Trophy className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+                      <span className="text-gray-700"><strong>Deploy Produção:</strong> Cutover gradual com rollback automático</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+
+            {/* Key Challenges */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Desafios Críticos e Mitigações</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="border border-red-200 rounded-lg p-6 bg-red-50">
+                  <div className="flex items-center gap-3 mb-3">
+                    <AlertTriangle className="h-8 w-8 text-red-600" />
+                    <h4 className="text-lg font-bold text-red-900">Precisão Decimal (CRÍTICO)</h4>
+                  </div>
+                  <p className="text-gray-700 mb-3">
+                    <strong>Risco:</strong> COBOL COMP-3 tem 31 dígitos decimais, erros de arredondamento causam divergências SUSEP
+                  </p>
+                  <div className="bg-red-100 border border-red-300 rounded p-3">
+                    <p className="text-sm text-red-900">
+                      <strong>✅ Mitigação:</strong> Uso obrigatório de <code className="bg-red-200 px-1 rounded">decimal</code> (nunca float/double) + validação com 10.000 casos de teste
+                    </p>
+                  </div>
+                </div>
+
+                <div className="border border-orange-200 rounded-lg p-6 bg-orange-50">
+                  <div className="flex items-center gap-3 mb-3">
+                    <AlertCircle className="h-8 w-8 text-orange-600" />
+                    <h4 className="text-lg font-bold text-orange-900">Formatação Fixed-Width</h4>
+                  </div>
+                  <p className="text-gray-700 mb-3">
+                    <strong>Risco:</strong> Padding/truncamento incorreto quebra validação SUSEP (rejeição de arquivo)
+                  </p>
+                  <div className="bg-orange-100 border border-orange-300 rounded p-3">
+                    <p className="text-sm text-orange-900">
+                      <strong>✅ Mitigação:</strong> FixedWidthFormatter com testes comparativos linha-a-linha contra COBOL
+                    </p>
+                  </div>
+                </div>
+
+                <div className="border border-yellow-200 rounded-lg p-6 bg-yellow-50">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Zap className="h-8 w-8 text-yellow-600" />
+                    <h4 className="text-lg font-bold text-yellow-900">Performance em Larga Escala</h4>
+                  </div>
+                  <p className="text-gray-700 mb-3">
+                    <strong>Risco:</strong> COBOL processa 10M+ registros/mês - .NET deve igualar ou superar
+                  </p>
+                  <div className="bg-yellow-100 border border-yellow-300 rounded p-3">
+                    <p className="text-sm text-yellow-900">
+                      <strong>✅ Mitigação:</strong> IAsyncEnumerable (streaming), parallel processing, benchmarks 50k+ registros
+                    </p>
+                  </div>
+                </div>
+
+                <div className="border border-blue-200 rounded-lg p-6 bg-blue-50">
+                  <div className="flex items-center gap-3 mb-3">
+                    <Database className="h-8 w-8 text-blue-600" />
+                    <h4 className="text-lg font-bold text-blue-900">Acesso DB2 Legacy</h4>
+                  </div>
+                  <p className="text-gray-700 mb-3">
+                    <strong>Risco:</strong> 26+ views DB2 com queries SQL/COBOL complexas e otimizadas
+                  </p>
+                  <div className="bg-blue-100 border border-blue-300 rounded p-3">
+                    <p className="text-sm text-blue-900">
+                      <strong>✅ Mitigação:</strong> EF Core raw SQL queries + índices otimizados + monitoramento de performance
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Technology Stack Comparison */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Comparação de Stack Tecnológica</h3>
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="py-3 px-4 text-left font-semibold text-gray-700">Componente</th>
+                      <th className="py-3 px-4 text-left font-semibold text-gray-700">COBOL (Legado)</th>
+                      <th className="py-3 px-4 text-left font-semibold text-gray-700">.NET 9.0 (Novo)</th>
+                      <th className="py-3 px-4 text-left font-semibold text-gray-700">Benefício</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    <tr className="bg-gray-50">
+                      <td className="py-3 px-4 font-semibold">Linguagem</td>
+                      <td className="py-3 px-4">COBOL 85/Enterprise 6.3</td>
+                      <td className="py-3 px-4 font-bold text-green-700">C# 12 (.NET 9)</td>
+                      <td className="py-3 px-4 text-sm">Moderna, tipo-segura, POO</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4 font-semibold">Processamento</td>
+                      <td className="py-3 px-4">JCL batch (mainframe)</td>
+                      <td className="py-3 px-4 font-bold text-green-700">ASP.NET Core Web API</td>
+                      <td className="py-3 px-4 text-sm">On-demand, RESTful, cloud-native</td>
+                    </tr>
+                    <tr className="bg-gray-50">
+                      <td className="py-3 px-4 font-semibold">Banco de Dados</td>
+                      <td className="py-3 px-4">DB2 z/OS (views)</td>
+                      <td className="py-3 px-4 font-bold text-green-700">EF Core + DB2 provider</td>
+                      <td className="py-3 px-4 text-sm">ORM, migrations, LINQ</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4 font-semibold">Interface</td>
+                      <td className="py-3 px-4">ISPF/TSO (terminal)</td>
+                      <td className="py-3 px-4 font-bold text-green-700">React SPA (web)</td>
+                      <td className="py-3 px-4 text-sm">UX moderna, self-service</td>
+                    </tr>
+                    <tr className="bg-gray-50">
+                      <td className="py-3 px-4 font-semibold">Deployment</td>
+                      <td className="py-3 px-4">Mainframe IBM z/OS</td>
+                      <td className="py-3 px-4 font-bold text-green-700">Azure App Service + Docker</td>
+                      <td className="py-3 px-4 text-sm">CI/CD, escalabilidade</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4 font-semibold">Testes</td>
+                      <td className="py-3 px-4">Input/output manual (JCL)</td>
+                      <td className="py-3 px-4 font-bold text-green-700">xUnit + Playwright (automatizado)</td>
+                      <td className="py-3 px-4 text-sm">Coverage 90%, regressão auto</td>
+                    </tr>
+                    <tr className="bg-gray-50">
+                      <td className="py-3 px-4 font-semibold">Logging</td>
+                      <td className="py-3 px-4">SYSOUT (batch logs)</td>
+                      <td className="py-3 px-4 font-bold text-green-700">Serilog + Application Insights</td>
+                      <td className="py-3 px-4 text-sm">Estruturado, alertas, dashboards</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            {/* Success Metrics */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Métricas de Sucesso</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-lg p-4 text-white">
+                  <div className="flex items-center gap-2 mb-2">
+                    <CheckCircle2 className="h-6 w-6" />
+                    <span className="text-sm font-semibold">Compatibilidade</span>
+                  </div>
+                  <div className="text-3xl font-bold">100%</div>
+                  <div className="text-xs opacity-90">Byte-level match COBOL</div>
+                </div>
+                <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-4 text-white">
+                  <div className="flex items-center gap-2 mb-2">
+                    <TrendingUp className="h-6 w-6" />
+                    <span className="text-sm font-semibold">Performance</span>
+                  </div>
+                  <div className="text-3xl font-bold">+50%</div>
+                  <div className="text-xs opacity-90">Mais rápido (paralelo)</div>
+                </div>
+                <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-4 text-white">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Trophy className="h-6 w-6" />
+                    <span className="text-sm font-semibold">Cobertura Testes</span>
+                  </div>
+                  <div className="text-3xl font-bold">90%+</div>
+                  <div className="text-xs opacity-90">Lógica de negócio</div>
+                </div>
+                <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg p-4 text-white">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Clock className="h-6 w-6" />
+                    <span className="text-sm font-semibold">Deploy Time</span>
+                  </div>
+                  <div className="text-3xl font-bold">5 min</div>
+                  <div className="text-xs opacity-90">vs 2h mainframe</div>
+                </div>
+              </div>
+            </section>
+
+            {/* Rollout Strategy */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Estratégia de Rollout</h3>
+              <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 rounded-lg p-6">
+                <ol className="space-y-4">
+                  <li className="flex items-start gap-3">
+                    <div className="bg-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">1</div>
+                    <div>
+                      <strong className="text-gray-900">Mês 1-3: Execução Paralela (Shadow Mode)</strong>
+                      <p className="text-gray-700 text-sm mt-1">COBOL + .NET executam simultaneamente, .NET não afeta produção</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="bg-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">2</div>
+                    <div>
+                      <strong className="text-gray-900">Mês 4: Piloto com 10% do Volume</strong>
+                      <p className="text-gray-700 text-sm mt-1">.NET processa ramos menos críticos (0561), COBOL como backup</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="bg-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">3</div>
+                    <div>
+                      <strong className="text-gray-900">Mês 5: Expansão para 50% (Blue-Green Deploy)</strong>
+                      <p className="text-gray-700 text-sm mt-1">Roteamento automático com rollback em caso de divergência</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="bg-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">4</div>
+                    <div>
+                      <strong className="text-gray-900">Mês 6: Cutover Completo + Desativação COBOL</strong>
+                      <p className="text-gray-700 text-sm mt-1">.NET assume 100% após certificação SUSEP, COBOL arquivado</p>
+                    </div>
+                  </li>
+                </ol>
+              </div>
+            </section>
+
+            {/* Reference */}
+            <section className="bg-gray-100 border border-gray-300 rounded-lg p-6">
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">Documentação Completa de Migração</h3>
+              <p className="text-gray-700 mb-4">
+                Para detalhes técnicos completos, estratégias de teste, scripts de validação e checklist de homologação, consulte:
               </p>
-            </div>
+              <div className="bg-white rounded-lg p-4 border border-gray-200">
+                <div className="flex items-center gap-3">
+                  <FileSearch className="h-6 w-6 text-blue-600" />
+                  <code className="text-sm font-mono text-gray-800">docs/legacy-system/09-migration-guide.md</code>
+                </div>
+              </div>
+            </section>
           </div>
         </TabsContent>
 
         <TabsContent value="glossary" className="space-y-6">
           <div className="bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Glossário Técnico e de Negócio - 150+ Termos</h2>
-            <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
-              <p className="text-gray-700">
-                Consulte o arquivo completo em <code className="bg-gray-200 px-2 py-1 rounded">docs/legacy-system/10-glossary.md</code> para definições de mais de 150 termos técnicos e de negócio.
+
+            {/* Overview */}
+            <section className="mb-8">
+              <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg p-6 text-white mb-6">
+                <div className="flex items-center gap-4 mb-3">
+                  <BookOpen className="h-12 w-12" />
+                  <div>
+                    <h3 className="text-2xl font-bold">Dicionário Completo RG1866B</h3>
+                    <p className="text-purple-100 text-lg">Termos de Negócio, Técnicos COBOL, Regulatórios SUSEP e Arquitetura .NET</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 gap-4 mt-4">
+                  <div className="bg-white/20 backdrop-blur rounded-lg p-3">
+                    <div className="text-2xl font-bold">150+</div>
+                    <div className="text-sm opacity-90">Termos Totais</div>
+                  </div>
+                  <div className="bg-white/20 backdrop-blur rounded-lg p-3">
+                    <div className="text-2xl font-bold">4</div>
+                    <div className="text-sm opacity-90">Categorias</div>
+                  </div>
+                  <div className="bg-white/20 backdrop-blur rounded-lg p-3">
+                    <div className="text-2xl font-bold">26+</div>
+                    <div className="text-sm opacity-90">Tabelas DB2</div>
+                  </div>
+                  <div className="bg-white/20 backdrop-blur rounded-lg p-3">
+                    <div className="text-2xl font-bold">687</div>
+                    <div className="text-sm opacity-90">Variáveis COBOL</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Business Terms */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-3">
+                <div className="bg-blue-600 text-white rounded-lg p-2">
+                  <Users className="h-6 w-6" />
+                </div>
+                Termos de Negócio e Domínio de Seguros (40 termos)
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="font-bold text-blue-900 mb-2">Apólice / Endosso / Renovação</h4>
+                  <p className="text-sm text-gray-700 mb-2">
+                    <strong>Apólice:</strong> Contrato de seguro identificado por número único (10 dígitos). Pode ter múltiplos endossos.
+                  </p>
+                  <p className="text-sm text-gray-700 mb-2">
+                    <strong>Endosso:</strong> Alteração contratual após emissão (inclusão/exclusão de coberturas, mudança de valor segurado).
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    <strong>Renovação:</strong> Nova vigência com ajustes de prêmio baseados em sinistralidade.
+                  </p>
+                </div>
+
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <h4 className="font-bold text-green-900 mb-2">Prêmio / IOF / Valor Total</h4>
+                  <p className="text-sm text-gray-700 mb-2">
+                    <strong>Prêmio Líquido:</strong> Valor base do seguro (sem impostos).
+                  </p>
+                  <p className="text-sm text-gray-700 mb-2">
+                    <strong>IOF:</strong> Imposto sobre Operações Financeiras (7.38% para seguros).
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    <strong>Prêmio Total:</strong> Prêmio Líquido + IOF = valor cobrado do cliente.
+                  </p>
+                </div>
+
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                  <h4 className="font-bold text-purple-900 mb-2">Cosseguro / Resseguro</h4>
+                  <p className="text-sm text-gray-700 mb-2">
+                    <strong>Cosseguro:</strong> Divisão de risco entre múltiplas seguradoras (ex: 60% Caixa + 40% Porto Seguro).
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    <strong>Resseguro:</strong> Transferência de parte do risco para resseguradora internacional (IRB, Swiss Re, Munich Re).
+                  </p>
+                </div>
+
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                  <h4 className="font-bold text-orange-900 mb-2">Ramo SUSEP</h4>
+                  <p className="text-sm text-gray-700 mb-2">
+                    <strong>Código numérico de 4 dígitos</strong> que classifica o tipo de seguro para fins regulatórios.
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    <strong>Exemplos:</strong> 0531 (Automóvel), 0553 (Acidentes Pessoais), 0561 (Ramos Elementares), 0571 (Previdência).
+                  </p>
+                </div>
+
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <h4 className="font-bold text-red-900 mb-2">Sinistro / Franquia / Indenização</h4>
+                  <p className="text-sm text-gray-700 mb-2">
+                    <strong>Sinistro:</strong> Evento coberto que aciona a apólice (acidente, roubo, incêndio).
+                  </p>
+                  <p className="text-sm text-gray-700 mb-2">
+                    <strong>Franquia:</strong> Valor mínimo que o segurado paga antes da seguradora indenizar.
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    <strong>Indenização:</strong> Valor pago pela seguradora após aprovação do sinistro.
+                  </p>
+                </div>
+
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <h4 className="font-bold text-yellow-900 mb-2">Pro-Rata / Curta Duração</h4>
+                  <p className="text-sm text-gray-700 mb-2">
+                    <strong>Pro-Rata Die:</strong> Cálculo proporcional de prêmio por dias de vigência (cancelamento antecipado).
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    <strong>Curta Duração:</strong> Apólices com vigência inferior a 12 meses (ex: seguro viagem).
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            {/* Technical COBOL Terms */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-3">
+                <div className="bg-green-600 text-white rounded-lg p-2">
+                  <Code2 className="h-6 w-6" />
+                </div>
+                Termos Técnicos COBOL (50 termos)
+              </h3>
+              <div className="space-y-4">
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-bold text-gray-900 mb-3">Tipos de Dados PIC (Picture)</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="bg-white p-3 rounded border border-gray-300">
+                      <code className="text-sm font-mono text-blue-700">PIC 9(15)V99</code>
+                      <p className="text-xs text-gray-600 mt-1">Numérico com 15 inteiros + 2 decimais (implied decimal point)</p>
+                    </div>
+                    <div className="bg-white p-3 rounded border border-gray-300">
+                      <code className="text-sm font-mono text-blue-700">PIC X(10)</code>
+                      <p className="text-xs text-gray-600 mt-1">Alfanumérico de 10 caracteres (string fixed-width)</p>
+                    </div>
+                    <div className="bg-white p-3 rounded border border-gray-300">
+                      <code className="text-sm font-mono text-blue-700">PIC S9(7) COMP-3</code>
+                      <p className="text-xs text-gray-600 mt-1">Packed decimal signed (7 dígitos, armazenamento compactado)</p>
+                    </div>
+                    <div className="bg-white p-3 rounded border border-gray-300">
+                      <code className="text-sm font-mono text-blue-700">PIC 9(8) COMP</code>
+                      <p className="text-xs text-gray-600 mt-1">Binary integer (4 bytes, até 99.999.999)</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-bold text-gray-900 mb-3">Estruturas de Dados</h4>
+                  <div className="space-y-2">
+                    <div className="bg-white p-3 rounded border border-gray-300">
+                      <strong className="text-blue-700">01 WORKING-STORAGE:</strong>
+                      <span className="text-sm text-gray-700 ml-2">Seção de variáveis globais do programa (687 variáveis no RG1866B)</span>
+                    </div>
+                    <div className="bg-white p-3 rounded border border-gray-300">
+                      <strong className="text-blue-700">OCCURS n TIMES:</strong>
+                      <span className="text-sm text-gray-700 ml-2">Array de n elementos (ex: OCCURS 100 TIMES = array[100])</span>
+                    </div>
+                    <div className="bg-white p-3 rounded border border-gray-300">
+                      <strong className="text-blue-700">REDEFINES:</strong>
+                      <span className="text-sm text-gray-700 ml-2">União C-style (múltiplas interpretações do mesmo espaço de memória)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-bold text-gray-900 mb-3">SQL Embedded</h4>
+                  <div className="space-y-2">
+                    <div className="bg-white p-3 rounded border border-gray-300">
+                      <strong className="text-blue-700">EXEC SQL ... END-EXEC:</strong>
+                      <span className="text-sm text-gray-700 ml-2">Bloco SQL embutido no COBOL</span>
+                    </div>
+                    <div className="bg-white p-3 rounded border border-gray-300">
+                      <strong className="text-blue-700">DECLARE CURSOR:</strong>
+                      <span className="text-sm text-gray-700 ml-2">Define cursor para fetch iterativo (streaming de resultados)</span>
+                    </div>
+                    <div className="bg-white p-3 rounded border border-gray-300">
+                      <strong className="text-blue-700">SQLCODE:</strong>
+                      <span className="text-sm text-gray-700 ml-2">Código de retorno SQL (0=sucesso, -911=deadlock, +100=no data)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* SUSEP Regulatory Terms */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-3">
+                <div className="bg-red-600 text-white rounded-lg p-2">
+                  <AlertTriangle className="h-6 w-6" />
+                </div>
+                Termos Regulatórios SUSEP (30 termos)
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <h4 className="font-bold text-red-900 mb-2">Circular SUSEP 360/2008</h4>
+                  <p className="text-sm text-gray-700 mb-2">
+                    Normativa que estabelece o formato e periodicidade dos relatórios PREMIT e PREMCED.
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    <strong>Penalidade:</strong> Multa de até R$ 500.000 por envio incorreto ou atrasado.
+                  </p>
+                </div>
+
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                  <h4 className="font-bold text-orange-900 mb-2">PREMIT.TXT / PREMCED.TXT</h4>
+                  <p className="text-sm text-gray-700 mb-2">
+                    <strong>PREMIT:</strong> Prêmios emitidos no mês (novos negócios + renovações).
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    <strong>PREMCED:</strong> Prêmios cedidos em cosseguro (parcela de outras seguradoras).
+                  </p>
+                </div>
+
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <h4 className="font-bold text-yellow-900 mb-2">Fixed-Width Format</h4>
+                  <p className="text-sm text-gray-700 mb-2">
+                    Cada registro tem 200 caracteres exatos, com posições fixas para cada campo.
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    <strong>Validação:</strong> SUSEP rejeita arquivo inteiro se houver 1 byte fora de posição.
+                  </p>
+                </div>
+
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <h4 className="font-bold text-green-900 mb-2">Prazo de Envio</h4>
+                  <p className="text-sm text-gray-700 mb-2">
+                    <strong>Deadline:</strong> Até o 15º dia útil do mês subsequente.
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    <strong>Exemplo:</strong> Dados de Janeiro/2025 → envio até 15/Fev/2025.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            {/* .NET Architecture Terms */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-3">
+                <div className="bg-purple-600 text-white rounded-lg p-2">
+                  <Cloud className="h-6 w-6" />
+                </div>
+                Termos de Arquitetura .NET (30 termos)
+              </h3>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                    <h4 className="font-bold text-purple-900 mb-2">Clean Architecture</h4>
+                    <p className="text-sm text-gray-700">
+                      Padrão de 3 camadas: API (interface) → Core (lógica) → Infrastructure (dados).
+                      Dependências fluem sempre para dentro (Core não depende de ninguém).
+                    </p>
+                  </div>
+
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 className="font-bold text-blue-900 mb-2">Entity Framework Core</h4>
+                    <p className="text-sm text-gray-700">
+                      ORM (Object-Relational Mapper) que mapeia classes C# para tabelas DB2.
+                      Suporta LINQ queries, migrations e lazy loading.
+                    </p>
+                  </div>
+
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <h4 className="font-bold text-green-900 mb-2">IAsyncEnumerable</h4>
+                    <p className="text-sm text-gray-700">
+                      Interface .NET para streaming assíncrono de dados.
+                      Equivalente ao cursor COBOL (fetch linha-a-linha sem carregar tudo em memória).
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                  <h4 className="font-bold text-gray-900 mb-3">Principais Componentes do Sistema .NET</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="bg-white p-3 rounded border border-gray-300">
+                      <strong className="text-blue-700">PremiumCalculationService:</strong>
+                      <span className="text-sm text-gray-700 ml-2">Implementa lógica de cálculo de prêmios (seções R0700-R1300 do COBOL)</span>
+                    </div>
+                    <div className="bg-white p-3 rounded border border-gray-300">
+                      <strong className="text-blue-700">FixedWidthFormatter:</strong>
+                      <span className="text-sm text-gray-700 ml-2">Gera arquivos .TXT com padding/truncamento compatível COBOL</span>
+                    </div>
+                    <div className="bg-white p-3 rounded border border-gray-300">
+                      <strong className="text-blue-700">CobolFieldAttribute:</strong>
+                      <span className="text-sm text-gray-700 ml-2">Atributo C# que preserva metadata PIC do COBOL para validação</span>
+                    </div>
+                    <div className="bg-white p-3 rounded border border-gray-300">
+                      <strong className="text-blue-700">OutputValidator:</strong>
+                      <span className="text-sm text-gray-700 ml-2">Compara byte-a-byte saída .NET vs COBOL (testes de regressão)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Quick Reference Table */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Referência Rápida: Conversão COBOL → .NET</h3>
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="py-3 px-4 text-left font-semibold text-gray-700">Conceito COBOL</th>
+                      <th className="py-3 px-4 text-left font-semibold text-gray-700">Equivalente .NET</th>
+                      <th className="py-3 px-4 text-left font-semibold text-gray-700">Observações</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    <tr className="bg-gray-50">
+                      <td className="py-3 px-4"><code className="text-sm">PIC 9(15)V99</code></td>
+                      <td className="py-3 px-4"><code className="text-sm">decimal (17,2)</code></td>
+                      <td className="py-3 px-4 text-sm">NUNCA usar float/double</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4"><code className="text-sm">PIC X(10)</code></td>
+                      <td className="py-3 px-4"><code className="text-sm">string (MaxLength=10)</code></td>
+                      <td className="py-3 px-4 text-sm">Right-pad com espaços</td>
+                    </tr>
+                    <tr className="bg-gray-50">
+                      <td className="py-3 px-4"><code className="text-sm">WORKING-STORAGE</code></td>
+                      <td className="py-3 px-4"><code className="text-sm">private fields</code></td>
+                      <td className="py-3 px-4 text-sm">Variáveis de instância</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4"><code className="text-sm">DECLARE CURSOR</code></td>
+                      <td className="py-3 px-4"><code className="text-sm">IAsyncEnumerable&lt;T&gt;</code></td>
+                      <td className="py-3 px-4 text-sm">Streaming assíncrono</td>
+                    </tr>
+                    <tr className="bg-gray-50">
+                      <td className="py-3 px-4"><code className="text-sm">PERFORM UNTIL</code></td>
+                      <td className="py-3 px-4"><code className="text-sm">while / foreach</code></td>
+                      <td className="py-3 px-4 text-sm">Iteração de loop</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 px-4"><code className="text-sm">WRITE</code></td>
+                      <td className="py-3 px-4"><code className="text-sm">StreamWriter.WriteLine</code></td>
+                      <td className="py-3 px-4 text-sm">Geração de arquivo texto</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            {/* Reference */}
+            <section className="bg-gray-100 border border-gray-300 rounded-lg p-6">
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">Glossário Completo</h3>
+              <p className="text-gray-700 mb-4">
+                Para definições completas dos 150+ termos, incluindo exemplos de uso, códigos de erro SQL, e mapeamentos completos COBOL→.NET, consulte:
               </p>
-            </div>
+              <div className="bg-white rounded-lg p-4 border border-gray-200">
+                <div className="flex items-center gap-3">
+                  <BookOpen className="h-6 w-6 text-purple-600" />
+                  <code className="text-sm font-mono text-gray-800">docs/legacy-system/10-glossary.md</code>
+                </div>
+              </div>
+            </section>
           </div>
         </TabsContent>
 
         <TabsContent value="complete" className="space-y-6">
           <div className="bg-white rounded-lg shadow-lg p-6">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Documentação Completa Consolidada</h2>
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-6 mb-6">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Arquivos de Referência</h3>
-              <ul className="space-y-3">
-                <li className="flex items-center">
-                  <FileText className="h-5 w-5 text-blue-600 mr-3" />
-                  <span className="font-mono text-sm">docs/legacy-system/COMPLETE-COBOL-DOCUMENTATION.pdf</span>
-                </li>
-                <li className="flex items-center">
-                  <FileText className="h-5 w-5 text-blue-600 mr-3" />
-                  <span className="font-mono text-sm">docs/legacy-system/README.md</span>
-                </li>
-                <li className="flex items-center">
-                  <FileText className="h-5 w-5 text-blue-600 mr-3" />
-                  <span className="font-mono text-sm">docs/legacy-system/01-executive-summary.md</span>
-                </li>
-                <li className="flex items-center">
-                  <FileText className="h-5 w-5 text-blue-600 mr-3" />
-                  <span className="font-mono text-sm">docs/legacy-system/02-architecture.md</span>
-                </li>
-                <li className="flex items-center">
-                  <FileText className="h-5 w-5 text-blue-600 mr-3" />
-                  <span className="font-mono text-sm">docs/legacy-system/03-data-structures.md</span>
-                </li>
-                <li className="flex items-center">
-                  <FileText className="h-5 w-5 text-blue-600 mr-3" />
-                  <span className="font-mono text-sm">docs/legacy-system/04-database-model.md</span>
-                </li>
-                <li className="flex items-center">
-                  <FileText className="h-5 w-5 text-blue-600 mr-3" />
-                  <span className="font-mono text-sm">docs/legacy-system/05-business-logic.md</span>
-                </li>
-                <li className="flex items-center">
-                  <FileText className="h-5 w-5 text-blue-600 mr-3" />
-                  <span className="font-mono text-sm">docs/legacy-system/06-external-modules.md</span>
-                </li>
-                <li className="flex items-center">
-                  <FileText className="h-5 w-5 text-blue-600 mr-3" />
-                  <span className="font-mono text-sm">docs/legacy-system/07-operations-guide.md</span>
-                </li>
-                <li className="flex items-center">
-                  <FileText className="h-5 w-5 text-blue-600 mr-3" />
-                  <span className="font-mono text-sm">docs/legacy-system/08-maintenance-history.md</span>
-                </li>
-                <li className="flex items-center">
-                  <FileText className="h-5 w-5 text-blue-600 mr-3" />
-                  <span className="font-mono text-sm">docs/legacy-system/09-migration-guide.md</span>
-                </li>
-                <li className="flex items-center">
-                  <FileText className="h-5 w-5 text-blue-600 mr-3" />
-                  <span className="font-mono text-sm">docs/legacy-system/10-glossary.md</span>
-                </li>
-              </ul>
-            </div>
 
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-yellow-900 mb-3">📄 Acesso aos Documentos Completos</h3>
-              <p className="text-gray-700">
-                Todos os documentos listados acima estão disponíveis no diretório <code className="bg-gray-200 px-2 py-1 rounded">docs/legacy-system/</code>
-                do projeto. Cada arquivo contém informações detalhadas sobre diferentes aspectos do sistema legado RG1866B.
-              </p>
-            </div>
+            {/* Overview Stats */}
+            <section className="mb-8">
+              <div className="bg-gradient-to-r from-gray-900 to-gray-700 rounded-lg p-6 text-white mb-6">
+                <div className="flex items-center gap-4 mb-3">
+                  <GitBranch className="h-12 w-12" />
+                  <div>
+                    <h3 className="text-2xl font-bold">Sistema Completo RG1866B Documentado</h3>
+                    <p className="text-gray-300 text-lg">10 arquivos .md + PDF consolidado + análise completa do parser</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-4 gap-4 mt-4">
+                  <div className="bg-white/20 backdrop-blur rounded-lg p-3">
+                    <div className="text-2xl font-bold">12</div>
+                    <div className="text-sm opacity-90">Arquivos de Documentação</div>
+                  </div>
+                  <div className="bg-white/20 backdrop-blur rounded-lg p-3">
+                    <div className="text-2xl font-bold">5.046</div>
+                    <div className="text-sm opacity-90">Linhas COBOL Analisadas</div>
+                  </div>
+                  <div className="bg-white/20 backdrop-blur rounded-lg p-3">
+                    <div className="text-2xl font-bold">150+</div>
+                    <div className="text-sm opacity-90">Termos Glossário</div>
+                  </div>
+                  <div className="bg-white/20 backdrop-blur rounded-lg p-3">
+                    <div className="text-2xl font-bold">100%</div>
+                    <div className="text-sm opacity-90">Cobertura Completa</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Documentation Structure */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Estrutura da Documentação</h3>
+              <div className="space-y-4">
+
+                {/* Executive Summary */}
+                <div className="border-l-4 border-blue-500 bg-blue-50 p-6 rounded-r-lg">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-blue-500 text-white rounded-lg p-3">
+                      <FileText className="h-6 w-6" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl font-bold text-gray-900 mb-2">01. Sumário Executivo</h4>
+                      <p className="text-gray-700 mb-3">
+                        Visão geral do sistema RG1866B para stakeholders não-técnicos: propósito, valor de negócio,
+                        métricas principais e justificativa de migração.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">4 páginas</span>
+                        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Público: C-level</span>
+                        <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">Tempo leitura: 10min</span>
+                      </div>
+                      <code className="block mt-3 text-xs text-gray-600 bg-white p-2 rounded border border-blue-200">
+                        docs/legacy-system/01-executive-summary.md
+                      </code>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Architecture */}
+                <div className="border-l-4 border-purple-500 bg-purple-50 p-6 rounded-r-lg">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-purple-500 text-white rounded-lg p-3">
+                      <Layers className="h-6 w-6" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl font-bold text-gray-900 mb-2">02. Arquitetura de Sistema</h4>
+                      <p className="text-gray-700 mb-3">
+                        Diagrama de componentes, fluxo de execução mainframe (JCL batch), dependências de módulos externos
+                        (RG1867A, RG1873D) e integração com DB2.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">8 páginas</span>
+                        <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">3 diagramas</span>
+                        <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">Público: Arquitetos</span>
+                      </div>
+                      <code className="block mt-3 text-xs text-gray-600 bg-white p-2 rounded border border-purple-200">
+                        docs/legacy-system/02-architecture.md
+                      </code>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Data Structures */}
+                <div className="border-l-4 border-green-500 bg-green-50 p-6 rounded-r-lg">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-green-500 text-white rounded-lg p-3">
+                      <Code2 className="h-6 w-6" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl font-bold text-gray-900 mb-2">03. Estruturas de Dados COBOL</h4>
+                      <p className="text-gray-700 mb-3">
+                        Análise detalhada das 687 variáveis WORKING-STORAGE: tipos PIC, OCCURS (arrays), REDEFINES (unions),
+                        e mapeamento para tipos C#/.NET.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">12 páginas</span>
+                        <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">687 variáveis</span>
+                        <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">Público: Devs</span>
+                      </div>
+                      <code className="block mt-3 text-xs text-gray-600 bg-white p-2 rounded border border-green-200">
+                        docs/legacy-system/03-data-structures.md
+                      </code>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Database Model */}
+                <div className="border-l-4 border-orange-500 bg-orange-50 p-6 rounded-r-lg">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-orange-500 text-white rounded-lg p-3">
+                      <Database className="h-6 w-6" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl font-bold text-gray-900 mb-2">04. Modelo de Banco de Dados DB2</h4>
+                      <p className="text-gray-700 mb-3">
+                        Esquema completo das 26+ views/tabelas DB2: V0PREMIOS, V0APOLICE, V0ENDOSSO, GE399 (cosseguro),
+                        relacionamentos, índices e queries SQL complexas.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">10 páginas</span>
+                        <span className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">26+ tabelas</span>
+                        <span className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">Público: DBAs</span>
+                      </div>
+                      <code className="block mt-3 text-xs text-gray-600 bg-white p-2 rounded border border-orange-200">
+                        docs/legacy-system/04-database-model.md
+                      </code>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Business Logic */}
+                <div className="border-l-4 border-red-500 bg-red-50 p-6 rounded-r-lg">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-red-500 text-white rounded-lg p-3">
+                      <BarChart className="h-6 w-6" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl font-bold text-gray-900 mb-2">05. Lógica de Negócio e Cálculos</h4>
+                      <p className="text-gray-700 mb-3">
+                        Seções críticas R0700-R5500: cálculo de prêmios, IOF, pro-rata, cosseguro, resseguro, validações
+                        SUSEP e regras de arredondamento COMP-3.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm">15 páginas</span>
+                        <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm">42 seções COBOL</span>
+                        <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm">CRÍTICO</span>
+                      </div>
+                      <code className="block mt-3 text-xs text-gray-600 bg-white p-2 rounded border border-red-200">
+                        docs/legacy-system/05-business-logic.md
+                      </code>
+                    </div>
+                  </div>
+                </div>
+
+                {/* External Modules */}
+                <div className="border-l-4 border-yellow-500 bg-yellow-50 p-6 rounded-r-lg">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-yellow-500 text-white rounded-lg p-3">
+                      <Map className="h-6 w-6" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl font-bold text-gray-900 mb-2">06. Módulos Externos e Dependências</h4>
+                      <p className="text-gray-700 mb-3">
+                        Chamadas CALL para submódulos: RG1867A (formatação), RG1873D (validação), RG1875C (auditoria).
+                        Documentação de interfaces (LINKAGE SECTION) e parâmetros.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">6 páginas</span>
+                        <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">8 módulos</span>
+                        <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm">Público: Integradores</span>
+                      </div>
+                      <code className="block mt-3 text-xs text-gray-600 bg-white p-2 rounded border border-yellow-200">
+                        docs/legacy-system/06-external-modules.md
+                      </code>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Operations Guide */}
+                <div className="border-l-4 border-indigo-500 bg-indigo-50 p-6 rounded-r-lg">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-indigo-500 text-white rounded-lg p-3">
+                      <Settings className="h-6 w-6" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl font-bold text-gray-900 mb-2">07. Guia de Operações e Execução</h4>
+                      <p className="text-gray-700 mb-3">
+                        JCL de produção, parâmetros de entrada, agendamento mensal (BMC Control-M), monitoramento,
+                        tratamento de erros e procedimentos de rollback.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm">7 páginas</span>
+                        <span className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm">SLAs 98%</span>
+                        <span className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm">Público: DevOps</span>
+                      </div>
+                      <code className="block mt-3 text-xs text-gray-600 bg-white p-2 rounded border border-indigo-200">
+                        docs/legacy-system/07-operations-guide.md
+                      </code>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Maintenance History */}
+                <div className="border-l-4 border-pink-500 bg-pink-50 p-6 rounded-r-lg">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-pink-500 text-white rounded-lg p-3">
+                      <History className="h-6 w-6" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl font-bold text-gray-900 mb-2">08. Histórico de Manutenção (2014-2022)</h4>
+                      <p className="text-gray-700 mb-3">
+                        37 alterações ao longo de 8 anos: bugs corrigidos, melhorias de performance, novos requisitos SUSEP,
+                        desenvolvedores envolvidos e lições aprendidas.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm">9 páginas</span>
+                        <span className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm">37 versões</span>
+                        <span className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm">Público: Gestores</span>
+                      </div>
+                      <code className="block mt-3 text-xs text-gray-600 bg-white p-2 rounded border border-pink-200">
+                        docs/legacy-system/08-maintenance-history.md
+                      </code>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Migration Guide */}
+                <div className="border-l-4 border-teal-500 bg-teal-50 p-6 rounded-r-lg">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-teal-500 text-white rounded-lg p-3">
+                      <Workflow className="h-6 w-6" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl font-bold text-gray-900 mb-2">09. Guia de Migração COBOL → .NET</h4>
+                      <p className="text-gray-700 mb-3">
+                        Estratégia de reescrita, fases (análise/implementação/validação), riscos críticos, stack tecnológica,
+                        testes de comparação byte-level e rollout.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm">14 páginas</span>
+                        <span className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm">6 meses prazo</span>
+                        <span className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm">Público: PMO/Tech Leads</span>
+                      </div>
+                      <code className="block mt-3 text-xs text-gray-600 bg-white p-2 rounded border border-teal-200">
+                        docs/legacy-system/09-migration-guide.md
+                      </code>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Glossary */}
+                <div className="border-l-4 border-cyan-500 bg-cyan-50 p-6 rounded-r-lg">
+                  <div className="flex items-start gap-4">
+                    <div className="bg-cyan-500 text-white rounded-lg p-3">
+                      <BookOpen className="h-6 w-6" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-xl font-bold text-gray-900 mb-2">10. Glossário Técnico e de Negócio</h4>
+                      <p className="text-gray-700 mb-3">
+                        150+ termos: domínio de seguros (apólice, endosso, IOF), COBOL (PIC, COMP-3, OCCURS),
+                        regulatórios SUSEP (Circular 360, ramos) e arquitetura .NET (EF Core, Clean Architecture).
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full text-sm">11 páginas</span>
+                        <span className="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full text-sm">150+ termos</span>
+                        <span className="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full text-sm">Público: Todos</span>
+                      </div>
+                      <code className="block mt-3 text-xs text-gray-600 bg-white p-2 rounded border border-cyan-200">
+                        docs/legacy-system/10-glossary.md
+                      </code>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </section>
+
+            {/* Additional Resources */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Recursos Adicionais</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-6 text-white">
+                  <div className="flex items-center gap-3 mb-3">
+                    <FileText className="h-8 w-8" />
+                    <h4 className="text-xl font-bold">PDF Consolidado</h4>
+                  </div>
+                  <p className="text-sm text-blue-100 mb-4">
+                    Documento único com todos os 10 capítulos + índice navegável + anexos técnicos.
+                    Ideal para impressão ou leitura offline.
+                  </p>
+                  <div className="bg-white/20 rounded p-3">
+                    <code className="text-xs">docs/legacy-system/COMPLETE-COBOL-DOCUMENTATION.pdf</code>
+                  </div>
+                  <div className="mt-3 text-sm">
+                    <strong>Tamanho:</strong> 2.8 MB | <strong>Páginas:</strong> 96
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-6 text-white">
+                  <div className="flex items-center gap-3 mb-3">
+                    <FileSearch className="h-8 w-8" />
+                    <h4 className="text-xl font-bold">Análise do Parser</h4>
+                  </div>
+                  <p className="text-sm text-purple-100 mb-4">
+                    Relatório técnico completo da análise estática do código COBOL: estrutura AST,
+                    dependências, complexidade ciclomática e métricas de qualidade.
+                  </p>
+                  <div className="bg-white/20 rounded p-3">
+                    <code className="text-xs">docs/parser/FINAL-ANALYSIS-REPORT.md</code>
+                  </div>
+                  <div className="mt-3 text-sm">
+                    <strong>Complexidade:</strong> Alta | <strong>Manutenibilidade:</strong> Média
+                  </div>
+                </div>
+
+              </div>
+            </section>
+
+            {/* Quick Stats */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Estatísticas Consolidadas</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+                  <div className="text-3xl font-bold text-blue-700">96</div>
+                  <div className="text-sm text-gray-600 mt-1">Páginas Totais</div>
+                </div>
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                  <div className="text-3xl font-bold text-green-700">5.046</div>
+                  <div className="text-sm text-gray-600 mt-1">Linhas COBOL</div>
+                </div>
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 text-center">
+                  <div className="text-3xl font-bold text-purple-700">687</div>
+                  <div className="text-sm text-gray-600 mt-1">Variáveis</div>
+                </div>
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 text-center">
+                  <div className="text-3xl font-bold text-orange-700">26+</div>
+                  <div className="text-sm text-gray-600 mt-1">Tabelas DB2</div>
+                </div>
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
+                  <div className="text-3xl font-bold text-red-700">42</div>
+                  <div className="text-sm text-gray-600 mt-1">Seções Lógica</div>
+                </div>
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-center">
+                  <div className="text-3xl font-bold text-yellow-700">8</div>
+                  <div className="text-sm text-gray-600 mt-1">Anos Produção</div>
+                </div>
+                <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 text-center">
+                  <div className="text-3xl font-bold text-indigo-700">37</div>
+                  <div className="text-sm text-gray-600 mt-1">Versões</div>
+                </div>
+                <div className="bg-pink-50 border border-pink-200 rounded-lg p-4 text-center">
+                  <div className="text-3xl font-bold text-pink-700">150+</div>
+                  <div className="text-sm text-gray-600 mt-1">Termos Glossário</div>
+                </div>
+              </div>
+            </section>
+
+            {/* Navigation Index */}
+            <section className="mb-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Índice de Navegação Rápida</h3>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <h4 className="font-bold text-gray-700 mb-3">Documentação por Público:</h4>
+                    <ul className="space-y-2 text-sm">
+                      <li className="flex items-center gap-2">
+                        <Users className="h-4 w-4 text-blue-600" />
+                        <span><strong>C-level/Gestores:</strong> 01, 08, 09</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Code2 className="h-4 w-4 text-green-600" />
+                        <span><strong>Desenvolvedores:</strong> 03, 05, 09, 10</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Layers className="h-4 w-4 text-purple-600" />
+                        <span><strong>Arquitetos:</strong> 02, 04, 06</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Settings className="h-4 w-4 text-orange-600" />
+                        <span><strong>DevOps/SRE:</strong> 07, 08</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-700 mb-3">Documentação por Fase:</h4>
+                    <ul className="space-y-2 text-sm">
+                      <li className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-green-600" />
+                        <span><strong>Análise Legado:</strong> 01, 02, 03, 04, 05, 06, 07, 08</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <Workflow className="h-4 w-4 text-blue-600" />
+                        <span><strong>Planejamento Migração:</strong> 09</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <BookOpen className="h-4 w-4 text-purple-600" />
+                        <span><strong>Referência Contínua:</strong> 10 (glossário)</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Access Instructions */}
+            <section className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-6">
+              <div className="flex items-start gap-4">
+                <div className="bg-green-600 text-white rounded-lg p-3">
+                  <FileText className="h-8 w-8" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Como Acessar a Documentação Completa</h3>
+                  <p className="text-gray-700 mb-4">
+                    Todos os documentos estão disponíveis no diretório raiz do projeto:
+                  </p>
+                  <div className="bg-white rounded-lg p-4 border border-gray-300 mb-4">
+                    <code className="text-sm font-mono text-gray-800">📁 docs/legacy-system/</code>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="bg-white rounded-lg p-3 border border-gray-200">
+                      <div className="font-bold text-gray-900 mb-1">Formato Markdown (.md)</div>
+                      <p className="text-sm text-gray-600">
+                        Para leitura no VS Code, GitHub ou qualquer editor markdown. Suporta busca por texto e links internos.
+                      </p>
+                    </div>
+                    <div className="bg-white rounded-lg p-3 border border-gray-200">
+                      <div className="font-bold text-gray-900 mb-1">Formato PDF Consolidado</div>
+                      <p className="text-sm text-gray-600">
+                        Documento único para impressão ou distribuição offline. Inclui índice navegável e bookmarks.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-4 p-4 bg-yellow-100 border border-yellow-300 rounded-lg">
+                    <p className="text-sm text-yellow-900">
+                      <strong>💡 Dica:</strong> Comece pelo <code className="bg-yellow-200 px-2 py-1 rounded">01-executive-summary.md</code>
+                      para entender o contexto geral, depois navegue para os capítulos técnicos conforme sua necessidade.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
         </TabsContent>
       </Tabs>
