@@ -41,6 +41,12 @@ namespace CaixaSeguradora.Core.Entities
         [CobolField("WS-IND-CANCELAMENTO", CobolFieldType.Alphanumeric, 265, 1)]
         public string CancellationFlag { get; set; } = "N";  // S=Sim, N=Não
 
+        [CobolField("WS-DAT-FIM-VIG-END", CobolFieldType.Date, 266, 8)]
+        public DateTime EndDate { get; set; }
+
+        [NotMapped]
+        public decimal PremiumImpact => PremiumAmount;  // Alias for compatibility
+
         // Navigation properties
         public Policy Policy { get; set; } = null!;
     }

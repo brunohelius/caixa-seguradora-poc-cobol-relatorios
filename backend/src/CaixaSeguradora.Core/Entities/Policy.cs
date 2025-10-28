@@ -20,7 +20,16 @@ namespace CaixaSeguradora.Core.Entities
         [CobolField("WS-COD-PRODUTO", CobolFieldType.Numeric, 28, 4)]
         public int ProductCode { get; set; }
 
-        [CobolField("WS-DAT-INICIO-VIGENCIA", CobolFieldType.Date, 32, 8)]
+        [CobolField("WS-RAMO-SUSEP", CobolFieldType.Numeric, 32, 4)]
+        public int RamoSusep { get; set; }
+
+        [CobolField("WS-DAT-EMISSAO", CobolFieldType.Date, 36, 8)]
+        public DateTime IssueDate { get; set; }
+
+        [CobolField("WS-DAT-PROPOSTA", CobolFieldType.Date, 44, 8)]
+        public DateTime ProposalDate { get; set; }
+
+        [CobolField("WS-DAT-INICIO-VIGENCIA", CobolFieldType.Date, 52, 8)]
         public DateTime EffectiveDate { get; set; }
 
         [CobolField("WS-DAT-FIM-VIGENCIA", CobolFieldType.Date, 40, 8)]
@@ -61,6 +70,12 @@ namespace CaixaSeguradora.Core.Entities
 
         [CobolField("WS-NUM-PROPOSTA", CobolFieldType.Numeric, 128, 13)]
         public long ProposalNumber { get; set; }  // Proposal/quote number
+
+        [CobolField("WS-COD-UF", CobolFieldType.Alphanumeric, 141, 2)]
+        public string StateCode { get; set; } = string.Empty;  // State code (UF)
+
+        [CobolField("WS-COD-PROPONENTE", CobolFieldType.Numeric, 143, 9)]
+        public int ProposerClientCode { get; set; }  // Proposer/applicant client code
 
         // Navigation properties
         public Client Client { get; set; } = null!;

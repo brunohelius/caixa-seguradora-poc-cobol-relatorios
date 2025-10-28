@@ -1,4 +1,6 @@
 import Card from '../common/Card';
+import { Badge } from '../ui/badge';
+import { Progress } from '../ui/progress';
 import type { ComplexityMetricsDto } from '../../services/types';
 
 interface ComplexityMetricsCardProps {
@@ -8,16 +10,16 @@ interface ComplexityMetricsCardProps {
 export const ComplexityMetricsCard: React.FC<ComplexityMetricsCardProps> = ({ complexity }) => {
   const getComplexityLevel = (cyclomaticComplexity: number): {
     level: string;
-    bgColor: string;
-    progressColor: string;
+    badgeClass: string;
+    progressVariant: 'default' | 'success' | 'warning' | 'danger';
   } => {
     if (cyclomaticComplexity < 50)
-      return { level: 'Baixa', bgColor: '#28A745', progressColor: '#28A745' };
+      return { level: 'Baixa', badgeClass: 'bg-success text-white', progressVariant: 'success' };
     if (cyclomaticComplexity < 100)
-      return { level: 'Média', bgColor: '#FFC107', progressColor: '#FFC107' };
+      return { level: 'Média', badgeClass: 'bg-warning text-black', progressVariant: 'warning' };
     if (cyclomaticComplexity < 150)
-      return { level: 'Alta', bgColor: '#FF9800', progressColor: '#FF9800' };
-    return { level: 'Muito Alta', bgColor: '#DC3545', progressColor: '#DC3545' };
+      return { level: 'Alta', badgeClass: 'bg-orange-500 text-white', progressVariant: 'warning' };
+    return { level: 'Muito Alta', badgeClass: 'bg-error text-white', progressVariant: 'danger' };
   };
 
   const complexityLevel = getComplexityLevel(complexity.cyclomaticComplexity);
@@ -27,43 +29,43 @@ export const ComplexityMetricsCard: React.FC<ComplexityMetricsCardProps> = ({ co
       label: 'Seções',
       value: complexity.totalSections,
       icon: '📋',
-      bgColor: '#E6F0FF',
-      textColor: '#0047BB'
+      bgClass: 'bg-caixa-blue-light',
+      textClass: 'text-caixa-blue'
     },
     {
       label: 'Parágrafos',
       value: complexity.totalParagraphs,
       icon: '📄',
-      bgColor: '#FFF8E1',
-      textColor: '#E6A519'
+      bgClass: 'bg-yellow-50',
+      textClass: 'text-caixa-yellow-dark'
     },
     {
       label: 'Pontos de Decisão',
       value: complexity.decisionPoints,
       icon: '🔀',
-      bgColor: '#F3E5F5',
-      textColor: '#7B1FA2'
+      bgClass: 'bg-purple-50',
+      textClass: 'text-purple-700'
     },
     {
       label: 'Chamadas Externas',
       value: complexity.externalCalls,
       icon: '📞',
-      bgColor: '#E8F5E9',
-      textColor: '#1e7e34'
+      bgClass: 'bg-green-50',
+      textClass: 'text-green-700'
     },
     {
       label: 'Operações SQL',
       value: complexity.sqlStatements,
       icon: '🗄️',
-      bgColor: '#E3F2FD',
-      textColor: '#1565C0'
+      bgClass: 'bg-blue-50',
+      textClass: 'text-blue-700'
     },
     {
       label: 'Operações I/O',
       value: complexity.fileOperations,
       icon: '📁',
-      bgColor: '#FCE4EC',
-      textColor: '#C2185B'
+      bgClass: 'bg-pink-50',
+      textClass: 'text-pink-700'
     },
   ];
 
@@ -71,29 +73,19 @@ export const ComplexityMetricsCard: React.FC<ComplexityMetricsCardProps> = ({ co
     <Card title="Métricas de Complexidade">
       <div className="mb-6">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-base font-bold" style={{ color: '#000' }}>
+          <span className="text-base font-bold text-black">
             Complexidade Ciclomática
           </span>
-          <span
-            className="px-4 py-1.5 rounded-full text-white text-sm font-bold shadow-md"
-            style={{ backgroundColor: complexityLevel.bgColor }}
-          >
+          <Badge className={`px-4 py-1.5 shadow-md ${complexityLevel.badgeClass}`}>
             {complexityLevel.level}
-          </span>
+          </Badge>
         </div>
-        <div
-          className="w-full rounded-full h-4 shadow-inner"
-          style={{ backgroundColor: '#e2e2e2' }}
-        >
-          <div
-            className="h-4 rounded-full transition-all duration-300"
-            style={{
-              width: `${Math.min((complexity.cyclomaticComplexity / 200) * 100, 100)}%`,
-              backgroundColor: complexityLevel.progressColor
-            }}
-          />
-        </div>
-        <p className="text-2xl font-black mt-3" style={{ color: '#000' }}>
+        <Progress
+          value={Math.min((complexity.cyclomaticComplexity / 200) * 100, 100)}
+          variant={complexityLevel.progressVariant}
+          className="h-4"
+        />
+        <p className="text-2xl font-black mt-3 text-black">
           {complexity.cyclomaticComplexity} pontos
         </p>
       </div>
@@ -102,19 +94,15 @@ export const ComplexityMetricsCard: React.FC<ComplexityMetricsCardProps> = ({ co
         {metrics.map((metric, index) => (
           <div
             key={index}
-            className="p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow"
-            style={{
-              backgroundColor: metric.bgColor,
-              border: '1px solid #e2e2e2'
-            }}
+            className={`p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow border border-site-grayDark ${metric.bgClass}`}
           >
             <div className="flex items-center gap-2 mb-2">
               <span className="text-2xl">{metric.icon}</span>
-              <p className="text-xs font-semibold" style={{ color: '#666' }}>
+              <p className="text-xs font-semibold text-gray-600">
                 {metric.label}
               </p>
             </div>
-            <p className="text-2xl font-black" style={{ color: metric.textColor }}>
+            <p className={`text-2xl font-black ${metric.textClass}`}>
               {metric.value}
             </p>
           </div>

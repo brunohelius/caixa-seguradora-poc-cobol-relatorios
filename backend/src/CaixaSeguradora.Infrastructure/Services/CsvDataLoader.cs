@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.IO;
 using System.Text;
 using CaixaSeguradora.Core.DTOs;
 using CaixaSeguradora.Core.Entities;
@@ -7,7 +8,8 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Linq;
 
 namespace CaixaSeguradora.Infrastructure.Services;
 
@@ -20,6 +22,21 @@ public class CsvDataLoader
 {
     private readonly PremiumReportingDbContext _context;
     private readonly ILogger<CsvDataLoader> _logger;
+
+    private static readonly string[] ProductRequiredColumns =
+    {
+        "ProductCode",
+        "ProductName",
+        "LineOfBusiness",
+        "ProductType",
+        "CompanyCode"
+    };
+
+    private static readonly Dictionary<string, IReadOnlyList<string>> RequiredCsvColumns = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["product"] = ProductRequiredColumns,
+        ["products"] = ProductRequiredColumns
+    };
 
     public CsvDataLoader(
         PremiumReportingDbContext context,
@@ -67,6 +84,33 @@ public class CsvDataLoader
                 _logger.LogInformation("Cleared {Count} existing records", response.RecordsDeleted);
             }
 
+            using var buffer = new MemoryStream();
+            await stream.CopyToAsync(buffer, cancellationToken);
+
+            if (stream.CanSeek)
+            {
+                stream.Seek(0, SeekOrigin.Begin);
+            }
+
+            if (buffer.Length == 0)
+            {
+                response.Success = false;
+                response.Message = "Arquivo CSV vazio";
+                return response;
+            }
+
+            buffer.Seek(0, SeekOrigin.Begin);
+
+            if (hasHeaders)
+            {
+                if (!ValidateHeader(buffer, entityType, delimiter, response))
+                {
+                    return response;
+                }
+
+                buffer.Seek(0, SeekOrigin.Begin);
+            }
+
             // Configure CSV reader
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
@@ -76,16 +120,17 @@ public class CsvDataLoader
                 HeaderValidated = null,
                 BadDataFound = context =>
                 {
+                    var parser = context.Context?.Parser;
                     response.ValidationErrors.Add(new DataValidationError
                     {
-                        RowNumber = context.Context.Parser.Row,
+                        RowNumber = parser?.Row ?? 0,
                         ErrorMessage = $"Malformed CSV data: {context.RawRecord}",
                         ErrorType = "CsvParseError"
                     });
                 }
             };
 
-            using var reader = new StreamReader(stream, Encoding.UTF8);
+            using var reader = new StreamReader(buffer, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
             using var csv = new CsvReader(reader, config);
 
             // Load data based on entity type
@@ -107,17 +152,14 @@ public class CsvDataLoader
                 _ => throw new ArgumentException($"Tipo de entidade desconhecido: {entityType}", nameof(entityType))
             };
 
-            response.Success = response.RecordsInserted > 0;
+            response.Success = response.RecordsInserted > 0 && !response.ValidationErrors.Any();
             response.Message = response.Success
                 ? $"Carregados {response.RecordsInserted} registros com sucesso"
-                : "Nenhum registro foi carregado";
-
-            if (response.ValidationErrors.Any())
-            {
-                response.Message += $". {response.ValidationErrors.Count} erros de validação encontrados";
-            }
+                : response.ValidationErrors.Any()
+                    ? $"Carga concluída com {response.ValidationErrors.Count} erros de validação"
+                    : "Nenhum registro foi carregado";
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not ArgumentException)
         {
             _logger.LogError(ex, "Error loading CSV for entity type: {EntityType}", entityType);
             response.Success = false;
@@ -127,6 +169,11 @@ public class CsvDataLoader
                 ErrorMessage = ex.Message,
                 ErrorType = "LoadException"
             });
+        }
+        catch (ArgumentException)
+        {
+            // Preserve original stack for callers that rely on ArgumentException
+            throw;
         }
         finally
         {
@@ -224,24 +271,173 @@ public class CsvDataLoader
     /// </summary>
     private async Task<int> ClearEntityDataAsync(string entityType, CancellationToken cancellationToken)
     {
+        var isRelational = _context.Database.IsRelational();
+
         var deletedCount = entityType switch
         {
-            "PremiumRecord" or "premiums" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Premiums", cancellationToken),
-            "Policy" or "policies" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Policies", cancellationToken),
-            "Client" or "clients" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Clients", cancellationToken),
-            "Product" or "products" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Products", cancellationToken),
-            "Endorsement" or "endorsements" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Endorsements", cancellationToken),
-            "Coverage" or "coverages" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Coverages", cancellationToken),
-            "Address" or "addresses" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Addresses", cancellationToken),
-            "CossuranceCalculation" or "cossurance" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM CossuranceCalculations", cancellationToken),
-            "CossuredPolicy" or "cossured_policies" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM CossuredPolicies", cancellationToken),
-            "Agency" or "agencies" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Agencies", cancellationToken),
-            "Producer" or "producers" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Producers", cancellationToken),
-            "Installment" or "installments" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Installments", cancellationToken),
-            "Invoice" or "invoices" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Invoices", cancellationToken),
+            "PremiumRecord" or "premiums" => await DeleteAsync(
+                "Premiums",
+                () => _context.PremiumRecords,
+                isRelational,
+                cancellationToken),
+            "Policy" or "policies" => await DeleteAsync(
+                "Policies",
+                () => _context.Policies,
+                isRelational,
+                cancellationToken),
+            "Client" or "clients" => await DeleteAsync(
+                "Clients",
+                () => _context.Clients,
+                isRelational,
+                cancellationToken),
+            "Product" or "products" => await DeleteAsync(
+                "Products",
+                () => _context.Products,
+                isRelational,
+                cancellationToken),
+            "Endorsement" or "endorsements" => await DeleteAsync(
+                "Endorsements",
+                () => _context.Endorsements,
+                isRelational,
+                cancellationToken),
+            "Coverage" or "coverages" => await DeleteAsync(
+                "Coverages",
+                () => _context.Coverages,
+                isRelational,
+                cancellationToken),
+            "Address" or "addresses" => await DeleteAsync(
+                "Addresses",
+                () => _context.Addresses,
+                isRelational,
+                cancellationToken),
+            "CossuranceCalculation" or "cossurance" => await DeleteAsync(
+                "CossuranceCalculations",
+                () => _context.CossuranceCalculations,
+                isRelational,
+                cancellationToken),
+            "CossuredPolicy" or "cossured_policies" => await DeleteAsync(
+                "CossuredPolicies",
+                () => _context.CossuredPolicies,
+                isRelational,
+                cancellationToken),
+            "Agency" or "agencies" => await DeleteAsync(
+                "Agencies",
+                () => _context.Agencies,
+                isRelational,
+                cancellationToken),
+            "Producer" or "producers" => await DeleteAsync(
+                "Producers",
+                () => _context.Producers,
+                isRelational,
+                cancellationToken),
+            "Installment" or "installments" => await DeleteAsync(
+                "Installments",
+                () => _context.Installments,
+                isRelational,
+                cancellationToken),
+            "Invoice" or "invoices" => await DeleteAsync(
+                "Invoices",
+                () => _context.Invoices,
+                isRelational,
+                cancellationToken),
             _ => 0
         };
 
         return deletedCount;
+    }
+
+    private static IReadOnlyList<string> GetRequiredColumns(string entityType)
+    {
+        if (string.IsNullOrWhiteSpace(entityType))
+        {
+            return Array.Empty<string>();
+        }
+
+        return RequiredCsvColumns.TryGetValue(entityType, out var columns)
+            ? columns
+            : Array.Empty<string>();
+    }
+
+    private bool ValidateHeader(
+        Stream buffer,
+        string entityType,
+        char delimiter,
+        MockDataLoadResponse response)
+    {
+        long originalPosition = buffer.Position;
+        using var previewReader = new StreamReader(buffer, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, leaveOpen: true);
+        string? headerLine = previewReader.ReadLine();
+
+        if (headerLine == null)
+        {
+            buffer.Seek(originalPosition, SeekOrigin.Begin);
+            response.ValidationErrors.Add(new DataValidationError
+            {
+                RowNumber = 0,
+                ErrorMessage = "Cabeçalho CSV não encontrado",
+                ErrorType = "MissingHeader"
+            });
+            response.Success = false;
+            response.Message = "CSV inválido: cabeçalho ausente";
+            return false;
+        }
+
+        var requiredHeaders = GetRequiredColumns(entityType);
+        if (requiredHeaders.Count > 0)
+        {
+            var headers = headerLine.Split(delimiter)
+                .Select(h => h.Trim())
+                .ToArray();
+
+            var missingHeaders = requiredHeaders
+                .Where(required => !headers.Any(h => string.Equals(h, required, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
+            if (missingHeaders.Count > 0)
+            {
+                buffer.Seek(originalPosition, SeekOrigin.Begin);
+
+                foreach (var column in missingHeaders)
+                {
+                    response.ValidationErrors.Add(new DataValidationError
+                    {
+                        RowNumber = 0,
+                        ColumnName = column,
+                        ErrorMessage = $"Coluna obrigatória ausente: {column}",
+                        ErrorType = "MissingColumn"
+                    });
+                }
+
+                response.Success = false;
+                response.Message = $"CSV inválido. Colunas obrigatórias ausentes: {string.Join(", ", missingHeaders)}";
+                return false;
+            }
+        }
+
+        buffer.Seek(originalPosition, SeekOrigin.Begin);
+        return true;
+    }
+
+    private async Task<int> DeleteAsync<TEntity>(
+        string tableName,
+        Func<DbSet<TEntity>> setAccessor,
+        bool isRelationalProvider,
+        CancellationToken cancellationToken) where TEntity : class
+    {
+        if (isRelationalProvider)
+        {
+            return await _context.Database.ExecuteSqlRawAsync($"DELETE FROM {tableName}", cancellationToken);
+        }
+
+        var set = setAccessor();
+        var entities = await set.ToListAsync(cancellationToken);
+        if (entities.Count == 0)
+        {
+            return 0;
+        }
+
+        set.RemoveRange(entities);
+        await _context.SaveChangesAsync(cancellationToken);
+        return entities.Count;
     }
 }

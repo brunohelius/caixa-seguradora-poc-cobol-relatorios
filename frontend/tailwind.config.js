@@ -8,72 +8,84 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Caixa Seguradora Brand Colors (from Site.css)
+        // Caixa Seguradora Brand Colors - Modern Palette
         caixa: {
           blue: {
-            DEFAULT: '#0047BB', // Azul Caixa principal
-            dark: '#003380',    // Azul escuro
-            light: '#E6F0FF',   // Azul claro para fundos
+            900: '#001F54',
+            800: '#003380',
+            700: '#0047BB', // Primary Caixa Blue
+            600: '#0052CC',
+            500: '#006BE6',
+            400: '#4A9FFF',
+            300: '#85C1FF',
+            200: '#B8DAFF',
+            100: '#E3F2FF',
+            50: '#F0F8FF',
           },
           yellow: {
-            DEFAULT: '#FFB81C', // Amarelo Caixa
-            dark: '#E6A519',    // Amarelo escuro
-          },
-          gray: {
-            900: '#1A1A1A',     // Texto muito escuro
-            700: '#4A4A4A',     // Texto médio
-            400: '#BDBDBD',     // Cinza médio
-            100: '#F5F5F5',     // Fundo claro
+            900: '#994D00',
+            800: '#CC6600',
+            700: '#FF8000',
+            600: '#FF9500',
+            500: '#FFB81C', // Secondary Caixa Yellow
+            400: '#FFC647',
+            300: '#FFD470',
+            200: '#FFE299',
+            100: '#FFF0C2',
+            50: '#FFF9EB',
           },
         },
-        // Site.css theme colors
-        site: {
-          blue: '#7ac0da',      // Azul claro Site.css
-          blueLight: '#a4d4e6', // Azul gradiente
-          gray: '#efeeef',      // Cinza fundo
-          grayDark: '#e2e2e2',  // Cinza borda
-          text: '#333',         // Texto padrão
-          error: '#e80c4d',     // Vermelho erro
+        // Extended Gray Palette
+        gray: {
+          900: '#111827',
+          800: '#1F2937',
+          700: '#374151',
+          600: '#4B5563',
+          500: '#6B7280',
+          400: '#9CA3AF',
+          300: '#D1D5DB',
+          200: '#E5E7EB',
+          100: '#F3F4F6',
+          50: '#F9FAFB',
         },
-        // Status colors
-        success: '#28A745',
-        error: '#DC3545',
-        warning: '#FFC107',
-        info: '#17A2B8',
-
-        // shadcn/ui semantic colors mapped to Caixa brand
-        border: "#e2e2e2",
-        input: "#e2e2e2",
+        // Semantic Colors
+        success: '#10B981',
+        error: '#EF4444',
+        warning: '#F59E0B',
+        info: '#3B82F6',
+        // shadcn/ui compatibility
+        border: "#E5E7EB",
+        input: "#E5E7EB",
         ring: "#0047BB",
-        background: "#ffffff",
-        foreground: "#333333",
+        background: "#FFFFFF",
+        foreground: "#111827",
         primary: {
           DEFAULT: "#0047BB",
-          foreground: "#ffffff",
+          foreground: "#FFFFFF",
         },
         secondary: {
           DEFAULT: "#FFB81C",
-          foreground: "#000000",
+          foreground: "#111827",
         },
         destructive: {
-          DEFAULT: "#DC3545",
-          foreground: "#ffffff",
+          DEFAULT: "#EF4444",
+          foreground: "#FFFFFF",
         },
         muted: {
-          DEFAULT: "#efeeef",
-          foreground: "#666666",
+          DEFAULT: "#F3F4F6",
+          foreground: "#6B7280",
         },
         accent: {
-          DEFAULT: "#7ac0da",
-          foreground: "#000000",
+          DEFAULT: "#006BE6",
+          foreground: "#FFFFFF",
         },
         popover: {
-          DEFAULT: "#ffffff",
-          foreground: "#333333",
+          DEFAULT: "#FFFFFF",
+          foreground: "#111827",
         },
         card: {
-          DEFAULT: "#ffffff",
-          foreground: "#333333",
+          DEFAULT: "#FFFFFF",
+          foreground: "#111827",
         },
       },
       borderRadius: {
@@ -82,10 +94,37 @@ export default {
         sm: "0.25rem",
       },
       fontFamily: {
-        sans: ['Segoe UI', 'Verdana', 'Helvetica', 'sans-serif'],
+        sans: ['Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'sans-serif'],
+        mono: ['SF Mono', 'Monaco', 'Consolas', 'monospace'],
+      },
+      boxShadow: {
+        'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+        'DEFAULT': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+        'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+        'xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+      },
+      keyframes: {
+        'fade-in': {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        'slide-in': {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(0)' },
+        },
+        'spin': {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
+        },
+      },
+      animation: {
+        'fade-in': 'fade-in 0.4s ease',
+        'slide-in': 'slide-in 0.3s ease',
+        'spin': 'spin 1s linear infinite',
       },
     },
   },
   plugins: [],
 }
-

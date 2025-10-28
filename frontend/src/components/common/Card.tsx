@@ -1,4 +1,12 @@
 import React from 'react';
+import {
+  Card as ShadcnCard,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../ui/card';
+import { cn } from '@/lib/utils';
 
 export interface CardProps {
   title?: string;
@@ -16,30 +24,37 @@ const Card: React.FC<CardProps> = ({
   padding = 'medium',
 }) => {
   const paddingClasses = {
-    none: 'p-0',
+    none: '',
     small: 'p-4',
     medium: 'p-6',
     large: 'p-8',
   };
 
+  // If no title/subtitle and custom padding, apply padding directly to the card
+  if (!title && !subtitle && padding !== 'medium') {
+    return (
+      <ShadcnCard className={cn(paddingClasses[padding], className)}>
+        {children}
+      </ShadcnCard>
+    );
+  }
+
+  // Use CardHeader/CardContent structure when we have title/subtitle
   return (
-    <div className={`bg-white rounded-xl shadow-lg border-2 border-gray-200 ${paddingClasses[padding]} ${className}`}>
+    <ShadcnCard className={className}>
       {(title || subtitle) && (
-        <div className="mb-6">
-          {title && (
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">
-              {title}
-            </h3>
-          )}
-          {subtitle && (
-            <p className="text-base text-gray-600">
-              {subtitle}
-            </p>
-          )}
-        </div>
+        <CardHeader className={cn(padding === 'none' ? 'p-0' : undefined)}>
+          {title && <CardTitle>{title}</CardTitle>}
+          {subtitle && <CardDescription>{subtitle}</CardDescription>}
+        </CardHeader>
       )}
-      <div>{children}</div>
-    </div>
+      <CardContent className={cn(
+        paddingClasses[padding],
+        !title && !subtitle ? '' : 'pt-0'
+      )}>
+        {children}
+      </CardContent>
+    </ShadcnCard>
   );
 };
 

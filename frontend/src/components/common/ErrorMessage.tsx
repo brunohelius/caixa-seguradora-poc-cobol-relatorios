@@ -1,4 +1,7 @@
 import React from 'react';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { Button } from '../ui/button';
+import { cn } from '@/lib/utils';
 
 export interface ErrorMessageProps {
   message: string;
@@ -20,46 +23,52 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`message-error ${className}`} role="alert">
-      <strong>{title}:</strong> {message}
-      {details && (
-        <details style={{ marginTop: '10px' }}>
-          <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>
-            Detalhes técnicos
-          </summary>
-          <pre style={{
-            marginTop: '10px',
-            fontSize: '0.85em',
-            backgroundColor: '#f5f5f5',
-            padding: '10px',
-            overflow: 'auto',
-            maxHeight: '200px',
-            border: '1px solid #e2e2e2'
-          }}>
-            {details}
-          </pre>
-        </details>
-      )}
-      {traceId && (
-        <p style={{ marginTop: '10px', fontSize: '0.8em' }}>
-          ID de rastreamento: <code style={{ backgroundColor: '#f5f5f5', padding: '2px 5px' }}>{traceId}</code>
-        </p>
-      )}
-      {(onRetry || onDismiss) && (
-        <div style={{ marginTop: '15px' }}>
-          {onRetry && (
-            <button onClick={onRetry} style={{ marginRight: '10px' }}>
-              Tentar novamente
-            </button>
-          )}
-          {onDismiss && (
-            <button onClick={onDismiss}>
-              Dispensar
-            </button>
-          )}
-        </div>
-      )}
-    </div>
+    <Alert variant="destructive" className={cn(className)}>
+      <AlertTitle className="font-bold">{title}</AlertTitle>
+      <AlertDescription className="mt-2">
+        <div>{message}</div>
+
+        {details && (
+          <details className="mt-3">
+            <summary className="cursor-pointer font-semibold text-sm">
+              Detalhes técnicos
+            </summary>
+            <pre className="mt-2 text-xs bg-gray-100 p-3 rounded overflow-auto max-h-48 border border-gray-200">
+              {details}
+            </pre>
+          </details>
+        )}
+
+        {traceId && (
+          <p className="mt-3 text-xs">
+            ID de rastreamento: <code className="bg-gray-100 px-1 py-0.5 rounded">{traceId}</code>
+          </p>
+        )}
+
+        {(onRetry || onDismiss) && (
+          <div className="mt-4 flex gap-2">
+            {onRetry && (
+              <Button
+                onClick={onRetry}
+                variant="default"
+                size="small"
+              >
+                Tentar novamente
+              </Button>
+            )}
+            {onDismiss && (
+              <Button
+                onClick={onDismiss}
+                variant="outline"
+                size="small"
+              >
+                Dispensar
+              </Button>
+            )}
+          </div>
+        )}
+      </AlertDescription>
+    </Alert>
   );
 };
 

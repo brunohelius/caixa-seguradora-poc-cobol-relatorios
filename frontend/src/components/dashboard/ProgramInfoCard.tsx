@@ -1,4 +1,5 @@
 import Card from '../common/Card';
+import { Badge } from '../ui/badge';
 import type { ProgramInfoDto } from '../../services/types';
 
 interface ProgramInfoCardProps {
@@ -20,87 +21,65 @@ export const ProgramInfoCard: React.FC<ProgramInfoCardProps> = ({ programInfo })
         {/* Program Name and Type */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide mb-2" style={{ color: '#666' }}>
+            <p className="text-sm font-semibold uppercase tracking-wide mb-2 text-gray-600">
               Programa:
             </p>
-            <p className="text-3xl font-black" style={{ color: '#0047BB' }}>
+            <p className="text-3xl font-black text-caixa-blue">
               {programInfo.programName}
             </p>
           </div>
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wide mb-2" style={{ color: '#666' }}>
+            <p className="text-sm font-semibold uppercase tracking-wide mb-2 text-gray-600">
               Tipo:
             </p>
-            <p className="text-2xl font-bold" style={{ color: '#000' }}>
+            <p className="text-2xl font-bold text-black">
               {programInfo.programType}
             </p>
           </div>
         </div>
 
         {/* Description */}
-        <div
-          className="p-5 rounded-xl shadow-md"
-          style={{
-            backgroundColor: '#E6F0FF',
-            border: '2px solid #0047BB'
-          }}
-        >
-          <p className="text-sm font-bold uppercase tracking-wide mb-3" style={{ color: '#0047BB' }}>
+        <div className="p-5 rounded-xl shadow-md bg-caixa-blue-light border-2 border-caixa-blue">
+          <p className="text-sm font-bold uppercase tracking-wide mb-3 text-caixa-blue">
             Descrição:
           </p>
-          <p className="text-base leading-relaxed" style={{ color: '#000' }}>
+          <p className="text-base leading-relaxed text-black">
             {programInfo.description}
           </p>
         </div>
 
         {/* Output Files */}
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide mb-3" style={{ color: '#666' }}>
+          <p className="text-sm font-semibold uppercase tracking-wide mb-3 text-gray-600">
             Arquivos de Saída:
           </p>
           <div className="flex flex-wrap gap-3">
             {programInfo.outputFiles.map((file, index) => (
-              <span
+              <Badge
                 key={index}
-                className="px-4 py-2 font-bold rounded-lg shadow-md text-sm"
-                style={{
-                  background: 'linear-gradient(135deg, #0047BB 0%, #003380 100%)',
-                  color: '#fff'
-                }}
+                className="px-4 py-2 font-bold rounded-lg shadow-md text-sm bg-gradient-to-br from-caixa-blue to-caixa-blue-dark text-white hover:from-caixa-blue-dark hover:to-caixa-blue"
               >
                 {file}
-              </span>
+              </Badge>
             ))}
           </div>
         </div>
 
         {/* Statistics */}
-        <div className="grid grid-cols-2 gap-4 pt-4" style={{ borderTop: '2px solid #e2e2e2' }}>
-          <div
-            className="p-5 rounded-xl shadow-md"
-            style={{
-              backgroundColor: '#F3E5F5',
-              border: '2px solid #7B1FA2'
-            }}
-          >
-            <p className="text-sm font-bold uppercase tracking-wide mb-2" style={{ color: '#6A1B9A' }}>
+        <div className="grid grid-cols-2 gap-4 pt-4 border-t-2 border-site-grayDark">
+          <div className="p-5 rounded-xl shadow-md bg-purple-50 border-2 border-purple-700">
+            <p className="text-sm font-bold uppercase tracking-wide mb-2 text-purple-700">
               Linhas de Código:
             </p>
-            <p className="text-3xl font-black" style={{ color: '#4A148C' }}>
+            <p className="text-3xl font-black text-purple-900">
               {programInfo.totalLinesOfCode.toLocaleString('pt-BR')}
             </p>
           </div>
-          <div
-            className="p-5 rounded-xl shadow-md"
-            style={{
-              backgroundColor: '#E8F5E9',
-              border: '2px solid #28A745'
-            }}
-          >
-            <p className="text-sm font-bold uppercase tracking-wide mb-2" style={{ color: '#1e7e34' }}>
+          <div className="p-5 rounded-xl shadow-md bg-green-50 border-2 border-success">
+            <p className="text-sm font-bold uppercase tracking-wide mb-2 text-green-700">
               Última Análise:
             </p>
-            <p className="text-xl font-bold" style={{ color: '#155724' }}>
+            <p className="text-xl font-bold text-green-900">
               {formatDate(programInfo.lastAnalyzed)}
             </p>
           </div>

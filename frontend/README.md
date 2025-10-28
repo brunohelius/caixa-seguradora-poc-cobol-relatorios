@@ -72,47 +72,182 @@ Este frontend é uma **Single Page Application (SPA)** construída com React 18,
 }
 ```
 
-## Configuração e Execução
+## Prerequisites
 
-### Instalação de Dependências
+- **Node.js 20+** - Download from https://nodejs.org/
+- **npm 10+** - Comes with Node.js
+- **Backend API running** - See backend/README.md
+
+## Quick Start
+
+### 1. Install dependencies
 
 ```bash
+cd frontend
 npm install
 ```
 
-### Desenvolvimento
+### 2. Configure API endpoint (optional)
+
+The frontend expects the backend API at `http://localhost:5555` by default.
+
+To change this, update `src/services/api.ts`:
+
+```typescript
+const API_BASE_URL = process.env.VITE_API_BASE_URL || 'http://localhost:5555';
+```
+
+Or set environment variable:
+
+```bash
+export VITE_API_BASE_URL=http://localhost:5555
+```
+
+### 3. Start development server
 
 ```bash
 npm run dev
 ```
 
-Abre em: `http://localhost:5173` com Hot Module Replacement (HMR)
+Open: `http://localhost:5173` with Hot Module Replacement (HMR)
 
-### Build de Produção
+### 4. Build for production
 
 ```bash
 npm run build
 ```
 
-Artefatos gerados em: `dist/`
+Production build artifacts generated in: `dist/`
 
-### Preview do Build
+### 5. Preview production build
 
 ```bash
 npm run preview
 ```
 
-### Linting e Formatação
+## Running Tests
+
+### Unit Tests (Vitest)
 
 ```bash
-# Executar ESLint
+# Run all unit tests
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+```
+
+Coverage report will be at `coverage/index.html`
+
+### End-to-End Tests (Playwright)
+
+```bash
+# Install Playwright browsers (first time only)
+npx playwright install
+
+# Run E2E tests headless
+npm run test:e2e
+
+# Run E2E tests with UI
+npm run test:e2e:ui
+
+# Run E2E tests in specific browser
+npx playwright test --project=chromium
+```
+
+## Code Quality
+
+### Linting
+
+```bash
+# Run ESLint
 npm run lint
 
-# Corrigir problemas automaticamente
+# Auto-fix ESLint issues
 npm run lint:fix
+```
 
-# Executar Prettier
+### Formatting
+
+```bash
+# Format code with Prettier
 npm run format
+
+# Check formatting without changes
+npm run format:check
+```
+
+## Docker Deployment
+
+### Build Docker image
+
+```bash
+cd frontend
+docker build -t caixa-seguradora-frontend:latest .
+```
+
+### Run with Docker Compose
+
+```bash
+cd .. # project root
+docker-compose up --build
+```
+
+This starts both backend and frontend services with proper networking.
+
+## Configuration
+
+### Environment Variables
+
+Create a `.env` file in the frontend root (not tracked in git):
+
+```env
+# API Base URL
+VITE_API_BASE_URL=http://localhost:5555
+
+# App Title
+VITE_APP_TITLE="Caixa Seguradora - Relatórios SUSEP"
+
+# Environment
+VITE_ENV=development
+```
+
+### Build-time Variables
+
+All environment variables prefixed with `VITE_` are embedded at build time and accessible via `import.meta.env`:
+
+```typescript
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
+const appTitle = import.meta.env.VITE_APP_TITLE;
+```
+
+## Troubleshooting
+
+### Port 5173 Already in Use
+
+```bash
+# Change port via --port flag
+npm run dev -- --port 3000
+```
+
+### Backend API Not Reachable
+
+1. Verify backend is running at http://localhost:5555
+2. Check browser console for CORS errors
+3. Verify backend CORS configuration allows http://localhost:5173
+
+### Build Errors
+
+```bash
+# Clear node_modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+
+# Clear Vite cache
+rm -rf node_modules/.vite
 ```
 
 ## Rotas da Aplicação

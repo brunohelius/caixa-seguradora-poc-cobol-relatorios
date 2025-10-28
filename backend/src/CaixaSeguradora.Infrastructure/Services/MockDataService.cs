@@ -4,6 +4,7 @@ using CaixaSeguradora.Core.Interfaces;
 using CaixaSeguradora.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace CaixaSeguradora.Infrastructure.Services;
 
@@ -175,21 +176,95 @@ public class MockDataService : IMockDataService
     {
         _logger.LogInformation("Clearing data for entity: {EntityType}", entityType);
 
+        var isRelational = _context.Database.IsRelational();
+
         var deletedCount = entityType switch
         {
-            "PremiumRecord" or "premiums" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Premiums", cancellationToken),
-            "Policy" or "policies" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Policies", cancellationToken),
-            "Client" or "clients" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Clients", cancellationToken),
-            "Product" or "products" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Products", cancellationToken),
-            "Endorsement" or "endorsements" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Endorsements", cancellationToken),
-            "Coverage" or "coverages" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Coverages", cancellationToken),
-            "Address" or "addresses" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Addresses", cancellationToken),
-            "CossuranceCalculation" or "cossurance" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM CossuranceCalculations", cancellationToken),
-            "CossuredPolicy" or "cossured_policies" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM CossuredPolicies", cancellationToken),
-            "Agency" or "agencies" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Agencies", cancellationToken),
-            "Producer" or "producers" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Producers", cancellationToken),
-            "Installment" or "installments" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Installments", cancellationToken),
-            "Invoice" or "invoices" => await _context.Database.ExecuteSqlRawAsync("DELETE FROM Invoices", cancellationToken),
+            "PremiumRecord" or "premiums" => await DeleteAsync(
+                "Premiums",
+                () => _context.PremiumRecords,
+                isRelational,
+                cancellationToken),
+            "Policy" or "policies" => await DeleteAsync(
+                "Policies",
+                () => _context.Policies,
+                isRelational,
+                cancellationToken),
+            "Client" or "clients" => await DeleteAsync(
+                "Clients",
+                () => _context.Clients,
+                isRelational,
+                cancellationToken),
+            "Product" or "products" => await DeleteAsync(
+                "Products",
+                () => _context.Products,
+                isRelational,
+                cancellationToken),
+            "Endorsement" or "endorsements" => await DeleteAsync(
+                "Endorsements",
+                () => _context.Endorsements,
+                isRelational,
+                cancellationToken),
+            "Coverage" or "coverages" => await DeleteAsync(
+                "Coverages",
+                () => _context.Coverages,
+                isRelational,
+                cancellationToken),
+            "Address" or "addresses" => await DeleteAsync(
+                "Addresses",
+                () => _context.Addresses,
+                isRelational,
+                cancellationToken),
+            "CossuranceCalculation" or "cossurance" => await DeleteAsync(
+                "CossuranceCalculations",
+                () => _context.CossuranceCalculations,
+                isRelational,
+                cancellationToken),
+            "CossuredPolicy" or "cossured_policies" => await DeleteAsync(
+                "CossuredPolicies",
+                () => _context.CossuredPolicies,
+                isRelational,
+                cancellationToken),
+            "Agency" or "agencies" => await DeleteAsync(
+                "Agencies",
+                () => _context.Agencies,
+                isRelational,
+                cancellationToken),
+            "Producer" or "producers" => await DeleteAsync(
+                "Producers",
+                () => _context.Producers,
+                isRelational,
+                cancellationToken),
+            "Installment" or "installments" => await DeleteAsync(
+                "Installments",
+                () => _context.Installments,
+                isRelational,
+                cancellationToken),
+            "Invoice" or "invoices" => await DeleteAsync(
+                "Invoices",
+                () => _context.Invoices,
+                isRelational,
+                cancellationToken),
+            "BatchJob" or "batchjobs" => await DeleteAsync(
+                "BatchJobs",
+                () => _context.BatchJobs,
+                isRelational,
+                cancellationToken),
+            "BatchJobExecution" or "batchjobexecutions" => await DeleteAsync(
+                "BatchJobExecutions",
+                () => _context.BatchJobExecutions,
+                isRelational,
+                cancellationToken),
+            "ReportDefinition" or "reportdefinitions" => await DeleteAsync(
+                "ReportDefinitions",
+                () => _context.ReportDefinitions,
+                isRelational,
+                cancellationToken),
+            "SystemConfiguration" or "systemconfigurations" => await DeleteAsync(
+                "SystemConfigurations",
+                () => _context.SystemConfigurations,
+                isRelational,
+                cancellationToken),
             _ => throw new ArgumentException($"Tipo de entidade desconhecido: {entityType}", nameof(entityType))
         };
 
@@ -207,19 +282,17 @@ public class MockDataService : IMockDataService
         // Delete in correct order to respect foreign key constraints
         var entityTypes = new[]
         {
-            "Installments", "Invoices", "CossuredPolicies", "CossuranceCalculations",
-            "Coverages", "Endorsements", "Premiums", "Policies",
-            "Addresses", "Clients", "Producers", "Agencies", "Products",
-            "BatchJobExecutions", "BatchJobs", "ReportDefinitions", "SystemConfigurations"
+            "installments", "invoices", "cossured_policies", "cossurance",
+            "coverages", "endorsements", "premiums", "policies",
+            "addresses", "clients", "producers", "agencies", "products",
+            "batchjobexecutions", "batchjobs", "reportdefinitions", "systemconfigurations"
         };
 
         foreach (var tableName in entityTypes)
         {
             try
             {
-                var deleted = await _context.Database.ExecuteSqlRawAsync(
-                    $"DELETE FROM {tableName}",
-                    cancellationToken);
+                var deleted = await ClearEntityDataAsync(tableName, cancellationToken);
                 totalDeleted += deleted;
                 _logger.LogInformation("Deleted {Count} records from {Table}", deleted, tableName);
             }
@@ -275,7 +348,7 @@ public class MockDataService : IMockDataService
         if (string.IsNullOrEmpty(entityType))
         {
             // Return all entity types
-            schemaInfo["EntityTypes"] = new[]
+            schemaInfo["EntityTypes"] = new List<string>
             {
                 "Premiums", "Policies", "Clients", "Products", "Endorsements",
                 "Coverages", "Addresses", "CossuranceCalculations", "CossuredPolicies",
@@ -302,5 +375,28 @@ public class MockDataService : IMockDataService
         // For now, return a simple implementation
         throw new NotImplementedException(
             $"Exportação de dados para {entityType} não implementada. Use o ExportController para exportação de dados.");
+    }
+
+    private async Task<int> DeleteAsync<TEntity>(
+        string tableName,
+        Func<DbSet<TEntity>> setAccessor,
+        bool isRelationalProvider,
+        CancellationToken cancellationToken) where TEntity : class
+    {
+        if (isRelationalProvider)
+        {
+            return await _context.Database.ExecuteSqlRawAsync($"DELETE FROM {tableName}", cancellationToken);
+        }
+
+        var set = setAccessor();
+        var entities = await set.ToListAsync(cancellationToken);
+        if (entities.Count == 0)
+        {
+            return 0;
+        }
+
+        set.RemoveRange(entities);
+        await _context.SaveChangesAsync(cancellationToken);
+        return entities.Count;
     }
 }

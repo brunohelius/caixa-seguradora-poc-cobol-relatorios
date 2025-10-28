@@ -20,8 +20,8 @@ public class ReportGenerationRequestValidatorTests
         // Arrange
         var request = new ReportGenerationRequestDto
         {
-            StartDate = new DateTime(2025, 10, 1),
-            EndDate = new DateTime(2025, 10, 31),
+            StartDate = new DateTime(2024, 9, 1),
+            EndDate = new DateTime(2024, 9, 30),
             SystemId = "GL",
             ReportType = "Both",
             ProcessingMode = "Monthly"
@@ -262,8 +262,8 @@ public class ReportGenerationRequestValidatorTests
         // Arrange
         var request = new ReportGenerationRequestDto
         {
-            StartDate = new DateTime(2025, 10, 1),
-            EndDate = new DateTime(2025, 10, 31),
+            StartDate = new DateTime(2024, 9, 1),
+            EndDate = new DateTime(2024, 9, 30),
             SystemId = "GL",
             ReportType = "PREMIT",
             PolicyNumber = "POL123456",

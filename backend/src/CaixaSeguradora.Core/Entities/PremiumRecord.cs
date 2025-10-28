@@ -474,6 +474,95 @@ namespace CaixaSeguradora.Core.Entities
         [NotMapped]
         public decimal PolicyCost => IssuanceCostTotal;
 
+        // Additional aliases for service compatibility
+        [NotMapped]
+        public int RamoSusep => LineOfBusiness;
+
+        [NotMapped]
+        public DateTime EffectiveDate { get; set; }
+
+        [NotMapped]
+        public DateTime ExpirationDate { get; set; }
+
+        [NotMapped]
+        public DateTime IssueDate { get; set; }
+
+        [NotMapped]
+        public DateTime ProposalDate { get; set; }
+
+        [NotMapped]
+        public int EndorsementNumberCA => EndorsementNumber;
+
+        [NotMapped]
+        public long EstipulanteCode => ClientCode;
+
+        [NotMapped]
+        public long BilheteNumber { get; set; }
+
+        [NotMapped]
+        public int NumberOfInsured { get; set; }
+
+        [NotMapped]
+        public decimal TotalPremiumAmount => TotalPremiumTotal;
+
+        [NotMapped]
+        public bool HasCossurance { get; set; }
+
+        [NotMapped]
+        public bool IsRenewal => MovementType == "R";
+
+        [NotMapped]
+        public long TomadorCode => ClientCode;
+
+        [NotMapped]
+        public int SalesChannelCode { get; set; }
+
+        [NotMapped]
+        public int NumberOfInstallments { get; set; }
+
+        // Collection aliases for items
+        [NotMapped]
+        public decimal[] BasePremiumItems => new[] { BasePremiumItem };
+
+        [NotMapped]
+        public decimal[] FixedPremiumItems => new[] { FixedPremiumItem };
+
+        [NotMapped]
+        public decimal[] TariffPremiumItems => new[] { TariffPremiumItem };
+
+        [NotMapped]
+        public decimal[] DiscountItems => new[] { DiscountItem };
+
+        [NotMapped]
+        public decimal[] NetPremiumItems => new[] { NetPremiumItem };
+
+        [NotMapped]
+        public decimal[] IofItems => new[] { IofItem };
+
+        [NotMapped]
+        public decimal[] CommissionItems => new[] { CommissionItem };
+
+        [NotMapped]
+        public decimal[] InstallmentSurchargeItems => new[] { AdditionalFractionalItem };
+
+        [NotMapped]
+        public decimal[] IssuanceCostItems => new[] { IssuanceCostItem };
+
+        [NotMapped]
+        public decimal[] AdministrationFeeItems => new[] { AdministrationFeeItem };
+
+        [NotMapped]
+        public decimal[] AgencyFeeItems { get; set; } = Array.Empty<decimal>();
+
+        [NotMapped]
+        public decimal[] TotalPremiumItems => new[] { TotalPremiumItem };
+
+        [NotMapped]
+        public decimal[] InsuredSumItems => new[] { InsuredAmountItem };
+
+        [NotMapped]
+        public decimal InsuredSumTotal => InsuredAmountTotal;
+
         // Navigation Properties
         public Policy? Policy { get; set; }
         public Product? Product { get; set; }

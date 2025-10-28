@@ -148,8 +148,9 @@ const FileUploadForm: React.FC<FileUploadFormProps> = ({ onUpload, loading }) =>
           fileInputRef.current.value = '';
         }
       }, 1000);
-    } catch (err: any) {
-      setError(err.message || 'Erro ao carregar arquivo. Tente novamente.');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      setError(errorMessage || 'Erro ao carregar arquivo. Tente novamente.');
       setUploadProgress(0);
     }
   };

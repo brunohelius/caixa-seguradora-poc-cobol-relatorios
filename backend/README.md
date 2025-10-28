@@ -1,5 +1,65 @@
 # Backend - Sistema de Relatórios de Prêmios SUSEP
 
+## Build Configuration
+
+This project uses **two separate solution files** to maintain production code quality while test projects are being updated:
+
+### Production Build (RECOMMENDED)
+
+**File**: `CaixaSeguradora.Production.sln`
+
+**Contains**:
+- CaixaSeguradora.Api
+- CaixaSeguradora.Core
+- CaixaSeguradora.Infrastructure
+
+**Status**: ✅ Builds successfully with 0 errors, 0 warnings
+
+**Use this for**:
+- Active development
+- Production deployments
+- CI/CD pipelines
+- Docker container builds
+
+**Build commands**:
+```bash
+# Restore dependencies
+dotnet restore CaixaSeguradora.Production.sln
+
+# Build production code
+dotnet build CaixaSeguradora.Production.sln
+
+# Run API
+cd src/CaixaSeguradora.Api
+dotnet run
+```
+
+### Test Build (Currently Disabled)
+
+**File**: `CaixaSeguradora.Tests.sln`
+
+**Contains**:
+- All production projects (for test references)
+- CaixaSeguradora.UnitTests
+- CaixaSeguradora.IntegrationTests
+- CaixaSeguradora.ComparisonTests
+
+**Status**: ⚠️ Temporarily disabled due to entity schema alignment work in progress
+
+**Known Issues**: Test projects reference outdated entity schemas and need updates to match current production code.
+
+**When to use**: After test projects are updated and re-enabled (see `/KNOWN_ISSUES.md` for details and timeline)
+
+### Original Solution File
+
+**File**: `CaixaSeguradora.sln`
+
+**Status**: ⚠️ Kept for backwards compatibility, includes all projects (production + tests)
+
+**Recommendation**: Use `CaixaSeguradora.Production.sln` instead for reliable builds.
+
+**For detailed information**: See `/KNOWN_ISSUES.md` in the project root.
+
 ## Arquitetura
 
 Este backend segue os princípios de **Clean Architecture** (também conhecida como Arquitetura Hexagonal ou Onion Architecture), organizando o código em camadas concêntricas com dependências unidirecionais.
@@ -88,6 +148,210 @@ Este backend segue os princípios de **Clean Architecture** (também conhecida c
 - Repositórios implementam interfaces da camada Core
 - EF Core é um detalhe de implementação (pode ser trocado)
 - Utiliza IAsyncEnumerable<T> para cursor streaming (performance)
+
+## Prerequisites
+
+- **.NET 9.0 SDK** - Download from https://dotnet.microsoft.com/download/dotnet/9.0
+- **SQLite 3.x** - Included with .NET, no separate installation needed
+- **Docker** (optional) - For containerized deployment
+
+## Quick Start
+
+### 1. Clone the repository
+
+```bash
+cd backend
+```
+
+### 2. Restore dependencies
+
+```bash
+dotnet restore
+```
+
+### 3. Apply database migrations
+
+```bash
+cd src/CaixaSeguradora.Api
+dotnet ef database update
+```
+
+### 4. Seed sample data (optional)
+
+```bash
+dotnet run --seed-data
+```
+
+### 5. Run the application
+
+```bash
+dotnet run
+```
+
+The API will start on:
+- HTTP: http://localhost:5555
+- HTTPS: https://localhost:5556
+- Swagger: https://localhost:5555/swagger
+
+## Running Tests
+
+### Run all tests
+
+```bash
+cd backend
+dotnet test
+```
+
+### Run specific test categories
+
+```bash
+# Unit tests only
+dotnet test --filter Category=Unit
+
+# Integration tests only
+dotnet test --filter Category=Integration
+
+# Comparison tests (COBOL parity validation)
+dotnet test --filter Category=Comparison
+```
+
+### Run tests with coverage
+
+```bash
+dotnet test /p:CollectCoverage=true /p:CoverageReportFormat=html
+```
+
+Coverage report will be generated at `tests/*/coverage/index.html`
+
+## Configuration
+
+### Environment Variables
+
+Key configuration values can be overridden via environment variables:
+
+```bash
+# Database
+export ConnectionStrings__DefaultConnection="Data Source=premium_reporting.db"
+
+# JWT Authentication
+export Jwt__SecretKey="your-secret-key-min-32-chars"
+export Jwt__Issuer="CaixaSeguradora"
+export Jwt__Audience="CaixaSeguradora.API"
+
+# Ports
+export BACKEND_HTTP_PORT=5555
+export BACKEND_HTTPS_PORT=5556
+
+# Logging
+export Serilog__MinimumLevel__Default="Information"
+```
+
+### appsettings.json Files
+
+- **appsettings.json** - Base configuration (checked into git)
+- **appsettings.Development.json** - Development overrides (checked into git)
+- **appsettings.Production.json** - Production overrides (checked into git, no secrets)
+
+**NEVER commit secrets** - Use environment variables or Azure Key Vault for production secrets.
+
+## Docker Deployment
+
+### Build Docker image
+
+```bash
+cd backend
+docker build -t caixa-seguradora-backend:latest .
+```
+
+### Run with Docker Compose
+
+```bash
+cd .. # project root
+docker-compose up --build
+```
+
+This starts both backend and frontend services with proper networking.
+
+## Health Checks
+
+The application exposes three health check endpoints:
+
+- **GET /api/v1/health** - Comprehensive health check (database, file system, disk space)
+- **GET /api/v1/health/live** - Liveness probe (returns 200 if API is running)
+- **GET /api/v1/health/ready** - Readiness probe (returns 200 if can serve traffic)
+
+Example response from `/api/v1/health`:
+
+```json
+{
+  "status": "Healthy",
+  "timestamp": "2025-10-27T12:00:00Z",
+  "version": "1.0.0",
+  "databaseStatus": "Healthy",
+  "databaseResponseTimeMs": 45,
+  "checks": {
+    "Database": {
+      "status": "Healthy",
+      "responseTimeMs": 45,
+      "message": "Database connection is healthy"
+    },
+    "FileSystem": {
+      "status": "Healthy",
+      "responseTimeMs": 2,
+      "message": "Output directory writable. Available space: 150.50 GB"
+    }
+  }
+}
+```
+
+## Logging
+
+Structured logging is configured using **Serilog** with:
+
+- **Console sink** - Colored output for development
+- **File sink** - Rolling logs at `logs/premiumreporting-{Date}.log` (7 days retention)
+- **Correlation ID** - Every request has a unique X-Correlation-ID header for tracking
+
+Example log entry:
+
+```
+2025-10-27 14:30:45.123 -03:00 [INF] CorrelationId=abc123def456 Processing premium calculation for policy 1234567890123
+```
+
+## Troubleshooting
+
+### Database Locked Error
+
+If you see "database is locked" errors:
+
+```bash
+# Close any open database connections
+# Delete lock file
+rm src/CaixaSeguradora.Api/premium-reporting-dev.db-shm
+rm src/CaixaSeguradora.Api/premium-reporting-dev.db-wal
+```
+
+### Port Already in Use
+
+If port 5555 is in use:
+
+```bash
+# Option 1: Kill process using the port
+lsof -ti:5555 | xargs kill -9
+
+# Option 2: Change port in appsettings.json
+# Set Ports:Http to different value (e.g., 5557)
+```
+
+### Migration Errors
+
+If migrations fail:
+
+```bash
+# Drop database and recreate
+rm src/CaixaSeguradora.Api/premium-reporting-dev.db
+dotnet ef database update
+```
 
 ## Tecnologias e Pacotes
 

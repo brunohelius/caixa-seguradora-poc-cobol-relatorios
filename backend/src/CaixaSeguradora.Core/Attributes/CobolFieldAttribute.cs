@@ -2,6 +2,11 @@ using System;
 
 namespace CaixaSeguradora.Core.Attributes
 {
+    /// <summary>
+    /// Attribute to preserve COBOL field metadata for .NET entity properties.
+    /// Enables exact type mapping and validation against COBOL PIC clauses.
+    /// Essential for maintaining byte-for-byte compatibility with COBOL output.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
     public class CobolFieldAttribute : Attribute
     {
@@ -11,6 +16,12 @@ namespace CaixaSeguradora.Core.Attributes
         public CobolFieldType FieldType { get; set; } = CobolFieldType.Display;
         public int StartPosition { get; set; }
         public string Description { get; set; }
+
+        /// <summary>
+        /// COBOL storage type as string (e.g., "COMP", "COMP-3", "DISPLAY").
+        /// Alternative to FieldType enum for explicit COBOL type specification.
+        /// </summary>
+        public string CobolType { get; set; }
 
         // Parameterless constructor
         public CobolFieldAttribute()

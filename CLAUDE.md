@@ -659,3 +659,10 @@ git commit -m "test: add comparison tests for PREMIT output"
 
 **Last Updated**: October 22, 2025
 **Project Status**: Planning complete, ready for implementation (Phase 1: Setup)
+
+## Active Technologies
+- .NET 9 (C# 13) backend, React 18+ frontend, Node.js 20+ for build tooling (003-complete-cobol-migration)
+- SQLite 3.x (development/testing), mirrors 26+ DB2 views/tables from mainframe (003-complete-cobol-migration)
+
+## Recent Changes
+- 003-complete-cobol-migration: Added .NET 9 (C# 13) backend, React 18+ frontend, Node.js 20+ for build tooling

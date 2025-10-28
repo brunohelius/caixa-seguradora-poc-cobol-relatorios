@@ -22,6 +22,10 @@ namespace CaixaSeguradora.Infrastructure.Data
         public DbSet<Installment> Installments { get; set; }
         public DbSet<CossuredPolicy> CossuredPolicies { get; set; }
         public DbSet<CossuranceCalculation> CossuranceCalculations { get; set; }
+        public DbSet<ReinsuranceData> ReinsuranceData { get; set; }
+        public DbSet<ReportExecution> ReportExecutions { get; set; }
+        public DbSet<ProcessingLog> ProcessingLogs { get; set; }
+        public DbSet<FileOutput> FileOutputs { get; set; }
         public DbSet<SystemConfiguration> SystemConfigurations { get; set; }
         public DbSet<ReportDefinition> ReportDefinitions { get; set; }
         public DbSet<BatchJob> BatchJobs { get; set; }

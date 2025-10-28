@@ -30,27 +30,27 @@ export const DatabaseDependenciesChart: React.FC<DatabaseDependenciesChartProps>
       <div className="space-y-6">
         {/* Summary Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-4 rounded-lg" style={{ backgroundColor: '#E3F2FD', border: '2px solid #0047BB' }}>
-            <p className="text-sm font-semibold mb-1" style={{ color: '#1565C0' }}>Total de Tabelas</p>
-            <p className="text-3xl font-black" style={{ color: '#0D47A1' }}>
+          <div className="p-4 rounded-lg bg-blue-50 border-2 border-caixa-blue">
+            <p className="text-sm font-semibold mb-1 text-blue-700">Total de Tabelas</p>
+            <p className="text-3xl font-black text-blue-900">
               {dependencies.totalTables}
             </p>
           </div>
-          <div className="p-4 rounded-lg" style={{ backgroundColor: '#E8F5E9', border: '2px solid #28A745' }}>
-            <p className="text-sm font-semibold mb-1" style={{ color: '#2E7D32' }}>Cursores</p>
-            <p className="text-3xl font-black" style={{ color: '#1B5E20' }}>
+          <div className="p-4 rounded-lg bg-green-50 border-2 border-success">
+            <p className="text-sm font-semibold mb-1 text-green-700">Cursores</p>
+            <p className="text-3xl font-black text-green-900">
               {dependencies.totalCursors}
             </p>
           </div>
-          <div className="p-4 rounded-lg" style={{ backgroundColor: '#F3E5F5', border: '2px solid #7B1FA2' }}>
-            <p className="text-sm font-semibold mb-1" style={{ color: '#7B1FA2' }}>Operações SQL</p>
-            <p className="text-3xl font-black" style={{ color: '#4A148C' }}>
+          <div className="p-4 rounded-lg bg-purple-50 border-2 border-purple-700">
+            <p className="text-sm font-semibold mb-1 text-purple-700">Operações SQL</p>
+            <p className="text-3xl font-black text-purple-900">
               {dependencies.sqlStats.totalOperations}
             </p>
           </div>
-          <div className="p-4 rounded-lg" style={{ backgroundColor: '#FFF3E0', border: '2px solid #FF9800' }}>
-            <p className="text-sm font-semibold mb-1" style={{ color: '#E65100' }}>Somente Leitura</p>
-            <p className="text-3xl font-black" style={{ color: '#BF360C' }}>
+          <div className="p-4 rounded-lg bg-orange-50 border-2 border-orange-500">
+            <p className="text-sm font-semibold mb-1 text-orange-700">Somente Leitura</p>
+            <p className="text-3xl font-black text-orange-900">
               {dependencies.sqlStats.readOnlyPercentage.toFixed(1)}%
             </p>
           </div>
@@ -58,7 +58,7 @@ export const DatabaseDependenciesChart: React.FC<DatabaseDependenciesChartProps>
 
         {/* Top Tables by Row Count */}
         <div>
-          <h4 className="text-md font-semibold mb-3" style={{ color: '#333' }}>
+          <h4 className="text-md font-semibold mb-3 text-gray-700">
             Top 10 Tabelas por Volume de Registros
           </h4>
           <ResponsiveContainer width="100%" height={300}>
@@ -87,7 +87,7 @@ export const DatabaseDependenciesChart: React.FC<DatabaseDependenciesChartProps>
         {/* SQL Operations Distribution */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 className="text-md font-semibold mb-3" style={{ color: '#333' }}>
+            <h4 className="text-md font-semibold mb-3 text-gray-700">
               Distribuição de Operações SQL
             </h4>
             <ResponsiveContainer width="100%" height={200}>
@@ -113,26 +113,22 @@ export const DatabaseDependenciesChart: React.FC<DatabaseDependenciesChartProps>
 
           {/* Cursor Information */}
           <div>
-            <h4 className="text-md font-semibold mb-3" style={{ color: '#333' }}>
+            <h4 className="text-md font-semibold mb-3 text-gray-700">
               Cursores Declarados ({dependencies.cursors.length})
             </h4>
             <div className="space-y-2 max-h-[200px] overflow-y-auto">
               {dependencies.cursors.map((cursor, index) => (
                 <div
                   key={index}
-                  className="p-3 rounded"
-                  style={{
-                    backgroundColor: '#F5F5F5',
-                    border: '1px solid #e2e2e2'
-                  }}
+                  className="p-3 rounded bg-gray-100 border border-site-grayDark"
                 >
-                  <p className="text-sm font-semibold" style={{ color: '#000' }}>
+                  <p className="text-sm font-semibold text-black">
                     {cursor.cursorName}
                   </p>
-                  <p className="text-xs" style={{ color: '#666' }}>
+                  <p className="text-xs text-gray-600">
                     Tabela: {cursor.targetTable}
                   </p>
-                  <p className="text-xs" style={{ color: '#999' }}>
+                  <p className="text-xs text-gray-500">
                     ~{cursor.estimatedRecordsProcessed.toLocaleString('pt-BR')} registros
                   </p>
                 </div>
