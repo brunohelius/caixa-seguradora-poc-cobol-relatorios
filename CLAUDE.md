@@ -59,6 +59,47 @@ Before creating ANY file, ask yourself:
 
 **Remember**: The `/specs/` directory structure is DYNAMIC (new features create new subdirectories), but it should NEVER contain executable code.
 
+## CRITICAL TESTING RULES
+
+**⚠️ MANDATORY: NEVER CLAIM CODE IS WORKING WITHOUT TESTING**
+
+### Testing Requirements Before Claiming Success
+
+1. **LOCAL TESTING REQUIRED**: NEVER say "está funcionando" or "deploy concluído com sucesso" without ACTUALLY testing:
+   - Open the application in a browser (localhost for local, Railway URL for production)
+   - Verify the page loads WITHOUT errors
+   - Check browser console for JavaScript errors
+   - Verify all components render correctly
+
+2. **DEPLOYMENT VERIFICATION**: After Railway deployment, you MUST:
+   - Wait for build to complete
+   - Open the Railway URL in browser
+   - Verify application loads successfully
+   - Test critical user flows
+   - Check for any runtime errors
+
+3. **DEPENDENCY VERIFICATION**: Before claiming frontend is working:
+   - Verify ALL npm packages are installed
+   - Check Vite dev server runs WITHOUT errors in console
+   - Confirm no missing imports or module resolution errors
+   - Test that the page actually renders
+
+4. **WHAT TO SAY INSTEAD**:
+   - ❌ WRONG: "Pronto! Frontend funcionando perfeitamente!"
+   - ✅ CORRECT: "Deploy iniciado. Aguardando build completar para testar..."
+   - ✅ CORRECT: "Vite rodando sem erros de compilação. Testando navegador..."
+   - ✅ CORRECT: "Abri no navegador e CONFIRMEI que está funcionando"
+
+### Historical Issue (DO NOT REPEAT)
+
+**Date**: October 28, 2025
+**Problem**: Claimed frontend was "working perfectly" without testing, had missing dependencies
+**Impact**: Railway deployment showed error page, localhost had missing @radix-ui/react-select
+**Resolution**: Had to install missing package and redeploy
+**Root Cause**: Didn't actually test - just assumed code would work
+
+**Remember**: WORDS LIKE "FUNCIONANDO", "SUCESSO", "PRONTO" REQUIRE ACTUAL TESTING PROOF.
+
 ## Project Overview
 
 This repository contains the COBOL RG1866B to .NET 9 migration project for Caixa Seguradora's SUSEP Circular 360 Premium Reporting System. The project migrates a legacy COBOL batch program (~5,000 lines processing 687 data items across 26+ database tables) to a modern full-stack application with .NET 9 backend and React frontend.
