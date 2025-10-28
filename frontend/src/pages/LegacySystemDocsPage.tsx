@@ -7,26 +7,36 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   AlertCircle,
   AlertTriangle,
+  ArrowRight,
   BarChart,
   BookOpen,
+  Boxes,
   CheckCircle2,
   Clock,
   Cloud,
+  Code,
   Code2,
   Database,
   FileSearch,
   FileText,
   GitBranch,
   History,
+  Info,
   Layers,
+  Link2,
   Map,
+  Package,
   Settings,
+  Share2,
+  TestTube,
   TrendingUp,
   Trophy,
+  Type,
   Users,
   Workflow,
   Zap
 } from 'lucide-react';
+import { BusinessLogicTab } from '../components/legacy-system/BusinessLogicTab';
 
 export default function LegacySystemDocsPage() {
   return (
@@ -683,187 +693,255 @@ export default function LegacySystemDocsPage() {
         </TabsContent>
 
         <TabsContent value="business" className="space-y-6">
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Lógica de Negócio - 147+ Regras</h2>
-
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-6 mb-6">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Métricas de Lógica de Negócio</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white p-4 rounded shadow">
-                  <div className="text-3xl font-bold text-blue-600">63</div>
-                  <div className="text-sm text-gray-600">Total de Seções</div>
-                </div>
-                <div className="bg-white p-4 rounded shadow">
-                  <div className="text-3xl font-bold text-purple-600">147+</div>
-                  <div className="text-sm text-gray-600">Regras de Negócio</div>
-                </div>
-                <div className="bg-white p-4 rounded shadow">
-                  <div className="text-3xl font-bold text-green-600">6</div>
-                  <div className="text-sm text-gray-600">Tipos de Movimento</div>
-                </div>
-                <div className="bg-white p-4 rounded shadow">
-                  <div className="text-3xl font-bold text-orange-600">38</div>
-                  <div className="text-sm text-gray-600">Fórmulas de Cálculo</div>
-                </div>
-              </div>
-            </div>
-
-            <section className="mb-8">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Tipos de Movimento (COD_TIPO_MOVIMENTO)</h3>
-              <div className="overflow-x-auto">
-                <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-                  <thead className="bg-gray-100">
-                    <tr>
-                      <th className="py-3 px-4 text-left font-semibold">Código</th>
-                      <th className="py-3 px-4 text-left font-semibold">Descrição</th>
-                      <th className="py-3 px-4 text-left font-semibold">Impacto no Prêmio</th>
-                      <th className="py-3 px-4 text-left font-semibold">Seção COBOL</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    <tr className="bg-green-50">
-                      <td className="py-3 px-4 font-bold">101</td>
-                      <td className="py-3 px-4">Emissão</td>
-                      <td className="py-3 px-4 text-green-700 font-semibold">+Prêmio Integral</td>
-                      <td className="py-3 px-4 font-mono">R1100</td>
-                    </tr>
-                    <tr className="bg-blue-50">
-                      <td className="py-3 px-4 font-bold">102</td>
-                      <td className="py-3 px-4">Endosso Aumento</td>
-                      <td className="py-3 px-4 text-blue-700 font-semibold">+Prêmio Adicional</td>
-                      <td className="py-3 px-4 font-mono">R1200</td>
-                    </tr>
-                    <tr className="bg-yellow-50">
-                      <td className="py-3 px-4 font-bold">103</td>
-                      <td className="py-3 px-4">Endosso Redução</td>
-                      <td className="py-3 px-4 text-yellow-700 font-semibold">-Prêmio Devolvido</td>
-                      <td className="py-3 px-4 font-mono">R1300</td>
-                    </tr>
-                    <tr className="bg-red-50">
-                      <td className="py-3 px-4 font-bold">104</td>
-                      <td className="py-3 px-4">Cancelamento</td>
-                      <td className="py-3 px-4 text-red-700 font-semibold">-Prêmio Integral</td>
-                      <td className="py-3 px-4 font-mono">R1400</td>
-                    </tr>
-                    <tr className="bg-purple-50">
-                      <td className="py-3 px-4 font-bold">105</td>
-                      <td className="py-3 px-4">Renovação</td>
-                      <td className="py-3 px-4 text-purple-700 font-semibold">+Prêmio Nova Vigência</td>
-                      <td className="py-3 px-4 font-mono">R1500</td>
-                    </tr>
-                    <tr className="bg-orange-50">
-                      <td className="py-3 px-4 font-bold">106</td>
-                      <td className="py-3 px-4">Substituição</td>
-                      <td className="py-3 px-4 text-orange-700 font-semibold">±Diferença Prêmio</td>
-                      <td className="py-3 px-4 font-mono">R1600</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </section>
-
-            <section className="mb-8">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Exemplo: R1100 - Processamento de Emissão</h3>
-              <div className="bg-gray-900 text-gray-100 p-6 rounded-lg font-mono text-sm overflow-x-auto">
-                <pre>{`R1100-PROCESSAR-EMISSAO.
-    MOVE REGISTRO-PREMIO-LIQUIDO TO WS-PREMIO-CALCULADO.
-    MOVE REGISTRO-PREMIO-TOTAL TO WS-PREMIO-EMITIDO.
-    MOVE REGISTRO-IOF TO WS-IOF-CALCULADO.
-
-    *> Calcular adicional de fracionamento
-    IF APOLICE-NUM-PARCELAS > 1
-        COMPUTE WS-ADICIONAL-FRAC =
-            REGISTRO-PREMIO-LIQUIDO * 0.0538  *> 5.38% taxa padrão
-        ADD WS-ADICIONAL-FRAC TO WS-PREMIO-EMITIDO
-    END-IF.
-
-    *> Validar vigência
-    IF APOLICE-DATA-VIG-INI > WS-DATA-PROCESSAMENTO
-        MOVE 'W' TO WS-STATUS-VALIDACAO  *> Warning: vigência futura
-    END-IF.`}</pre>
-              </div>
-
-              <div className="mt-4 bg-green-50 border border-green-200 rounded-lg p-4">
-                <h4 className="font-bold text-green-900 mb-2">Migração para .NET</h4>
-                <pre className="bg-white p-4 rounded font-mono text-xs overflow-x-auto">{`public class EmissionCalculationService
-{
-    private const decimal DEFAULT_INSTALLMENT_FEE_RATE = 0.0538m; // 5.38%
-
-    public PremiumCalculation CalculateEmission(Premium premium, Policy policy)
-    {
-        var calculation = new PremiumCalculation
-        {
-            NetPremium = premium.NetPremium,
-            GrossPremium = premium.TotalPremium,
-            IOF = premium.IOF
-        };
-
-        // Adicional de fracionamento
-        if (policy.InstallmentCount > 1)
-        {
-            calculation.InstallmentFee = premium.NetPremium * DEFAULT_INSTALLMENT_FEE_RATE;
-            calculation.GrossPremium += calculation.InstallmentFee;
-        }
-
-        // Validações
-        if (policy.EffectiveStartDate > _processingDate)
-        {
-            calculation.Warnings.Add("Vigência futura");
-        }
-
-        return calculation;
-    }
-}`}</pre>
-              </div>
-            </section>
-          </div>
+          <BusinessLogicTab />
         </TabsContent>
 
         {/* Modules Tab */}
         <TabsContent value="modules" className="space-y-6">
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Módulos Externos - 3 Componentes</h2>
-
-            <p className="text-gray-700 mb-6">
-              O programa RG1866B depende de 3 módulos externos (subprogramas COBOL) que fornecem funcionalidades reutilizáveis.
-              Estes módulos são chamados via CALL statement e seguem o padrão de comunicação por área de linkage.
+          {/* Hero Section */}
+          <div className="bg-gradient-to-r from-[#0047BB] to-indigo-700 rounded-2xl shadow-2xl p-8 text-white">
+            <div className="flex items-center gap-4 mb-4">
+              <Package className="w-12 h-12" />
+              <div>
+                <h2 className="text-4xl font-bold">Módulos Externos</h2>
+                <p className="text-xl text-blue-100 mt-1">3 subprogramas COBOL reutilizáveis</p>
+              </div>
+            </div>
+            <p className="text-lg leading-relaxed text-blue-50">
+              O programa RG1866B depende de <strong>3 módulos externos</strong> (subprogramas COBOL) que fornecem
+              funcionalidades reutilizáveis. Estes módulos são chamados via <code className="bg-white/20 px-2 py-1 rounded">CALL</code> statement
+              e seguem o padrão de comunicação por área de linkage.
             </p>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <h3 className="text-xl font-bold text-blue-900 mb-3">RE0001S</h3>
-                <p className="text-sm text-gray-700 mb-2"><strong>Propósito:</strong> Cálculos de resseguro</p>
-                <p className="text-sm text-gray-700 mb-2"><strong>Chamadas:</strong> ~500-1000/execução</p>
-                <p className="text-sm text-gray-700"><strong>Localização:</strong> PROD.LOADLIB</p>
+          {/* Modules Overview Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* RE0001S Module */}
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-lg border-2 border-blue-300 p-6 hover:shadow-2xl transition-shadow">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white">
+                  <Share2 className="w-6 h-6" />
+                </div>
+                <h3 className="text-2xl font-bold text-blue-900">RE0001S</h3>
               </div>
-
-              <div className="bg-green-50 border border-green-200 rounded-lg p-6">
-                <h3 className="text-xl font-bold text-green-900 mb-3">GE0009S</h3>
-                <p className="text-sm text-gray-700 mb-2"><strong>Propósito:</strong> Formatações especiais</p>
-                <p className="text-sm text-gray-700 mb-2"><strong>Chamadas:</strong> ~10.000/execução</p>
-                <p className="text-sm text-gray-700"><strong>Localização:</strong> SYS1.COBLIB</p>
-              </div>
-
-              <div className="bg-purple-50 border border-purple-200 rounded-lg p-6">
-                <h3 className="text-xl font-bold text-purple-900 mb-3">GE0010S</h3>
-                <p className="text-sm text-gray-700 mb-2"><strong>Propósito:</strong> Validações de dados</p>
-                <p className="text-sm text-gray-700 mb-2"><strong>Chamadas:</strong> ~8.000/execução</p>
-                <p className="text-sm text-gray-700"><strong>Localização:</strong> SYS1.COBLIB</p>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2">
+                  <span className="font-semibold text-blue-800 min-w-[110px]">Propósito:</span>
+                  <span className="text-gray-700">Cálculos de resseguro</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="font-semibold text-blue-800 min-w-[110px]">Chamadas:</span>
+                  <span className="text-gray-700">~500-1000/execução</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="font-semibold text-blue-800 min-w-[110px]">Localização:</span>
+                  <span className="text-gray-700 font-mono text-sm">PROD.LOADLIB</span>
+                </div>
               </div>
             </div>
 
-            <section className="mb-8">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">RE0001S - Módulo de Resseguro</h3>
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <p className="text-gray-700 mb-4">
-                  Calcula valores de resseguro (reinsurance) para apólices que excedem limites de retenção da seguradora.
-                  Implementa regras complexas de distribuição proporcional e por camadas (layers).
-                </p>
+            {/* GE0009S Module */}
+            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-lg border-2 border-green-300 p-6 hover:shadow-2xl transition-shadow">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center text-white">
+                  <Type className="w-6 h-6" />
+                </div>
+                <h3 className="text-2xl font-bold text-green-900">GE0009S</h3>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2">
+                  <span className="font-semibold text-green-800 min-w-[110px]">Propósito:</span>
+                  <span className="text-gray-700">Formatação de campos</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="font-semibold text-green-800 min-w-[110px]">Chamadas:</span>
+                  <span className="text-gray-700">~10.000/execução</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="font-semibold text-green-800 min-w-[110px]">Localização:</span>
+                  <span className="text-gray-700 font-mono text-sm">SYS1.COBLIB</span>
+                </div>
+              </div>
+            </div>
 
-                <h4 className="font-bold text-gray-800 mb-3">Estratégia de Migração para .NET</h4>
-                <pre className="bg-gray-900 text-gray-100 p-4 rounded font-mono text-xs overflow-x-auto">{`public interface IReinsuranceService
+            {/* GE0010S Module */}
+            <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl shadow-lg border-2 border-purple-300 p-6 hover:shadow-2xl transition-shadow">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center text-white">
+                  <CheckCircle2 className="w-6 h-6" />
+                </div>
+                <h3 className="text-2xl font-bold text-purple-900">GE0010S</h3>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2">
+                  <span className="font-semibold text-purple-800 min-w-[110px]">Propósito:</span>
+                  <span className="text-gray-700">Validação de dados</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="font-semibold text-purple-800 min-w-[110px]">Chamadas:</span>
+                  <span className="text-gray-700">~8.000/execução</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="font-semibold text-purple-800 min-w-[110px]">Localização:</span>
+                  <span className="text-gray-700 font-mono text-sm">SYS1.COBLIB</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Communication Pattern Section */}
+          <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-gray-200">
+            <div className="flex items-center gap-3 mb-4">
+              <Link2 className="w-8 h-8 text-[#0047BB]" />
+              <h3 className="text-2xl font-bold text-gray-900">Padrão de Comunicação</h3>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* COBOL Pattern */}
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                  <Code className="w-5 h-5 text-gray-600" />
+                  Padrão COBOL
+                </h4>
+                <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg font-mono text-xs overflow-x-auto border-2 border-gray-700">{`*> Padrão de chamada COBOL
+CALL 'MODULENAME' USING
+    BY REFERENCE AREA-ENTRADA
+    BY REFERENCE AREA-SAIDA
+    BY REFERENCE AREA-RETORNO.
+
+IF RETORNO-STATUS NOT = '00'
+    PERFORM TRATAR-ERRO-MODULO
+END-IF.`}</pre>
+              </div>
+
+              {/* .NET Pattern */}
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                  <Code className="w-5 h-5 text-blue-600" />
+                  Migração .NET
+                </h4>
+                <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg font-mono text-xs overflow-x-auto border-2 border-blue-700">{`// Padrão de serviço .NET
+public interface IModuleService
+{
+    Task<ModuleResponse> ExecuteAsync(
+        ModuleRequest request);
+}
+
+public class ModuleResponse
+{
+    public string StatusCode { get; set; }
+    public string ErrorMessage { get; set; }
+    public object Result { get; set; }
+}`}</pre>
+              </div>
+            </div>
+          </div>
+
+          {/* RE0001S - Reinsurance Module */}
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl shadow-lg p-6 border-2 border-blue-300">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white">
+                <Share2 className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-3xl font-bold text-blue-900">RE0001S - Módulo de Resseguro</h3>
+                <p className="text-blue-700">Cálculos complexos de reinsurance</p>
+              </div>
+            </div>
+
+            {/* Purpose */}
+            <div className="bg-white rounded-lg p-5 mb-6 border-2 border-blue-200">
+              <h4 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                <Info className="w-5 h-5 text-blue-600" />
+                Propósito
+              </h4>
+              <p className="text-gray-700 leading-relaxed">
+                Calcular valores de resseguro (reinsurance) para apólices que excedem limites de retenção da seguradora.
+                Implementa regras complexas de distribuição proporcional e por camadas (layers).
+              </p>
+            </div>
+
+            {/* Interface Details */}
+            <div className="space-y-4">
+              <h4 className="font-bold text-gray-800 text-lg">Interface COBOL</h4>
+
+              {/* Input Area */}
+              <div className="bg-white rounded-lg p-4 border-2 border-blue-200">
+                <h5 className="font-semibold text-blue-800 mb-2">Área de Entrada (LINKAGE SECTION)</h5>
+                <pre className="bg-gray-900 text-gray-100 p-4 rounded font-mono text-xs overflow-x-auto">{`01  RE0001S-ENTRADA.
+    05  RE-COD-CIA              PIC 9(5).
+    05  RE-NUM-APOLICE          PIC X(20).
+    05  RE-PREMIO-TOTAL         PIC 9(15)V99 COMP-3.
+    05  RE-IMPORTANCIA-SEGURADA PIC 9(15)V99 COMP-3.
+    05  RE-RAMO-SUSEP           PIC 9(4).
+    05  RE-TIPO-CALCULO         PIC X(1).
+        88  RE-CALC-PROPORCIONAL   VALUE 'P'.
+        88  RE-CALC-EXCEDENTE      VALUE 'E'.
+        88  RE-CALC-NAO-PROPORCIONAL VALUE 'N'.`}</pre>
+              </div>
+
+              {/* Output Area */}
+              <div className="bg-white rounded-lg p-4 border-2 border-blue-200">
+                <h5 className="font-semibold text-blue-800 mb-2">Área de Saída</h5>
+                <pre className="bg-gray-900 text-gray-100 p-4 rounded font-mono text-xs overflow-x-auto">{`01  RE0001S-SAIDA.
+    05  RE-PREMIO-RETIDO        PIC 9(15)V99 COMP-3.
+    05  RE-PREMIO-CEDIDO        PIC 9(15)V99 COMP-3.
+    05  RE-PERCENTUAL-CEDIDO    PIC 9(3)V99 COMP-3.
+    05  RE-QTD-RESSEGURADORES   PIC 9(3).
+    05  RE-RESSEGURADORES OCCURS 10 TIMES.
+        10  RE-COD-RESSEGURADOR PIC 9(5).
+        10  RE-NOME-RESSEGURADOR PIC X(50).
+        10  RE-PREMIO-RESSEG    PIC 9(15)V99 COMP-3.
+        10  RE-PERC-RESSEG      PIC 9(3)V99 COMP-3.`}</pre>
+              </div>
+
+              {/* Return Area */}
+              <div className="bg-white rounded-lg p-4 border-2 border-blue-200">
+                <h5 className="font-semibold text-blue-800 mb-2">Área de Retorno</h5>
+                <pre className="bg-gray-900 text-gray-100 p-4 rounded font-mono text-xs overflow-x-auto">{`01  RE0001S-RETORNO.
+    05  RE-STATUS               PIC X(2).
+        88  RE-SUCESSO             VALUE '00'.
+        88  RE-ERRO-PARAMETRO      VALUE '10'.
+        88  RE-ERRO-CALCULO        VALUE '20'.
+        88  RE-ERRO-LIMITES        VALUE '30'.
+    05  RE-MENSAGEM-ERRO        PIC X(100).`}</pre>
+              </div>
+            </div>
+
+            {/* .NET Migration */}
+            <div className="mt-6 bg-white rounded-lg p-5 border-2 border-blue-300">
+              <h4 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <ArrowRight className="w-5 h-5 text-blue-600" />
+                Migração .NET
+              </h4>
+              <pre className="bg-gray-900 text-gray-100 p-4 rounded font-mono text-xs overflow-x-auto max-h-96">{`public interface IReinsuranceService
 {
     Task<ReinsuranceCalculation> CalculateAsync(ReinsuranceRequest request);
+}
+
+public class ReinsuranceRequest
+{
+    public int CompanyCode { get; set; }
+    public string PolicyNumber { get; set; }
+    public decimal TotalPremium { get; set; }
+    public decimal InsuredAmount { get; set; }
+    public int SusepBranch { get; set; }
+    public ReinsuranceCalculationType CalculationType { get; set; }
+}
+
+public enum ReinsuranceCalculationType
+{
+    Proportional,      // Proporcional
+    SurplusShare,      // Excedente
+    NonProportional    // Não-proporcional
+}
+
+public class ReinsuranceCalculation
+{
+    public decimal RetainedPremium { get; set; }
+    public decimal CededPremium { get; set; }
+    public decimal CededPercentage { get; set; }
+    public List<ReinsurerParticipation> Reinsurers { get; set; }
 }
 
 public class ReinsuranceService : IReinsuranceService
@@ -877,15 +955,22 @@ public class ReinsuranceService : IReinsuranceService
         { 571, 10000000m }   // Previdência: R$ 10.000.000
     };
 
-    public async Task<ReinsuranceCalculation> CalculateAsync(ReinsuranceRequest request)
+    public async Task<ReinsuranceCalculation> CalculateAsync(
+        ReinsuranceRequest request)
     {
         var retentionLimit = GetRetentionLimit(request.SusepBranch);
 
         var calculation = request.CalculationType switch
         {
-            ReinsuranceCalculationType.Proportional => CalculateProportional(request, retentionLimit),
-            ReinsuranceCalculationType.SurplusShare => CalculateSurplusShare(request, retentionLimit),
-            ReinsuranceCalculationType.NonProportional => CalculateNonProportional(request, retentionLimit),
+            ReinsuranceCalculationType.Proportional =>
+                CalculateProportional(request, retentionLimit),
+
+            ReinsuranceCalculationType.SurplusShare =>
+                CalculateSurplusShare(request, retentionLimit),
+
+            ReinsuranceCalculationType.NonProportional =>
+                CalculateNonProportional(request, retentionLimit),
+
             _ => throw new ArgumentException("Tipo de cálculo inválido")
         };
 
@@ -893,10 +978,428 @@ public class ReinsuranceService : IReinsuranceService
         return calculation;
     }
 }`}</pre>
+            </div>
+          </div>
+
+          {/* GE0009S - Formatting Module */}
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl shadow-lg p-6 border-2 border-green-300">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center text-white">
+                <Type className="w-6 h-6" />
               </div>
-            </section>
+              <div>
+                <h3 className="text-3xl font-bold text-green-900">GE0009S - Módulo de Formatação</h3>
+                <p className="text-green-700">Formatação de campos fixed-width</p>
+              </div>
+            </div>
+
+            {/* Purpose */}
+            <div className="bg-white rounded-lg p-5 mb-6 border-2 border-green-200">
+              <h4 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                <Info className="w-5 h-5 text-green-600" />
+                Propósito
+              </h4>
+              <p className="text-gray-700 leading-relaxed">
+                Formatar campos numéricos e alfanuméricos para saída em arquivos fixed-width (PREMIT.TXT, PREMCED.TXT).
+                Garante padding correto, alinhamento e conversão de tipos.
+              </p>
+            </div>
+
+            {/* Interface Details */}
+            <div className="space-y-4">
+              <h4 className="font-bold text-gray-800 text-lg">Interface COBOL</h4>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* Input Area */}
+                <div className="bg-white rounded-lg p-4 border-2 border-green-200">
+                  <h5 className="font-semibold text-green-800 mb-2">Área de Entrada</h5>
+                  <pre className="bg-gray-900 text-gray-100 p-3 rounded font-mono text-xs overflow-x-auto">{`01  GE0009S-ENTRADA.
+    05  GE-TIPO-FORMATO         PIC X(1).
+        88  GE-FORMATO-NUMERICO    VALUE 'N'.
+        88  GE-FORMATO-ALFANUMERICO VALUE 'A'.
+        88  GE-FORMATO-DATA        VALUE 'D'.
+        88  GE-FORMATO-MOEDA       VALUE 'M'.
+    05  GE-VALOR-ENTRADA        PIC X(50).
+    05  GE-TAMANHO-SAIDA        PIC 9(3).
+    05  GE-CASAS-DECIMAIS       PIC 9(2).
+    05  GE-CARACTERE-PREENCHIMENTO PIC X(1).`}</pre>
+                </div>
+
+                {/* Output Area */}
+                <div className="bg-white rounded-lg p-4 border-2 border-green-200">
+                  <h5 className="font-semibold text-green-800 mb-2">Área de Saída</h5>
+                  <pre className="bg-gray-900 text-gray-100 p-3 rounded font-mono text-xs overflow-x-auto">{`01  GE0009S-SAIDA.
+    05  GE-VALOR-FORMATADO      PIC X(100).`}</pre>
+                </div>
+              </div>
+            </div>
+
+            {/* .NET Migration */}
+            <div className="mt-6 bg-white rounded-lg p-5 border-2 border-green-300">
+              <h4 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <ArrowRight className="w-5 h-5 text-green-600" />
+                Migração .NET
+              </h4>
+              <pre className="bg-gray-900 text-gray-100 p-4 rounded font-mono text-xs overflow-x-auto max-h-96">{`public interface IFixedWidthFormatter
+{
+    string FormatNumeric(decimal value, int totalWidth, int decimalPlaces);
+    string FormatAlphanumeric(string value, int width);
+    string FormatDate(DateTime date, string format, int width);
+    string FormatMoney(decimal amount, int totalWidth, int decimalPlaces);
+}
+
+public class FixedWidthFormatter : IFixedWidthFormatter
+{
+    public string FormatNumeric(decimal value, int totalWidth, int decimalPlaces)
+    {
+        // Remove ponto decimal e preenche com zeros à esquerda
+        var scaledValue = (long)(value * (decimal)Math.Pow(10, decimalPlaces));
+        return scaledValue.ToString().PadLeft(totalWidth, '0');
+    }
+
+    public string FormatAlphanumeric(string value, int width)
+    {
+        // Trunca ou preenche com espaços à direita
+        if (string.IsNullOrEmpty(value))
+            return new string(' ', width);
+
+        return value.Length > width
+            ? value.Substring(0, width)
+            : value.PadRight(width, ' ');
+    }
+
+    public string FormatDate(DateTime date, string format, int width)
+    {
+        var formatted = date.ToString(format);
+        return FormatAlphanumeric(formatted, width);
+    }
+
+    public string FormatMoney(decimal amount, int totalWidth, int decimalPlaces)
+    {
+        if (amount < 0)
+            throw new ArgumentException(
+                "Valores monetários não podem ser negativos");
+
+        return FormatNumeric(amount, totalWidth, decimalPlaces);
+    }
+}`}</pre>
+            </div>
+          </div>
+
+          {/* GE0010S - Validation Module */}
+          <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl shadow-lg p-6 border-2 border-purple-300">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center text-white">
+                <CheckCircle2 className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-3xl font-bold text-purple-900">GE0010S - Módulo de Validação</h3>
+                <p className="text-purple-700">Validação centralizada de dados</p>
+              </div>
+            </div>
+
+            {/* Purpose */}
+            <div className="bg-white rounded-lg p-5 mb-6 border-2 border-purple-200">
+              <h4 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                <Info className="w-5 h-5 text-purple-600" />
+                Propósito
+              </h4>
+              <p className="text-gray-700 leading-relaxed">
+                Validar dados de entrada (CPF, CNPJ, datas, códigos) usando regras padrão da Caixa Seguradora.
+                Centraliza lógica de validação para reuso em múltiplos programas.
+              </p>
+            </div>
+
+            {/* Interface Details */}
+            <div className="space-y-4">
+              <h4 className="font-bold text-gray-800 text-lg">Interface COBOL</h4>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* Input Area */}
+                <div className="bg-white rounded-lg p-4 border-2 border-purple-200">
+                  <h5 className="font-semibold text-purple-800 mb-2">Área de Entrada</h5>
+                  <pre className="bg-gray-900 text-gray-100 p-3 rounded font-mono text-xs overflow-x-auto">{`01  GE0010S-ENTRADA.
+    05  GE-TIPO-VALIDACAO       PIC X(2).
+        88  GE-VALIDAR-CPF         VALUE 'CP'.
+        88  GE-VALIDAR-CNPJ        VALUE 'CN'.
+        88  GE-VALIDAR-DATA        VALUE 'DT'.
+        88  GE-VALIDAR-CODIGO      VALUE 'CD'.
+    05  GE-VALOR-VALIDAR        PIC X(50).
+    05  GE-PARAMETRO-VALIDACAO  PIC X(20).`}</pre>
+                </div>
+
+                {/* Output Area */}
+                <div className="bg-white rounded-lg p-4 border-2 border-purple-200">
+                  <h5 className="font-semibold text-purple-800 mb-2">Área de Saída</h5>
+                  <pre className="bg-gray-900 text-gray-100 p-3 rounded font-mono text-xs overflow-x-auto">{`01  GE0010S-SAIDA.
+    05  GE-VALIDACAO-OK         PIC X(1).
+        88  GE-VALIDO              VALUE 'S'.
+        88  GE-INVALIDO            VALUE 'N'.
+    05  GE-MENSAGEM-VALIDACAO   PIC X(100).`}</pre>
+                </div>
+              </div>
+            </div>
+
+            {/* .NET Migration */}
+            <div className="mt-6 bg-white rounded-lg p-5 border-2 border-purple-300">
+              <h4 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <ArrowRight className="w-5 h-5 text-purple-600" />
+                Migração .NET
+              </h4>
+              <pre className="bg-gray-900 text-gray-100 p-4 rounded font-mono text-xs overflow-x-auto max-h-96">{`public interface IValidationService
+{
+    ValidationResult ValidateCPF(string cpf);
+    ValidationResult ValidateCNPJ(string cnpj);
+    ValidationResult ValidateDate(DateTime date, DateValidationType type);
+    ValidationResult ValidateCode(string code, string codeType);
+}
+
+public class ValidationResult
+{
+    public bool IsValid { get; set; }
+    public string ErrorMessage { get; set; }
+
+    public static ValidationResult Success() =>
+        new ValidationResult { IsValid = true };
+
+    public static ValidationResult Failure(string message) =>
+        new ValidationResult { IsValid = false, ErrorMessage = message };
+}
+
+public class ValidationService : IValidationService
+{
+    public ValidationResult ValidateCPF(string cpf)
+    {
+        if (string.IsNullOrWhiteSpace(cpf))
+            return ValidationResult.Failure("CPF não informado");
+
+        cpf = new string(cpf.Where(char.IsDigit).ToArray());
+
+        if (cpf.Length != 11)
+            return ValidationResult.Failure("CPF deve conter 11 dígitos");
+
+        if (cpf.All(c => c == cpf[0]))
+            return ValidationResult.Failure("CPF com dígitos repetidos");
+
+        // Calcular dígitos verificadores
+        var digits = cpf.Select(c => int.Parse(c.ToString())).ToArray();
+
+        var sum1 = 0;
+        for (int i = 0; i < 9; i++)
+            sum1 += digits[i] * (10 - i);
+
+        var remainder1 = sum1 % 11;
+        var digit1 = remainder1 < 2 ? 0 : 11 - remainder1;
+
+        if (digits[9] != digit1)
+            return ValidationResult.Failure("CPF inválido (1º dígito)");
+
+        var sum2 = 0;
+        for (int i = 0; i < 10; i++)
+            sum2 += digits[i] * (11 - i);
+
+        var remainder2 = sum2 % 11;
+        var digit2 = remainder2 < 2 ? 0 : 11 - remainder2;
+
+        if (digits[10] != digit2)
+            return ValidationResult.Failure("CPF inválido (2º dígito)");
+
+        return ValidationResult.Success();
+    }
+
+    public ValidationResult ValidateCNPJ(string cnpj)
+    {
+        if (string.IsNullOrWhiteSpace(cnpj))
+            return ValidationResult.Failure("CNPJ não informado");
+
+        cnpj = new string(cnpj.Where(char.IsDigit).ToArray());
+
+        if (cnpj.Length != 14)
+            return ValidationResult.Failure("CNPJ deve conter 14 dígitos");
+
+        if (cnpj.All(c => c == cnpj[0]))
+            return ValidationResult.Failure("CNPJ com dígitos repetidos");
+
+        // Algoritmo de validação CNPJ (simplificado)
+        return ValidationResult.Success();
+    }
+}`}</pre>
+            </div>
+          </div>
+
+          {/* Migration Strategy Section */}
+          <div className="bg-gradient-to-r from-amber-50 to-orange-100 rounded-xl shadow-lg p-6 border-2 border-amber-300">
+            <div className="flex items-center gap-3 mb-6">
+              <Boxes className="w-10 h-10 text-amber-700" />
+              <h3 className="text-3xl font-bold text-gray-900">Estratégia de Migração</h3>
+            </div>
+
+            {/* Phase 1: Module Mapping */}
+            <div className="bg-white rounded-lg p-5 mb-4 border-2 border-amber-200">
+              <h4 className="font-bold text-gray-800 mb-4 text-lg">Fase 1: Mapeamento de Módulos</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-amber-100">
+                    <tr>
+                      <th className="px-4 py-3 text-left font-bold text-gray-800">Módulo COBOL</th>
+                      <th className="px-4 py-3 text-left font-bold text-gray-800">Serviço .NET</th>
+                      <th className="px-4 py-3 text-left font-bold text-gray-800">Localização</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    <tr className="hover:bg-amber-50">
+                      <td className="px-4 py-3 font-mono text-blue-700">RE0001S</td>
+                      <td className="px-4 py-3 font-mono text-sm">ReinsuranceService</td>
+                      <td className="px-4 py-3 text-xs text-gray-600">CaixaSeguradora.Core/Services/</td>
+                    </tr>
+                    <tr className="hover:bg-amber-50">
+                      <td className="px-4 py-3 font-mono text-green-700">GE0009S</td>
+                      <td className="px-4 py-3 font-mono text-sm">FixedWidthFormatter</td>
+                      <td className="px-4 py-3 text-xs text-gray-600">CaixaSeguradora.Infrastructure/Formatters/</td>
+                    </tr>
+                    <tr className="hover:bg-amber-50">
+                      <td className="px-4 py-3 font-mono text-purple-700">GE0010S</td>
+                      <td className="px-4 py-3 font-mono text-sm">ValidationService</td>
+                      <td className="px-4 py-3 text-xs text-gray-600">CaixaSeguradora.Core/Services/</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Phase 2: Dependency Injection */}
+            <div className="bg-white rounded-lg p-5 mb-4 border-2 border-amber-200">
+              <h4 className="font-bold text-gray-800 mb-3 text-lg">Fase 2: Dependency Injection</h4>
+              <pre className="bg-gray-900 text-gray-100 p-4 rounded font-mono text-xs overflow-x-auto">{`// Program.cs
+builder.Services.AddScoped<IReinsuranceService, ReinsuranceService>();
+builder.Services.AddSingleton<IFixedWidthFormatter, FixedWidthFormatter>();
+builder.Services.AddScoped<IValidationService, ValidationService>();`}</pre>
+            </div>
+
+            {/* Phase 3: Compatibility Tests */}
+            <div className="bg-white rounded-lg p-5 border-2 border-amber-200">
+              <h4 className="font-bold text-gray-800 mb-3 text-lg">Fase 3: Testes de Compatibilidade</h4>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-amber-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">1</div>
+                  <p className="text-gray-700 pt-1">Capturar inputs/outputs de chamadas COBOL reais</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-amber-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">2</div>
+                  <p className="text-gray-700 pt-1">Executar mesmos inputs nos serviços .NET</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-amber-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">3</div>
+                  <p className="text-gray-700 pt-1">Comparar outputs byte-a-byte</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-amber-600 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">4</div>
+                  <p className="text-gray-700 pt-1">Validar 100% de compatibilidade para conformidade regulatória</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Integration Tests Section */}
+          <div className="bg-white rounded-xl shadow-lg p-6 border-2 border-gray-200">
+            <div className="flex items-center gap-3 mb-6">
+              <TestTube className="w-10 h-10 text-[#0047BB]" />
+              <h3 className="text-3xl font-bold text-gray-900">Testes de Integração</h3>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Reinsurance Test */}
+              <div className="bg-blue-50 rounded-lg p-4 border-2 border-blue-200">
+                <h4 className="font-bold text-blue-900 mb-3">Teste de Resseguro</h4>
+                <pre className="bg-gray-900 text-gray-100 p-3 rounded font-mono text-xs overflow-x-auto">{`[Fact]
+public async Task ReinsuranceCalculation_
+  ShouldMatch_COBOLOutput()
+{
+    var request = new ReinsuranceRequest
+    {
+        CompanyCode = 1,
+        PolicyNumber = "000000012345678",
+        TotalPremium = 5000000.00m,
+        InsuredAmount = 10000000.00m,
+        SusepBranch = 531,
+        CalculationType =
+            ReinsuranceCalculationType.SurplusShare
+    };
+
+    var result = await _service.CalculateAsync(request);
+
+    Assert.Equal(1000000.00m, result.RetainedPremium);
+    Assert.Equal(4000000.00m, result.CededPremium);
+    Assert.Equal(80.00m, result.CededPercentage);
+}`}</pre>
+              </div>
+
+              {/* Formatting Test */}
+              <div className="bg-green-50 rounded-lg p-4 border-2 border-green-200">
+                <h4 className="font-bold text-green-900 mb-3">Teste de Formatação</h4>
+                <pre className="bg-gray-900 text-gray-100 p-3 rounded font-mono text-xs overflow-x-auto">{`[Theory]
+[InlineData(12345.67, 15, 2, "000000001234567")]
+[InlineData(0.00, 15, 2, "000000000000000")]
+[InlineData(999999999999.99, 15, 2, "99999999999999")]
+public void FormatMoney_ShouldMatch_COBOLOutput(
+    decimal amount,
+    int width,
+    int decimals,
+    string expected)
+{
+    var result = _formatter.FormatMoney(
+        amount, width, decimals);
+
+    Assert.Equal(expected, result);
+}`}</pre>
+              </div>
+
+              {/* Validation Test */}
+              <div className="bg-purple-50 rounded-lg p-4 border-2 border-purple-200">
+                <h4 className="font-bold text-purple-900 mb-3">Teste de Validação</h4>
+                <pre className="bg-gray-900 text-gray-100 p-3 rounded font-mono text-xs overflow-x-auto">{`[Theory]
+[InlineData("12345678909", true)]
+[InlineData("00000000000", false)]
+[InlineData("123", false)]
+public void ValidateCPF_ShouldMatch_COBOLBehavior(
+    string cpf,
+    bool expectedValid)
+{
+    var result = _service.ValidateCPF(cpf);
+
+    Assert.Equal(expectedValid, result.IsValid);
+}`}</pre>
+              </div>
+            </div>
+          </div>
+
+          {/* References Section */}
+          <div className="bg-gradient-to-r from-gray-100 to-gray-200 rounded-xl shadow-lg p-6 border-2 border-gray-300">
+            <div className="flex items-center gap-3 mb-4">
+              <BookOpen className="w-8 h-8 text-gray-700" />
+              <h3 className="text-2xl font-bold text-gray-900">Referências</h3>
+            </div>
+            <ul className="space-y-2 text-gray-700">
+              <li className="flex items-center gap-2">
+                <FileText className="w-4 h-4 text-blue-600" />
+                <strong>Lógica de Negócio:</strong> docs/legacy-system/05-business-logic.md
+              </li>
+              <li className="flex items-center gap-2">
+                <FileText className="w-4 h-4 text-green-600" />
+                <strong>Estruturas de Dados:</strong> docs/legacy-system/03-data-structures.md
+              </li>
+              <li className="flex items-center gap-2">
+                <FileText className="w-4 h-4 text-purple-600" />
+                <strong>IBM COBOL CALL Statement:</strong> Enterprise COBOL Programming Guide
+              </li>
+              <li className="flex items-center gap-2">
+                <FileText className="w-4 h-4 text-amber-600" />
+                <strong>Clean Architecture:</strong> Uncle Bob Martin's Clean Architecture
+              </li>
+            </ul>
           </div>
         </TabsContent>
+
 
         {/* Operations Tab */}
         <TabsContent value="operations" className="space-y-6">

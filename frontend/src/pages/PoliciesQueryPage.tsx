@@ -619,7 +619,7 @@ const PoliciesQueryPage: React.FC = () => {
                         </td>
                         <td className="px-4 py-4 text-right">
                           <Button
-                            size="sm"
+                            size="small"
                             variant="outline"
                             onClick={(e) => {
                               e.stopPropagation();
@@ -684,7 +684,7 @@ const PoliciesQueryPage: React.FC = () => {
                           {formatCurrency(policy.premiumAmount)}/mês
                         </span>
                       </div>
-                      <Button size="sm" variant="outline">
+                      <Button size="small" variant="outline">
                         Ver Detalhes
                       </Button>
                     </div>
