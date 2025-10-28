@@ -1,0 +1,228 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e6]:
+      - link "Caixa Seguradora Sistema de Relatórios PREMIT/PREMCED" [ref=e7] [cursor=pointer]:
+        - /url: /
+        - img [ref=e8]
+        - generic [ref=e12]:
+          - generic [ref=e13]: Caixa Seguradora
+          - generic [ref=e14]: Sistema de Relatórios PREMIT/PREMCED
+      - navigation [ref=e15]:
+        - link "Dashboard" [ref=e16] [cursor=pointer]:
+          - /url: /
+          - img [ref=e17]
+          - generic [ref=e20]: Dashboard
+        - link "Gerar Relatórios" [ref=e21] [cursor=pointer]:
+          - /url: /reports
+          - img [ref=e22]
+          - generic [ref=e23]: Gerar Relatórios
+        - link "Consultar Dados" [ref=e24] [cursor=pointer]:
+          - /url: /query
+          - img [ref=e25]
+          - generic [ref=e28]: Consultar Dados
+        - link "Jobs Agendados" [ref=e29] [cursor=pointer]:
+          - /url: /batch-jobs
+          - img [ref=e30]
+          - generic [ref=e32]: Jobs Agendados
+        - link "Gerenciar Dados" [ref=e33] [cursor=pointer]:
+          - /url: /data-management
+          - img [ref=e34]
+          - generic [ref=e38]: Gerenciar Dados
+  - main [ref=e39]:
+    - generic [ref=e40]:
+      - generic [ref=e44]:
+        - generic [ref=e45]:
+          - img [ref=e47]
+          - generic [ref=e49]:
+            - heading "Sistema Legado SIWEA" [level=1] [ref=e50]
+            - paragraph [ref=e51]: Sistema de Indenização e Workflow de Eventos Atendidos
+        - generic [ref=e52]:
+          - generic [ref=e53]:
+            - img [ref=e54]
+            - generic [ref=e57]: 35+
+            - generic [ref=e58]: anos em produção
+          - generic [ref=e59]:
+            - img [ref=e60]
+            - generic [ref=e65]: 200+
+            - generic [ref=e66]: usuários ativos
+          - generic [ref=e67]:
+            - img [ref=e68]
+            - generic [ref=e70]: "8.000"
+            - generic [ref=e71]: transações/dia
+          - generic [ref=e72]:
+            - img [ref=e73]
+            - generic [ref=e77]: 2.5M
+            - generic [ref=e78]: sinistros
+          - generic [ref=e79]:
+            - img [ref=e80]
+            - generic [ref=e82]: 100%
+            - generic [ref=e83]: missão crítica
+      - generic [ref=e84]:
+        - tablist [ref=e86]:
+          - tab "Dashboard" [selected] [ref=e87] [cursor=pointer]:
+            - img [ref=e88]
+            - text: Dashboard
+          - tab "📊 Sumário Executivo" [ref=e91] [cursor=pointer]
+          - tab "🏗️ Arquitetura" [ref=e92] [cursor=pointer]
+          - tab "💾 Banco de Dados" [ref=e93] [cursor=pointer]
+          - tab "⚙️ Regras de Negócio" [ref=e94] [cursor=pointer]
+          - tab "🔗 Integrações" [ref=e95] [cursor=pointer]
+          - tab "🚀 Migração" [ref=e96] [cursor=pointer]
+          - tab "📐 Pontos de Função" [ref=e97] [cursor=pointer]
+        - tabpanel "Dashboard" [ref=e98]:
+          - generic [ref=e99]:
+            - generic [ref=e100]:
+              - heading "Documentação" [level=3] [ref=e102]:
+                - img [ref=e103]
+                - text: Documentação
+              - generic [ref=e106]:
+                - generic [ref=e107]: "10"
+                - paragraph [ref=e108]: documentos completos
+            - generic [ref=e109]:
+              - heading "Código Fonte" [level=3] [ref=e111]:
+                - img [ref=e112]
+                - text: Código Fonte
+              - generic [ref=e115]:
+                - generic [ref=e116]: 851.9 KB
+                - paragraph [ref=e117]: COBOL/EZEE
+            - generic [ref=e118]:
+              - heading "Entidades" [level=3] [ref=e120]:
+                - img [ref=e121]
+                - text: Entidades
+              - generic [ref=e125]:
+                - generic [ref=e126]: "13"
+                - paragraph [ref=e127]: tabelas DB2
+            - generic [ref=e128]:
+              - heading "Regras" [level=3] [ref=e130]:
+                - img [ref=e131]
+                - text: Regras
+              - generic [ref=e133]:
+                - generic [ref=e134]: "122"
+                - paragraph [ref=e135]: regras de negócio
+          - generic [ref=e136]:
+            - generic [ref=e137]:
+              - heading "Stack Legado (1989-2025)" [level=3] [ref=e139]:
+                - img [ref=e140]
+                - text: Stack Legado (1989-2025)
+              - generic [ref=e144]:
+                - generic [ref=e145]:
+                  - generic [ref=e146]: 🖥️
+                  - generic [ref=e147]: IBM z/OS Mainframe
+                - generic [ref=e148]:
+                  - generic [ref=e149]: ⚡
+                  - generic [ref=e150]: IBM CICS Transaction Server
+                - generic [ref=e151]:
+                  - generic [ref=e152]: 💾
+                  - generic [ref=e153]: IBM DB2 for z/OS
+                - generic [ref=e154]:
+                  - generic [ref=e155]: 🔧
+                  - generic [ref=e156]: IBM VisualAge EZEE 4.40
+                - generic [ref=e157]:
+                  - generic [ref=e158]: 📝
+                  - generic [ref=e159]: COBOL ANSI 85
+                - generic [ref=e160]:
+                  - generic [ref=e161]: ⌨️
+                  - generic [ref=e162]: Terminal 3270
+            - generic [ref=e163]:
+              - heading "Stack Migração (.NET 9.0)" [level=3] [ref=e165]:
+                - img [ref=e166]
+                - text: Stack Migração (.NET 9.0)
+              - generic [ref=e171]:
+                - generic [ref=e172]:
+                  - generic [ref=e173]: 💻
+                  - generic [ref=e174]: .NET 9.0
+                - generic [ref=e175]:
+                  - generic [ref=e176]: ⚛️
+                  - generic [ref=e177]: React 19 + TypeScript
+                - generic [ref=e178]:
+                  - generic [ref=e179]: 🗄️
+                  - generic [ref=e180]: SQL Server / PostgreSQL
+                - generic [ref=e181]:
+                  - generic [ref=e182]: ☁️
+                  - generic [ref=e183]: Azure Cloud
+                - generic [ref=e184]:
+                  - generic [ref=e185]: 🐳
+                  - generic [ref=e186]: Docker / Kubernetes
+                - generic [ref=e187]:
+                  - generic [ref=e188]: 🔌
+                  - generic [ref=e189]: REST APIs
+          - generic [ref=e190]:
+            - heading "Índice de Documentação" [level=3] [ref=e192]
+            - generic [ref=e194]:
+              - generic [ref=e195] [cursor=pointer]:
+                - generic [ref=e196]: 📊
+                - generic [ref=e197]:
+                  - heading "Sumário Executivo" [level=4] [ref=e198]
+                  - paragraph [ref=e199]: Visão executiva e indicadores
+                  - generic [ref=e201]: 12 páginas
+              - generic [ref=e202] [cursor=pointer]:
+                - generic [ref=e203]: 🏗️
+                - generic [ref=e204]:
+                  - heading "Arquitetura Técnica" [level=4] [ref=e205]
+                  - paragraph [ref=e206]: 3 camadas e infraestrutura
+                  - generic [ref=e208]: 28 páginas
+              - generic [ref=e209] [cursor=pointer]:
+                - generic [ref=e210]: 💾
+                - generic [ref=e211]:
+                  - heading "Modelo de Dados" [level=4] [ref=e212]
+                  - paragraph [ref=e213]: 13 entidades e relacionamentos
+                  - generic [ref=e215]: 35 páginas
+              - generic [ref=e216] [cursor=pointer]:
+                - generic [ref=e217]: ⚙️
+                - generic [ref=e218]:
+                  - heading "Lógica de Negócio" [level=4] [ref=e219]
+                  - paragraph [ref=e220]: 122 regras documentadas
+                  - generic [ref=e222]: 40 páginas
+              - generic [ref=e223] [cursor=pointer]:
+                - generic [ref=e224]: 🔗
+                - generic [ref=e225]:
+                  - heading "Integrações Externas" [level=4] [ref=e226]
+                  - paragraph [ref=e227]: CNOUA, SIPUA, SIMDA
+                  - generic [ref=e229]: 25 páginas
+              - generic [ref=e230] [cursor=pointer]:
+                - generic [ref=e231]: 🚀
+                - generic [ref=e232]:
+                  - heading "Guia de Migração" [level=4] [ref=e233]
+                  - paragraph [ref=e234]: Estratégia para .NET 9.0
+                  - generic [ref=e236]: 30 páginas
+  - contentinfo [ref=e237]:
+    - generic [ref=e238]:
+      - generic [ref=e239]:
+        - generic [ref=e240]:
+          - generic [ref=e241]:
+            - img [ref=e242]
+            - heading "Caixa Seguradora" [level=3] [ref=e246]
+          - paragraph [ref=e247]: Migração COBOL para .NET 9.0
+          - paragraph [ref=e248]: Circular SUSEP 360 - Relatórios PREMIT e PREMCED
+        - generic [ref=e249]:
+          - heading "Links Rápidos" [level=4] [ref=e250]
+          - list [ref=e251]:
+            - listitem [ref=e252]:
+              - link "Dashboard" [ref=e253] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=e254]:
+              - link "Gerar Relatórios" [ref=e255] [cursor=pointer]:
+                - /url: /reports
+            - listitem [ref=e256]:
+              - link "Consultar Dados" [ref=e257] [cursor=pointer]:
+                - /url: /query
+            - listitem [ref=e258]:
+              - link "Jobs Agendados" [ref=e259] [cursor=pointer]:
+                - /url: /batch-jobs
+            - listitem [ref=e260]:
+              - link "Gerenciar Dados" [ref=e261] [cursor=pointer]:
+                - /url: /data-management
+        - generic [ref=e262]:
+          - heading "Informações do Sistema" [level=4] [ref=e263]
+          - list [ref=e264]:
+            - listitem [ref=e265]: "Versão: 1.0.0"
+            - listitem [ref=e266]: "Build: .NET 9.0"
+            - listitem [ref=e267]: "Frontend: React 19 + TypeScript"
+            - listitem [ref=e268]: "Última atualização: 28/10/2025"
+      - generic [ref=e270]:
+        - paragraph [ref=e271]: © 2025 Caixa Seguradora. Todos os direitos reservados.
+        - paragraph [ref=e272]: Desenvolvido com React 19 e .NET 9.0
+```

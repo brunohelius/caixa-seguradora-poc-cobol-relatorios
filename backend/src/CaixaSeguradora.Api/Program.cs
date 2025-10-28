@@ -326,7 +326,12 @@ try
     // Migrations work fine with just AddDbContext above
 
     // Configure CORS
-    var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? new[] { "http://localhost:5173" };
+    var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? new[]
+    {
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "http://localhost:5175"
+    };
     builder.Services.AddCors(options =>
     {
         options.AddDefaultPolicy(policy =>
@@ -431,12 +436,14 @@ try
         });
     }
 
-    // HTTPS Redirection (User Story 6 - T231)
-    app.UseHttpsRedirection();
+    app.UseCors();
 
-    // HSTS (HTTP Strict Transport Security) - Production only (User Story 6 - T231)
     if (!app.Environment.IsDevelopment())
     {
+        // HTTPS Redirection (User Story 6 - T231)
+        app.UseHttpsRedirection();
+
+        // HSTS (HTTP Strict Transport Security) - Production only (User Story 6 - T231)
         var hstsMaxAge = app.Configuration.GetValue<int>("Hsts:MaxAge", 31536000); // 1 year default
         var hstsIncludeSubDomains = app.Configuration.GetValue<bool>("Hsts:IncludeSubDomains", true);
 
@@ -446,8 +453,10 @@ try
             hstsMaxAge,
             hstsIncludeSubDomains);
     }
-
-    app.UseCors();
+    else
+    {
+        Log.Information("Development environment detected. Skipping HTTPS redirection to keep local HTTP endpoints reachable.");
+    }
 
     // Rate limiting deve vir após CORS mas antes de autenticação (User Story 6 - T230)
     // Protege contra ataques de força bruta e abuse da API
