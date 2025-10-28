@@ -13,6 +13,10 @@ COPY backend/CaixaSeguradora.sln ./CaixaSeguradora.sln
 COPY backend/src/CaixaSeguradora.Api/CaixaSeguradora.Api.csproj ./src/CaixaSeguradora.Api/
 COPY backend/src/CaixaSeguradora.Core/CaixaSeguradora.Core.csproj ./src/CaixaSeguradora.Core/
 COPY backend/src/CaixaSeguradora.Infrastructure/CaixaSeguradora.Infrastructure.csproj ./src/CaixaSeguradora.Infrastructure/
+COPY backend/tests/CaixaSeguradora.UnitTests/CaixaSeguradora.UnitTests.csproj ./tests/CaixaSeguradora.UnitTests/
+COPY backend/tests/CaixaSeguradora.IntegrationTests/CaixaSeguradora.IntegrationTests.csproj ./tests/CaixaSeguradora.IntegrationTests/
+COPY backend/tests/CaixaSeguradora.ComparisonTests/CaixaSeguradora.ComparisonTests.csproj ./tests/CaixaSeguradora.ComparisonTests/
+COPY backend/tests/CaixaSeguradora.PerformanceTests/CaixaSeguradora.PerformanceTests.csproj ./tests/CaixaSeguradora.PerformanceTests/
 
 # Restore dependencies (leverages Docker layer caching)
 RUN dotnet restore CaixaSeguradora.sln
