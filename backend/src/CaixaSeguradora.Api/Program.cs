@@ -185,8 +185,12 @@ try
     });
 
     // Configure JWT Authentication (User Story 6 - T228)
-    var jwtSecretKey = builder.Configuration["Jwt:SecretKey"]
-        ?? throw new InvalidOperationException("JWT SecretKey não configurada");
+    var jwtSecretKey = builder.Configuration["Jwt:SecretKey"];
+    if (string.IsNullOrWhiteSpace(jwtSecretKey))
+    {
+        jwtSecretKey = "CaixaSeguradora2025PremiumReportingApiSecretKey1234567890";
+        Log.Warning("JWT SecretKey not provided. Falling back to development secret key. Configure Jwt:SecretKey for production environments.");
+    }
     var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "CaixaSeguradora";
     var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "CaixaSeguradora.API";
 
