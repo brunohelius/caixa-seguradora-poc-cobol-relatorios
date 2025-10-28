@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
-import { MigrationDashboardPage } from './pages/MigrationDashboardPage';
-import { LegacySystemDocsPage } from './pages/LegacySystemDocsPage';
+import MigrationDashboardPage from './pages/MigrationDashboardPage';
+import LegacySystemDocsPage from './pages/LegacySystemDocsPage';
 import ReportGenerationPage from './pages/ReportGenerationPage';
 import QueryPage from './pages/QueryPage';
 import BatchJobsPage from './pages/BatchJobsPage';
