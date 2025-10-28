@@ -5,4 +5,4 @@ dockerContext = "."
 
 [deploy]
 restartPolicyType = "ON_FAILURE"
-healthcheckPath = "/api/v1/health"
+healthcheckPath = "/healthz"

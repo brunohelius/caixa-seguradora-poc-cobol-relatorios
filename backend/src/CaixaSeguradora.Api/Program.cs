@@ -466,6 +466,9 @@ try
     });
 
     app.MapControllers();
+    app.MapGet("/healthz", () => Results.Ok(new { status = "ok", timestamp = DateTime.UtcNow }))
+        .WithName("RailwayHealthCheck")
+        .WithMetadata(new AllowAnonymousAttribute());
 
     Log.Information("Application configured successfully, starting web server");
     app.Run();
