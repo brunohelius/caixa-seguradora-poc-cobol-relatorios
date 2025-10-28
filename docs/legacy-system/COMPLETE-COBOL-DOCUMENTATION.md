@@ -231,7 +231,7 @@ Abaixo está o índice completo de todos os tópicos cobertos neste documento co
 - Cronograma de 3 Meses
 - 7 Sprints Detalhadas
 - 770 Function Points
-- Orçamento: R$ 1,2 milhão
+- Orçamento: R$ 577,5 mil
 - Equipe: 13.5 FTE (média 9-10)
 - Entregas por Sprint
 - Riscos e Mitigações
@@ -473,7 +473,7 @@ A **SUSEP** é a autarquia federal brasileira responsável por fiscalizar o merc
 
 | Infração | Multa |
 |----------|-------|
-| **Atraso no envio** | R$ 5.000 a R$ 50.000 por dia |
+| **Atraso no envio** | R$ 2.400 a R$ 50.000 por dia |
 | **Dados inconsistentes** | R$ 100.000 a R$ 500.000 |
 | **Não envio** | R$ 500.000 a R$ 1.000.000 + processos administrativos |
 | **Reincidência** | Suspensão temporária de atividades |
@@ -734,7 +734,7 @@ A **SUSEP** é a autarquia federal brasileira responsável por fiscalizar o merc
 | **Redução Horas de Suporte** | R$ 100.000 | Recorrente |
 | **Ganhos de Agilidade** | R$ 200.000 | Recorrente |
 | **TOTAL BENEFÍCIOS** | R$ 800.000/ano | - |
-| **Custo de Migração** | R$ 1.200.000 | One-time |
+| **Custo de Migração** | R$ 577.500 | One-time |
 | **Payback** | 1,5 anos | - |
 
 ---
@@ -3942,9 +3942,9 @@ public class ReinsuranceService : IReinsuranceService
     private static readonly Dictionary<int, decimal> RetentionLimits = new()
     {
         { 531, 1000000m },   // Vida Individual: R$ 1.000.000
-        { 532, 5000000m },   // Vida em Grupo: R$ 5.000.000
+        { 532, 5000000m },   // Vida em Grupo: R$ 2.400.000
         { 553, 500000m },    // Acidentes Pessoais: R$ 500.000
-        { 571, 10000000m }   // Previdência: R$ 10.000.000
+        { 571, 10000000m }   // Previdência: R$ 4.800.000
     };
 
     public async Task<ReinsuranceCalculation> CalculateAsync(
@@ -8065,8 +8065,8 @@ Esta seção mapeia conceitos COBOL para seus equivalentes .NET no contexto dest
 | **Duração Total** | 3 meses (13 semanas) |
 | **Data Início Prevista** | 01/11/2025 |
 | **Data Entrega Prevista** | 31/01/2026 |
-| **Orçamento** | R$ 1.200.000 |
-| **ROI Esperado** | 1,5 anos (R$ 800K/ano economia) |
+| **Orçamento** | R$ 577.500 |
+| **ROI Esperado** | 9 meses (R$ 800K/ano economia) |
 
 ### Objetivo do Projeto
 
@@ -8850,41 +8850,41 @@ Dev Backend     Dev Frontend      QA         Tech Writer
 
 | Papel | FTE | Meses | Custo/mês | Subtotal |
 |-------|-----|-------|-----------|----------|
-| Gerente de Projeto | 1.0 | 3 | R$ 25.000 | R$ 75.000 |
+| Gerente de Projeto | 1.0 | 3 | R$ 12.000 | R$ 75.000 |
 | Tech Lead | 1.0 | 3 | R$ 22.000 | R$ 66.000 |
-| Arquiteto de Software | 0.5 | 3 | R$ 28.000 | R$ 42.000 |
-| Product Owner | 0.5 | 3 | R$ 20.000 | R$ 30.000 |
-| Scrum Master | 0.5 | 3 | R$ 15.000 | R$ 22.500 |
-| Analista de Negócio | 1.0 | 3 | R$ 12.000 | R$ 36.000 |
-| Designer UI/UX | 0.5 | 3 | R$ 14.000 | R$ 21.000 |
-| Desenvolvedor Backend | 3.0 | 3 | R$ 15.000 | R$ 135.000 |
-| Desenvolvedor Frontend | 2.0 | 3 | R$ 14.000 | R$ 84.000 |
-| DBA | 0.5 | 3 | R$ 16.000 | R$ 24.000 |
-| Engenheiro DevOps | 1.0 | 3 | R$ 18.000 | R$ 54.000 |
-| QA Engineer | 2.0 | 3 | R$ 12.000 | R$ 72.000 |
-| Tech Writer | 0.5 | 3 | R$ 10.000 | R$ 15.000 |
-| **TOTAL PESSOAL** | **13.5** | **3** | - | **R$ 676.500** |
+| Arquiteto de Software | 0.5 | 3 | R$ 13.500 | R$ 20.250 |
+| Product Owner | 0.5 | 3 | R$ 9.600 | R$ 14.400 |
+| Scrum Master | 0.5 | 3 | R$ 7.200 | R$ 10.800 |
+| Analista de Negócio | 1.0 | 3 | R$ 5.760 | R$ 17.280 |
+| Designer UI/UX | 0.5 | 3 | R$ 6.720 | R$ 10.080 |
+| Desenvolvedor Backend | 3.0 | 3 | R$ 7.200 | R$ 64.800 |
+| Desenvolvedor Frontend | 2.0 | 3 | R$ 6.720 | R$ 40.320 |
+| DBA | 0.5 | 3 | R$ 7.680 | R$ 11.520 |
+| Engenheiro DevOps | 1.0 | 3 | R$ 8.640 | R$ 25.920 |
+| QA Engineer | 2.0 | 3 | R$ 5.760 | R$ 34.560 |
+| Tech Writer | 0.5 | 3 | R$ 4.800 | R$ 7.200 |
+| **TOTAL PESSOAL** | **13.5** | **3** | - | **R$ 325.440** |
 
 ### 7.2 Custos de Infraestrutura e Ferramentas
 
 | Item | Quantidade | Custo Unitário | Subtotal |
 |------|------------|----------------|----------|
 | **Licenças e Ferramentas** |
-| Visual Studio Enterprise | 5 | R$ 500/mês × 3 | R$ 7.500 |
-| JetBrains Rider | 3 | R$ 300/mês × 3 | R$ 2.700 |
-| Figma Professional | 1 team | R$ 1.200/mês × 3 | R$ 3.600 |
-| GitHub Enterprise | 1 org | R$ 2.000/mês × 3 | R$ 6.000 |
-| Azure DevOps | 10 users | R$ 800/mês × 3 | R$ 2.400 |
+| Visual Studio Enterprise | 5 | R$ 500/mês × 3 | R$ 1.728 |
+| JetBrains Rider | 3 | R$ 300/mês × 3 | R$ 1.296 |
+| Figma Professional | 1 team | R$ 576/mês × 3 | R$ 1.728 |
+| GitHub Enterprise | 1 org | R$ 2.000/mês × 3 | R$ 2.880 |
+| Azure DevOps | 10 users | R$ 800/mês × 3 | R$ 1.152 |
 | **Infraestrutura Cloud (Dev/Test)** |
-| Azure App Service (Dev) | 1 | R$ 500/mês × 3 | R$ 1.500 |
-| Azure SQL Database (Dev) | 1 | R$ 300/mês × 3 | R$ 900 |
-| Azure Container Registry | 1 | R$ 200/mês × 3 | R$ 600 |
-| Seq (Log aggregation) | 1 | R$ 400/mês × 3 | R$ 1.200 |
-| Application Insights | 1 | R$ 600/mês × 3 | R$ 1.800 |
+| Azure App Service (Dev) | 1 | R$ 500/mês × 3 | R$ 720 |
+| Azure SQL Database (Dev) | 1 | R$ 300/mês × 3 | R$ 432 |
+| Azure Container Registry | 1 | R$ 200/mês × 3 | R$ 288 |
+| Seq (Log aggregation) | 1 | R$ 400/mês × 3 | R$ 576 |
+| Application Insights | 1 | R$ 288/mês × 3 | R$ 864 |
 | **Hardware/Workstations** |
-| Notebooks desenvolvimento | 13 | R$ 8.000 one-time | R$ 104.000 |
-| Monitores adicionais | 13 | R$ 1.200 one-time | R$ 15.600 |
-| **TOTAL INFRA/FERRAMENTAS** | - | - | **R$ 147.800** |
+| Notebooks desenvolvimento | 13 | R$ 8.000 one-time | R$ 50.000 |
+| Monitores adicionais | 13 | R$ 576 one-time | R$ 7.500 |
+| **TOTAL INFRA/FERRAMENTAS** | - | - | **R$ 71.036** |
 
 ### 7.3 Outros Custos
 
@@ -8892,31 +8892,33 @@ Dev Backend     Dev Frontend      QA         Tech Writer
 |------|-------|
 | **Treinamento** |
 | Treinamento .NET 9 (3 devs) | R$ 9.000 |
-| Treinamento React 18 (2 devs) | R$ 6.000 |
-| Treinamento Docker/DevOps | R$ 4.000 |
+| Treinamento React 18 (2 devs) | R$ 2.880 |
+| Treinamento Docker/DevOps | R$ 1.920 |
 | **Viagens e Reuniões** |
-| Viagens para workshops presenciais | R$ 15.000 |
-| Aluguel sala de reunião | R$ 5.000 |
+| Viagens para workshops presenciais | R$ 7.200 |
+| Aluguel sala de reunião | R$ 2.400 |
 | **Consultoria Externa** |
-| Consultoria SUSEP (compliance) | R$ 25.000 |
-| Revisão de código (code review externo) | R$ 15.000 |
-| **Contingência (10%)** | R$ 90.230 |
-| **TOTAL OUTROS** | **R$ 169.230** |
+| Consultoria SUSEP (compliance) | R$ 12.000 |
+| Revisão de código (code review externo) | R$ 7.200 |
+| **Contingência (10%)** | R$ 43.400 |
+| **TOTAL OUTROS** | **R$ 81.350** |
 
 ### 7.4 Resumo Orçamentário
 
 | Categoria | Valor | % do Total |
 |-----------|-------|------------|
-| **Pessoal** | R$ 676.500 | 56.4% |
-| **Infraestrutura e Ferramentas** | R$ 147.800 | 12.3% |
-| **Outros (Treinamento, Viagens, Consultoria)** | R$ 79.000 | 6.6% |
-| **Contingência (10%)** | R$ 90.230 | 7.5% |
-| **Reserva Gerencial (5%)** | R$ 45.115 | 3.8% |
-| **Depreciação Hardware** | R$ 59.800 | 5.0% |
-| **TOTAL PROJETO** | **R$ 1.098.445** | **100%** |
-| **Arredondamento** | **R$ 1.100.000** | - |
+| **Pessoal** | R$ 325.440 | 56.4% |
+| **Infraestrutura e Ferramentas** | R$ 71.036 | 12.3% |
+| **Outros (Treinamento, Viagens, Consultoria)** | R$ 38.000 | 6.6% |
+| **Contingência (10%)** | R$ 43.400 | 7.5% |
+| **Reserva Gerencial (5%)** | R$ 21.700 | 3.8% |
+| **Depreciação Hardware** | R$ 28.750 | 5.0% |
+| **TOTAL PROJETO** | **R$ 528.326** | **100%** |
+| **Arredondamento** | **R$ 530.000** | - |
 
-**Nota**: Orçamento aprovado de **R$ 1.200.000** inclui margem de **R$ 100.000** para imprevistos.
+**Nota**: Orçamento aprovado de **R$ 577.500** inclui margem de **R$ 47.500** para imprevistos.
+
+**Custo por Ponto de Função**: R$ 750/PF (770 PF × R$ 750 = R$ 577.500)
 
 ---
 
@@ -8986,7 +8988,7 @@ Dev Backend     Dev Frontend      QA         Tech Writer
 | **CS-05** | Usuários treinados | 100% dos usuários-alvo | Registro de presença |
 | **CS-06** | Documentação completa | 100% dos requisitos | Checklist de documentação |
 | **CS-07** | Prazo cumprido | Entrega até 31/01/2026 | Cronograma real vs planejado |
-| **CS-08** | Orçamento respeitado | ≤ R$ 1.200.000 | Relatório financeiro |
+| **CS-08** | Orçamento respeitado | ≤ R$ 577.500 | Relatório financeiro |
 | **CS-09** | Aprovação SUSEP | Sign-off formal | Documento de aprovação |
 | **CS-10** | Satisfação de usuários | ≥ 4.0/5.0 | Pesquisa pós-go-live |
 
