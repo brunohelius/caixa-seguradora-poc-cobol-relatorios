@@ -5,7 +5,10 @@ echo "🚀 Iniciando Backend - Caixa Seguradora Premium Reporting API..."
 # Carrega variáveis de ambiente do .env
 if [ -f "backend/.env" ]; then
     echo "📄 Carregando configuração do backend/.env"
-    export $(cat backend/.env | grep -v '^#' | xargs)
+    # shellcheck disable=SC1091
+    set -a
+    source backend/.env
+    set +a
 fi
 
 # Navega para o diretório da API
