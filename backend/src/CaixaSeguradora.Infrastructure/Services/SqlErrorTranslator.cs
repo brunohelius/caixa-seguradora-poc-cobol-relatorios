@@ -50,12 +50,11 @@ public class SqlErrorTranslator
     // SQLite error code mappings (for development environment)
     private static readonly Dictionary<int, string> SqliteErrorMappings = new()
     {
+        { 19, "Violação de constraint: operação violou regra de integridade" },
+        { 8, "Operação não permitida: banco de dados está bloqueado" },
         { 1, "Erro de SQL: sintaxe inválida" },
-        { 5, "Operação não permitida: banco de dados está ocupado" },
-        { 6, "Operação não permitida: banco de dados está bloqueado" },
         { 11, "Tabela ou coluna não encontrada" },
-        { 13, "Operação não concluída: banco de dados está cheio" },
-        { 19, "Violação de constraint: operação violou regra de integridade" }
+        { 13, "Timeout: banco de dados está ocupado" }
     };
 
     // Transient errors that can be retried
@@ -153,11 +152,9 @@ public class SqlErrorTranslator
         // SQLite transient errors
         if (exception is SqliteException sqliteEx)
         {
-            var baseCode = (int)sqliteEx.SqliteErrorCode;
-            var extendedCode = sqliteEx.SqliteExtendedErrorCode;
-
-            return baseCode == 5 || baseCode == 6 ||
-                   extendedCode == 5 || extendedCode == 6;
+            return sqliteEx.SqliteErrorCode == 5 ||  // SQLITE_BUSY
+                   sqliteEx.SqliteErrorCode == 6 ||  // SQLITE_LOCKED
+                   sqliteEx.SqliteErrorCode == 13;   // SQLITE_FULL (can retry after cleanup)
         }
 
         // DB2 transient errors (check error code)
@@ -166,37 +163,19 @@ public class SqlErrorTranslator
 
     private (string Message, bool IsTransient) TranslateSqliteException(SqliteException exception)
     {
-        var baseCode = (int)exception.SqliteErrorCode;
-        var extendedCode = exception.SqliteExtendedErrorCode;
+        var errorCode = (int)exception.SqliteErrorCode;
 
-        _logger.LogDebug("SQLite exception details - BaseCode: {BaseCode}, ExtendedCode: {ExtendedCode}, Message: {ExceptionMessage}",
-            baseCode, extendedCode, exception.Message);
-
-        foreach (var code in GetSqliteLookupCodes(baseCode, extendedCode))
+        if (SqliteErrorMappings.TryGetValue(errorCode, out var message))
         {
-            if (SqliteErrorMappings.TryGetValue(code, out var message))
-            {
-                var isTransient = code == 5 || code == 6;
-                _logger.LogInformation("SQLite error {ErrorCode} translated to: {Message} (Transient: {IsTransient})",
-                    code, message, isTransient);
-                return (message, isTransient);
-            }
+            var isTransient = errorCode == 5 || errorCode == 13; // BUSY or FULL
+            _logger.LogInformation("SQLite error {ErrorCode} translated to: {Message} (Transient: {IsTransient})",
+                errorCode, message, isTransient);
+            return (message, isTransient);
         }
 
         var defaultMessage = $"Erro no banco de dados SQLite: {exception.Message}";
-        _logger.LogWarning("Unknown SQLite error codes Base={BaseCode}, Extended={ExtendedCode}, using default message",
-            baseCode, extendedCode);
+        _logger.LogWarning("Unknown SQLite error code {ErrorCode}, using default message", errorCode);
         return (defaultMessage, false);
-    }
-
-    private static IEnumerable<int> GetSqliteLookupCodes(int baseCode, int extendedCode)
-    {
-        if (extendedCode != 0 && extendedCode != baseCode)
-        {
-            yield return extendedCode;
-        }
-
-        yield return baseCode;
     }
 
     private (string Message, bool IsTransient) TranslateDB2Exception(DbException exception)

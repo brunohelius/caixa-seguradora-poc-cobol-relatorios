@@ -8,14 +8,14 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Copy solution and project files (paths relative to repository root)
-COPY backend/CaixaSeguradora.sln ./CaixaSeguradora.sln
+# Copy production solution and project files (paths relative to repository root)
+COPY backend/CaixaSeguradora.Production.sln ./CaixaSeguradora.Production.sln
 COPY backend/src/CaixaSeguradora.Api/CaixaSeguradora.Api.csproj ./src/CaixaSeguradora.Api/
 COPY backend/src/CaixaSeguradora.Core/CaixaSeguradora.Core.csproj ./src/CaixaSeguradora.Core/
 COPY backend/src/CaixaSeguradora.Infrastructure/CaixaSeguradora.Infrastructure.csproj ./src/CaixaSeguradora.Infrastructure/
 
 # Restore dependencies (leverages Docker layer caching)
-RUN dotnet restore CaixaSeguradora.sln
+RUN dotnet restore CaixaSeguradora.Production.sln
 
 # Copy backend source code
 COPY backend/. .

@@ -174,51 +174,8 @@ public static class PremitFileGenerator
             throw new ArgumentException("File path cannot be null or empty", nameof(filePath));
         }
 
-        var premiumsList = premiums.ToList(); // Materialize for count
-        var fileBytes = GenerateFile(premiumsList);
-        var expectedSize = fileBytes.Length;
-
-        try
-        {
-            // Ensure directory exists
-            var directory = Path.GetDirectoryName(filePath);
-            if (!string.IsNullOrEmpty(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            // Write to temp file first (atomic operation)
-            var tempFile = filePath + ".tmp";
-            await File.WriteAllBytesAsync(tempFile, fileBytes, cancellationToken);
-
-            // Verify temp file size
-            var fileInfo = new FileInfo(tempFile);
-            if (!fileInfo.Exists)
-            {
-                throw new IOException($"Arquivo temporário não foi criado: {tempFile}");
-            }
-
-            if (fileInfo.Length != expectedSize)
-            {
-                try { File.Delete(tempFile); } catch { }
-                throw new IOException(
-                    $"Arquivo truncado: esperado {expectedSize} bytes, escrito {fileInfo.Length} bytes. Disco cheio?");
-            }
-
-            // Atomic move (replaces existing file)
-            File.Move(tempFile, filePath, overwrite: true);
-
-            // Final verification
-            fileInfo = new FileInfo(filePath);
-            if (fileInfo.Length != expectedSize)
-            {
-                throw new IOException($"Verificação final falhou: arquivo {filePath} tem tamanho incorreto");
-            }
-        }
-        catch (IOException ioEx)
-        {
-            throw new IOException($"Erro ao escrever arquivo PREMIT: {ioEx.Message}. Verifique espaço em disco e permissões.", ioEx);
-        }
+        var fileBytes = GenerateFile(premiums);
+        await File.WriteAllBytesAsync(filePath, fileBytes, cancellationToken);
     }
 
     /// <summary>

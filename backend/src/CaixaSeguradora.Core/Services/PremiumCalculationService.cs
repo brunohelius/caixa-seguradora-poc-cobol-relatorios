@@ -291,14 +291,11 @@ public class PremiumCalculationService : IPremiumCalculationService
     /// </summary>
     public decimal RoundCobol(decimal value, int decimalPlaces)
     {
-        // COBOL ROUND mode uses standard rounding (round half away from zero)
+        // COBOL ROUND mode uses "round half away from zero"
         // Equivalent to C# MidpointRounding.AwayFromZero
         //
         // COBOL: COMPUTE WS-RESULT ROUNDED = WS-VALUE
-        //        ROUNDED mode rounds 0.5 away from zero (e.g., 2.5 -> 3, -2.5 -> -3)
-        //        This is the standard mathematical rounding convention
-        //
-        // CRITICAL: This must match COBOL's rounding behavior for regulatory compliance
+        //        ROUNDED mode rounds 0.5 up to 1, -0.5 down to -1
         return Math.Round(value, decimalPlaces, MidpointRounding.AwayFromZero);
     }
 

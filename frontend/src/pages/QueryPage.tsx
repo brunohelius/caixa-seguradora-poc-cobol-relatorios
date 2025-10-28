@@ -4,12 +4,6 @@ import QueryFilterForm, { type QueryFilters } from '../components/query/QueryFil
 import QueryResultsTable from '../components/query/QueryResultsTable';
 import QueryVisualizationPanel from '../components/query/QueryVisualizationPanel';
 import ExportButtonGroup from '../components/query/ExportButtonGroup';
-import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert';
-import { Card, CardContent } from '../components/ui/card';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
 import type { PremiumQueryResponse } from '../services/types';
 
 /**
@@ -45,15 +39,9 @@ const QueryPage: React.FC = () => {
 
   // Tab state
   const [activeTab, setActiveTab] = useState<'results' | 'visualizations'>('results');
-  const [queryTypeTab, setQueryTypeTab] = useState('premiums');
 
   // Query executed flag (to enable visualizations)
   const [queryExecuted, setQueryExecuted] = useState(false);
-
-  // States for other query types
-  const [policySearch, setPolicySearch] = useState({ type: 'policy', term: '' });
-  const [productSearch, setProductSearch] = useState('');
-  const [clientSearch, setClientSearch] = useState({ type: 'cpfcnpj', term: '' });
 
   /**
    * Execute premium query with current filters and pagination
@@ -137,211 +125,142 @@ const QueryPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Query Type Tabs */}
-        <Card className="mb-6">
-          <Tabs value={queryTypeTab} onValueChange={setQueryTypeTab}>
-            <TabsList className="w-full justify-start rounded-none border-b bg-white px-6">
-              <TabsTrigger value="premiums" className="data-[state=active]:border-b-2 data-[state=active]:border-caixa-blue">
+        {/* Query Type Tabs (future: add Policy, Product, Client tabs) */}
+        <div className="bg-white rounded-lg shadow mb-6">
+          <div className="border-b border-gray-200">
+            <nav className="-mb-px flex space-x-8 px-6" aria-label="Tabs">
+              <button
+                className="border-blue-500 text-blue-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+              >
                 Consulta de Prêmios
-              </TabsTrigger>
-              <TabsTrigger value="policies" className="data-[state=active]:border-b-2 data-[state=active]:border-caixa-blue">
-                Consulta de Apólices
-              </TabsTrigger>
-              <TabsTrigger value="products" className="data-[state=active]:border-b-2 data-[state=active]:border-caixa-blue">
-                Produtos
-              </TabsTrigger>
-              <TabsTrigger value="clients" className="data-[state=active]:border-b-2 data-[state=active]:border-caixa-blue">
-                Clientes
-              </TabsTrigger>
-            </TabsList>
+              </button>
+              <button
+                disabled
+                className="border-transparent text-gray-400 cursor-not-allowed whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+              >
+                Consulta de Apólices (Em breve)
+              </button>
+              <button
+                disabled
+                className="border-transparent text-gray-400 cursor-not-allowed whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+              >
+                Produtos (Em breve)
+              </button>
+              <button
+                disabled
+                className="border-transparent text-gray-400 cursor-not-allowed whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
+              >
+                Clientes (Em breve)
+              </button>
+            </nav>
+          </div>
+        </div>
 
-            {/* Premiums Tab Content */}
-            <TabsContent value="premiums" className="mt-6">
-              <QueryFilterForm
-                onSearch={handleSearch}
-                onClear={handleClear}
-                loading={loading}
-              />
-            </TabsContent>
-
-            {/* Policies Tab Content */}
-            <TabsContent value="policies" className="mt-6">
-              <div className="card-modern p-6">
-                <h3 className="text-lg font-semibold mb-4">Buscar Apólice</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <Label>Tipo de Busca</Label>
-                    <select
-                      value={policySearch.type}
-                      onChange={(e) => setPolicySearch({ ...policySearch, type: e.target.value })}
-                      className="input-modern w-full mt-1"
-                    >
-                      <option value="policy">Número da Apólice</option>
-                      <option value="client">CPF/CNPJ do Cliente</option>
-                      <option value="product">Código do Produto</option>
-                    </select>
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label>Termo de Busca</Label>
-                    <div className="flex gap-2 mt-1">
-                      <Input
-                        type="text"
-                        placeholder={
-                          policySearch.type === 'policy' ? 'Digite o número da apólice' :
-                          policySearch.type === 'client' ? 'Digite o CPF/CNPJ' :
-                          'Digite o código do produto'
-                        }
-                        value={policySearch.term}
-                        onChange={(e) => setPolicySearch({ ...policySearch, term: e.target.value })}
-                        className="input-modern"
-                      />
-                      <Button className="btn btn-primary">Buscar</Button>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-6 text-center text-gray-500">
-                  <p>Digite os critérios acima e clique em Buscar</p>
-                </div>
-              </div>
-            </TabsContent>
-
-            {/* Products Tab Content */}
-            <TabsContent value="products" className="mt-6">
-              <div className="card-modern p-6">
-                <h3 className="text-lg font-semibold mb-4">Buscar Produto</h3>
-                <div className="space-y-4">
-                  <div>
-                    <Label>Código ou Nome do Produto</Label>
-                    <div className="flex gap-2 mt-1">
-                      <Input
-                        type="text"
-                        placeholder="Digite o código ou nome do produto"
-                        value={productSearch}
-                        onChange={(e) => setProductSearch(e.target.value)}
-                        className="input-modern flex-1"
-                      />
-                      <Button className="btn btn-primary">Buscar</Button>
-                      <Button className="btn btn-outline">Listar Todos</Button>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-6 text-center text-gray-500">
-                  <p>Digite o código ou nome do produto para buscar</p>
-                </div>
-              </div>
-            </TabsContent>
-
-            {/* Clients Tab Content */}
-            <TabsContent value="clients" className="mt-6">
-              <div className="card-modern p-6">
-                <h3 className="text-lg font-semibold mb-4">Buscar Cliente</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <Label>Tipo de Busca</Label>
-                    <select
-                      value={clientSearch.type}
-                      onChange={(e) => setClientSearch({ ...clientSearch, type: e.target.value })}
-                      className="input-modern w-full mt-1"
-                    >
-                      <option value="cpfcnpj">CPF/CNPJ</option>
-                      <option value="name">Nome</option>
-                    </select>
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label>Termo de Busca</Label>
-                    <div className="flex gap-2 mt-1">
-                      <Input
-                        type="text"
-                        placeholder={
-                          clientSearch.type === 'cpfcnpj'
-                            ? 'Digite o CPF ou CNPJ'
-                            : 'Digite o nome do cliente'
-                        }
-                        value={clientSearch.term}
-                        onChange={(e) => setClientSearch({ ...clientSearch, term: e.target.value })}
-                        className="input-modern"
-                      />
-                      <Button className="btn btn-primary">Buscar</Button>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-6 text-center text-gray-500">
-                  <p>Digite os critérios acima e clique em Buscar</p>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </Card>
+        {/* Filter Form */}
+        <div className="mb-6">
+          <QueryFilterForm
+            onSearch={handleSearch}
+            onClear={handleClear}
+            loading={loading}
+          />
+        </div>
 
         {/* Error Display */}
         {error && (
-          <Alert variant="destructive" className="mb-6">
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <AlertTitle>Erro na Consulta</AlertTitle>
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-start">
+              <svg
+                className="w-5 h-5 text-red-600 mt-0.5 mr-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <div>
+                <h4 className="text-sm font-medium text-red-800">Erro na Consulta</h4>
+                <p className="text-sm text-red-700 mt-1">{error}</p>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Results/Visualizations Tabs */}
         {queryExecuted && (
           <div className="mb-6">
-            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'results' | 'visualizations')}>
-              <TabsList className="bg-white">
-                <TabsTrigger value="results">Resultados</TabsTrigger>
-                <TabsTrigger value="visualizations">Visualizações</TabsTrigger>
-              </TabsList>
+            <div className="border-b border-gray-200 bg-white rounded-t-lg">
+              <nav className="-mb-px flex space-x-8 px-6" aria-label="View Tabs">
+                <button
+                  onClick={() => setActiveTab('results')}
+                  className={`${
+                    activeTab === 'results'
+                      ? 'border-blue-500 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors`}
+                >
+                  Resultados
+                </button>
+                <button
+                  onClick={() => setActiveTab('visualizations')}
+                  className={`${
+                    activeTab === 'visualizations'
+                      ? 'border-blue-500 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors`}
+                >
+                  Visualizações
+                </button>
+              </nav>
+            </div>
+          </div>
+        )}
 
-              <TabsContent value="results" className="space-y-6">
-                {/* Results Table */}
-                <QueryResultsTable
-                  data={queryResults?.premiums || []}
-                  totalRecords={queryResults?.pagination.totalRecords || 0}
-                  currentPage={queryResults?.pagination.currentPage || 1}
-                  totalPages={queryResults?.pagination.totalPages || 1}
-                  pageSize={pageSize}
-                  onPageChange={handlePageChange}
-                  onSort={handleSort}
-                  loading={loading}
-                />
+        {/* Tab Content */}
+        {activeTab === 'results' && (
+          <div className="space-y-6">
+            {/* Results Table */}
+            <QueryResultsTable
+              data={queryResults?.premiums || []}
+              totalRecords={queryResults?.pagination.totalRecords || 0}
+              currentPage={queryResults?.pagination.currentPage || 1}
+              totalPages={queryResults?.pagination.totalPages || 1}
+              pageSize={pageSize}
+              onPageChange={handlePageChange}
+              onSort={handleSort}
+              loading={loading}
+            />
 
-                {/* Export Button Group */}
-                {queryResults && queryResults.premiums.length > 0 && (
-                  <ExportButtonGroup
-                    queryType="premiums"
-                    filters={currentFilters}
-                    totalRecords={queryResults.pagination.totalRecords}
-                    disabled={loading}
-                  />
-                )}
-              </TabsContent>
+            {/* Export Button Group */}
+            {queryResults && queryResults.premiums.length > 0 && (
+              <ExportButtonGroup
+                queryType="premiums"
+                filters={currentFilters}
+                totalRecords={queryResults.pagination.totalRecords}
+                disabled={loading}
+              />
+            )}
+          </div>
+        )}
 
-              <TabsContent value="visualizations" className="space-y-6">
-                <QueryVisualizationPanel
-                  startDate={currentFilters.startDate || ''}
-                  endDate={currentFilters.endDate || ''}
-                  enabled={queryExecuted}
-                />
-              </TabsContent>
-            </Tabs>
+        {activeTab === 'visualizations' && (
+          <div className="space-y-6">
+            <QueryVisualizationPanel
+              startDate={currentFilters.startDate || ''}
+              endDate={currentFilters.endDate || ''}
+              enabled={queryExecuted}
+            />
           </div>
         )}
 
         {/* Empty State (no query executed yet) */}
         {!queryExecuted && !loading && (
-          <Card className="p-12">
-            <CardContent className="text-center">
+          <div className="bg-white rounded-lg shadow p-12">
+            <div className="text-center">
               <svg
                 className="mx-auto h-16 w-16 text-gray-400"
                 fill="none"
@@ -363,9 +282,9 @@ const QueryPage: React.FC = () => {
                 ramo SUSEP, tipo de movimento ou valor.
               </p>
               <div className="mt-6">
-                <Alert variant="info" className="inline-flex items-center">
+                <div className="inline-flex items-center px-4 py-2 border border-blue-300 rounded-md bg-blue-50">
                   <svg
-                    className="w-5 h-5 mr-2"
+                    className="w-5 h-5 text-blue-600 mr-2"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -377,13 +296,13 @@ const QueryPage: React.FC = () => {
                       d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                  <AlertDescription>
+                  <span className="text-sm text-blue-800">
                     Dica: Combine múltiplos filtros para refinar sua pesquisa
-                  </AlertDescription>
-                </Alert>
+                  </span>
+                </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
       </div>
     </div>

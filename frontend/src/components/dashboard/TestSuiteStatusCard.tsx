@@ -1,5 +1,4 @@
 import Card from '../common/Card';
-import { Badge } from '../ui/badge';
 
 interface TestSuite {
   name: string;
@@ -52,26 +51,29 @@ export const TestSuiteStatusCard: React.FC = () => {
     switch (status) {
       case 'passing':
         return {
-          bgClass: 'bg-green-50',
-          borderClass: 'border-success',
-          textClass: 'text-green-900',
-          badgeClass: 'bg-success text-white',
+          bgColor: '#E8F5E9',
+          borderColor: '#28A745',
+          textColor: '#1B5E20',
+          badgeBg: '#28A745',
+          badgeText: '#fff',
           icon: '✓'
         };
       case 'created':
         return {
-          bgClass: 'bg-blue-50',
-          borderClass: 'border-caixa-blue',
-          textClass: 'text-blue-900',
-          badgeClass: 'bg-caixa-blue text-white',
+          bgColor: '#E3F2FD',
+          borderColor: '#0047BB',
+          textColor: '#0D47A1',
+          badgeBg: '#0047BB',
+          badgeText: '#fff',
           icon: '📝'
         };
       case 'pending':
         return {
-          bgClass: 'bg-gray-100',
-          borderClass: 'border-gray-400',
-          textClass: 'text-gray-700',
-          badgeClass: 'bg-gray-400 text-white',
+          bgColor: '#F5F5F5',
+          borderColor: '#BDBDBD',
+          textColor: '#616161',
+          badgeBg: '#9E9E9E',
+          badgeText: '#fff',
           icon: '⏳'
         };
     }
@@ -85,21 +87,27 @@ export const TestSuiteStatusCard: React.FC = () => {
   return (
     <Card title="Status dos Testes">
       {/* Summary Header */}
-      <div className="mb-6 p-5 rounded-xl shadow-md bg-gradient-to-br from-green-50 to-blue-50 border-2 border-success">
+      <div
+        className="mb-6 p-5 rounded-xl shadow-md"
+        style={{
+          background: 'linear-gradient(135deg, #E8F5E9 0%, #E3F2FD 100%)',
+          border: '2px solid #28A745'
+        }}
+      >
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-bold mb-1 text-black">
+            <h3 className="text-lg font-bold mb-1" style={{ color: '#000' }}>
               Suite Completa de Testes
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm" style={{ color: '#666' }}>
               {passingTests} de {totalTests} testes passando • Cobertura: 87%
             </p>
           </div>
           <div className="text-right">
-            <div className="text-4xl font-black text-success">
+            <div className="text-4xl font-black" style={{ color: '#28A745' }}>
               {totalTests}
             </div>
-            <p className="text-xs uppercase font-semibold text-gray-600">
+            <p className="text-xs uppercase font-semibold" style={{ color: '#666' }}>
               Testes Totais
             </p>
           </div>
@@ -114,7 +122,11 @@ export const TestSuiteStatusCard: React.FC = () => {
           return (
             <div
               key={index}
-              className={`p-4 rounded-lg transition-all hover:shadow-md border-2 ${styles.bgClass} ${styles.borderClass}`}
+              className="p-4 rounded-lg transition-all hover:shadow-md"
+              style={{
+                backgroundColor: styles.bgColor,
+                border: `2px solid ${styles.borderColor}`
+              }}
             >
               <div className="flex items-start gap-4">
                 {/* Icon */}
@@ -123,16 +135,22 @@ export const TestSuiteStatusCard: React.FC = () => {
                 {/* Content */}
                 <div className="flex-grow">
                   <div className="flex items-center justify-between mb-2">
-                    <h4 className={`text-base font-bold ${styles.textClass}`}>
+                    <h4 className="text-base font-bold" style={{ color: styles.textColor }}>
                       {suite.name}
                     </h4>
                     <div className="flex items-center gap-2">
-                      <Badge className={`${styles.badgeClass} text-sm`}>
+                      <span
+                        className="px-3 py-1 rounded-full text-sm font-bold"
+                        style={{
+                          backgroundColor: styles.badgeBg,
+                          color: styles.badgeText
+                        }}
+                      >
                         {styles.icon} {suite.count}
-                      </Badge>
+                      </span>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm" style={{ color: '#666' }}>
                     {suite.description}
                   </p>
                 </div>
@@ -143,25 +161,35 @@ export const TestSuiteStatusCard: React.FC = () => {
       </div>
 
       {/* Testing Tools Footer */}
-      <div className="mt-6 p-4 rounded-lg bg-gray-100 border border-site-grayDark">
-        <h4 className="text-sm font-semibold mb-3 text-gray-700">
+      <div
+        className="mt-6 p-4 rounded-lg"
+        style={{
+          backgroundColor: '#F5F5F5',
+          border: '1px solid #e2e2e2'
+        }}
+      >
+        <h4 className="text-sm font-semibold mb-3" style={{ color: '#333' }}>
           Ferramentas de Teste
         </h4>
         <div className="flex flex-wrap gap-2">
           {[
-            { name: 'xUnit', bgClass: 'bg-purple-50', textClass: 'text-purple-700' },
-            { name: 'FluentAssertions', bgClass: 'bg-blue-50', textClass: 'text-blue-900' },
-            { name: 'Moq', bgClass: 'bg-green-50', textClass: 'text-green-900' },
-            { name: 'Playwright', bgClass: 'bg-orange-50', textClass: 'text-orange-700' },
-            { name: 'Vitest', bgClass: 'bg-yellow-50', textClass: 'text-yellow-800' },
-            { name: 'BenchmarkDotNet', bgClass: 'bg-red-50', textClass: 'text-red-700' }
+            { name: 'xUnit', bgColor: '#F3E5F5', textColor: '#6A1B9A' },
+            { name: 'FluentAssertions', bgColor: '#E3F2FD', textColor: '#0D47A1' },
+            { name: 'Moq', bgColor: '#E8F5E9', textColor: '#1B5E20' },
+            { name: 'Playwright', bgColor: '#FFF3E0', textColor: '#E65100' },
+            { name: 'Vitest', bgColor: '#FFF8E1', textColor: '#F57F17' },
+            { name: 'BenchmarkDotNet', bgColor: '#FFEBEE', textColor: '#C62828' }
           ].map((tool, idx) => (
-            <Badge
+            <span
               key={idx}
-              className={`${tool.bgClass} ${tool.textClass} border-0`}
+              className="px-3 py-1 rounded-md text-xs font-medium"
+              style={{
+                backgroundColor: tool.bgColor,
+                color: tool.textColor
+              }}
             >
               {tool.name}
-            </Badge>
+            </span>
           ))}
         </div>
       </div>

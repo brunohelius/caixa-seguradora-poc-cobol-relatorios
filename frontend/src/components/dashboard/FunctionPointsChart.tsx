@@ -1,5 +1,4 @@
 import Card from '../common/Card';
-import { Badge } from '../ui/badge';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
 import type { FunctionPointsDto } from '../../services/types';
 
@@ -38,28 +37,28 @@ export const FunctionPointsChart: React.FC<FunctionPointsChartProps> = ({ functi
       <div className="space-y-6">
         {/* Summary Metrics */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="p-4 rounded-lg bg-blue-50 border-2 border-caixa-blue">
-            <p className="text-sm font-semibold mb-1 text-blue-700">PF Não Ajustados</p>
-            <p className="text-3xl font-black text-blue-900">
+          <div className="p-4 rounded-lg" style={{ backgroundColor: '#E3F2FD', border: '2px solid #0047BB' }}>
+            <p className="text-sm font-semibold mb-1" style={{ color: '#1565C0' }}>PF Não Ajustados</p>
+            <p className="text-3xl font-black" style={{ color: '#0D47A1' }}>
               {functionPoints.totalUnadjustedFunctionPoints}
             </p>
           </div>
-          <div className="p-4 rounded-lg bg-green-50 border-2 border-success">
-            <p className="text-sm font-semibold mb-1 text-green-700">PF Ajustados</p>
-            <p className="text-3xl font-black text-green-900">
+          <div className="p-4 rounded-lg" style={{ backgroundColor: '#E8F5E9', border: '2px solid #28A745' }}>
+            <p className="text-sm font-semibold mb-1" style={{ color: '#2E7D32' }}>PF Ajustados</p>
+            <p className="text-3xl font-black" style={{ color: '#1B5E20' }}>
               {Math.round(functionPoints.totalAdjustedFunctionPoints)}
             </p>
           </div>
-          <div className="p-4 rounded-lg bg-purple-50 border-2 border-purple-700">
-            <p className="text-sm font-semibold mb-1 text-purple-700">Esforço Estimado</p>
-            <p className="text-3xl font-black text-purple-900">
+          <div className="p-4 rounded-lg" style={{ backgroundColor: '#F3E5F5', border: '2px solid #7B1FA2' }}>
+            <p className="text-sm font-semibold mb-1" style={{ color: '#7B1FA2' }}>Esforço Estimado</p>
+            <p className="text-3xl font-black" style={{ color: '#4A148C' }}>
               {functionPoints.estimatedEffortMonths.toFixed(1)}
               <span className="text-sm font-normal ml-1">meses</span>
             </p>
           </div>
-          <div className="p-4 rounded-lg bg-orange-50 border-2 border-orange-500">
-            <p className="text-sm font-semibold mb-1 text-orange-700">Complexidade</p>
-            <p className="text-2xl font-black text-orange-900">
+          <div className="p-4 rounded-lg" style={{ backgroundColor: '#FFF3E0', border: '2px solid #FF9800' }}>
+            <p className="text-sm font-semibold mb-1" style={{ color: '#E65100' }}>Complexidade</p>
+            <p className="text-2xl font-black" style={{ color: '#BF360C' }}>
               {functionPoints.complexityRating}
             </p>
           </div>
@@ -68,7 +67,7 @@ export const FunctionPointsChart: React.FC<FunctionPointsChartProps> = ({ functi
         {/* Function Points Breakdown */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 className="text-md font-semibold mb-3 text-gray-700">
+            <h4 className="text-md font-semibold mb-3" style={{ color: '#333' }}>
               Distribuição de Pontos de Função
             </h4>
             <ResponsiveContainer width="100%" height={250}>
@@ -88,7 +87,7 @@ export const FunctionPointsChart: React.FC<FunctionPointsChartProps> = ({ functi
           </div>
 
           <div>
-            <h4 className="text-md font-semibold mb-3 text-gray-700">
+            <h4 className="text-md font-semibold mb-3" style={{ color: '#333' }}>
               Visão Radar - Complexidade
             </h4>
             <ResponsiveContainer width="100%" height={250}>
@@ -111,40 +110,48 @@ export const FunctionPointsChart: React.FC<FunctionPointsChartProps> = ({ functi
 
         {/* Module Breakdown */}
         <div>
-          <h4 className="text-md font-semibold mb-3 text-gray-700">
+          <h4 className="text-md font-semibold mb-3" style={{ color: '#333' }}>
             Breakdown por Módulo COBOL
           </h4>
           <div className="space-y-2 max-h-[300px] overflow-y-auto">
             {functionPoints.moduleBreakdown.map((module, index) => (
               <div
                 key={index}
-                className="p-4 rounded-lg hover:shadow-md transition-shadow bg-gray-100 border border-site-grayDark"
+                className="p-4 rounded-lg hover:shadow-md transition-shadow"
+                style={{
+                  backgroundColor: '#F5F5F5',
+                  border: '1px solid #e2e2e2'
+                }}
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex-1">
-                    <p className="font-semibold text-black">
+                    <p className="font-semibold" style={{ color: '#000' }}>
                       {module.moduleName}
                     </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm" style={{ color: '#666' }}>
                       {module.functionPoints} PF • {module.estimatedHours.toFixed(0)}h estimadas
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge
-                      className="text-white"
+                    <span
+                      className="px-3 py-1 rounded-full text-xs font-semibold text-white"
                       style={{ backgroundColor: getComplexityColor(module.complexity) }}
                     >
                       {module.complexity}
-                    </Badge>
-                    <Badge
-                      className={
-                        module.status === 'Complete' ? 'bg-green-200 text-green-900' :
-                        module.status === 'In Progress' ? 'bg-yellow-200 text-yellow-900' :
-                        'bg-gray-200 text-gray-700'
-                      }
+                    </span>
+                    <span
+                      className="px-3 py-1 rounded-full text-xs font-semibold"
+                      style={{
+                        backgroundColor:
+                          module.status === 'Complete' ? '#C8E6C9' :
+                          module.status === 'In Progress' ? '#FFF9C4' : '#EEEEEE',
+                        color:
+                          module.status === 'Complete' ? '#1B5E20' :
+                          module.status === 'In Progress' ? '#F57F17' : '#616161'
+                      }}
                     >
                       {module.status}
-                    </Badge>
+                    </span>
                   </div>
                 </div>
               </div>

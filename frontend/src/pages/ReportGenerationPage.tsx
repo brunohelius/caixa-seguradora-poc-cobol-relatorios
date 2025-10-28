@@ -3,9 +3,6 @@ import ReportParametersForm from '../components/reports/ReportParametersForm';
 import ReportProgressIndicator from '../components/reports/ReportProgressIndicator';
 import ReportResultsCard from '../components/reports/ReportResultsCard';
 import ReportHistoryTable from '../components/reports/ReportHistoryTable';
-import { Button } from '../components/ui/button';
-import { Alert, AlertDescription } from '../components/ui/alert';
-import { Card } from '../components/ui/card';
 import {
   generateReport,
   pollReportStatus,
@@ -39,9 +36,6 @@ export default function ReportGenerationPage() {
   // Polling control
   const pollingRef = useRef<boolean>(false);
 
-  // Error state
-  const [pageError, setPageError] = useState<string | null>(null);
-
   /**
    * Load report history on mount and when page changes
    */
@@ -55,16 +49,12 @@ export default function ReportGenerationPage() {
   const loadHistory = async () => {
     try {
       setHistoryLoading(true);
-      setPageError(null);
       const response = await getReportHistory(currentPage, pageSize);
-      // API returns 'items' and 'total'
-      setHistory(response.items || []);
-      setTotalPages(Math.ceil((response.total || 0) / pageSize));
+      setHistory(response.items);
+      setTotalPages(Math.ceil(response.total / pageSize));
     } catch (error) {
       console.error('Error loading report history:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
-      setPageError(errorMessage || 'Erro ao carregar histórico de relatórios');
-      setHistory([]);
+      // Error handling is done by apiClient interceptor
     } finally {
       setHistoryLoading(false);
     }
@@ -206,15 +196,6 @@ export default function ReportGenerationPage() {
           </p>
         </div>
 
-        {/* Page error message */}
-        {pageError && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertDescription>
-              {pageError}
-            </AlertDescription>
-          </Alert>
-        )}
-
         {/* Main content grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left column: Form and Progress */}
@@ -227,16 +208,14 @@ export default function ReportGenerationPage() {
               />
             ) : (
               /* Show "New Report" button when completed */
-              <Card className="p-6">
-                <Button
+              <div className="bg-white shadow-md rounded-lg p-6">
+                <button
                   onClick={handleNewReport}
-                  variant="primary"
-                  size="large"
-                  className="w-full"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
                 >
                   Gerar Novo Relatório
-                </Button>
-              </Card>
+                </button>
+              </div>
             )}
 
             {/* Progress indicator - show when job is active */}
@@ -264,11 +243,11 @@ export default function ReportGenerationPage() {
 
             {/* Info card when no job is running */}
             {!currentStatus && (
-              <Alert variant="info">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
                 <div className="flex">
                   <div className="flex-shrink-0">
                     <svg
-                      className="h-6 w-6"
+                      className="h-6 w-6 text-blue-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -282,21 +261,21 @@ export default function ReportGenerationPage() {
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <h3 className="text-sm font-medium mb-2">
+                    <h3 className="text-sm font-medium text-blue-800">
                       Como usar este sistema
                     </h3>
-                    <AlertDescription>
-                      <ol className="list-decimal list-inside space-y-1 text-sm">
+                    <div className="mt-2 text-sm text-blue-700">
+                      <ol className="list-decimal list-inside space-y-1">
                         <li>Preencha os parâmetros do relatório no formulário à esquerda</li>
                         <li>Clique em "Gerar Relatório" para iniciar o processamento</li>
                         <li>Acompanhe o progresso em tempo real</li>
                         <li>Faça download dos arquivos quando concluído</li>
                         <li>Acesse relatórios anteriores no histórico abaixo</li>
                       </ol>
-                    </AlertDescription>
+                    </div>
                   </div>
                 </div>
-              </Alert>
+              </div>
             )}
           </div>
         </div>

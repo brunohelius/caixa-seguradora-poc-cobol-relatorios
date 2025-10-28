@@ -73,10 +73,8 @@ public class ReadOnlyDbCommandInterceptorTests : IDisposable
         Func<Task> act = async () => await _readOnlyContext.SaveChangesAsync();
 
         // Assert
-        var exception = await act.Should().ThrowAsync<DbUpdateException>();
-        var innerException = exception.WithInnerException<InvalidOperationException>().Which;
-        innerException.Message.Should().Contain("INSERT");
-        innerException.Message.Should().Contain("SC-007");
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("*INSERT*não permitida*SC-007*");
     }
 
     [Fact]
@@ -102,10 +100,8 @@ public class ReadOnlyDbCommandInterceptorTests : IDisposable
         Func<Task> act = async () => await _readOnlyContext.SaveChangesAsync();
 
         // Assert
-        var exception = await act.Should().ThrowAsync<DbUpdateException>();
-        var innerException = exception.WithInnerException<InvalidOperationException>().Which;
-        innerException.Message.Should().Contain("UPDATE");
-        innerException.Message.Should().Contain("SC-007");
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("*UPDATE*não permitida*SC-007*");
     }
 
     [Fact]
@@ -131,10 +127,8 @@ public class ReadOnlyDbCommandInterceptorTests : IDisposable
         Func<Task> act = async () => await _readOnlyContext.SaveChangesAsync();
 
         // Assert
-        var exception = await act.Should().ThrowAsync<DbUpdateException>();
-        var innerException = exception.WithInnerException<InvalidOperationException>().Which;
-        innerException.Message.Should().Contain("DELETE");
-        innerException.Message.Should().Contain("SC-007");
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("*DELETE*não permitida*SC-007*");
     }
 
     [Fact]

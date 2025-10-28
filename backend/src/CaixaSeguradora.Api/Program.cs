@@ -12,7 +12,6 @@ using CaixaSeguradora.Core.Services;
 using CaixaSeguradora.Core.DTOs;
 using CaixaSeguradora.Api.Middleware;
 using CaixaSeguradora.Api.Validators;
-using CaixaSeguradora.Api.HealthChecks;
 using Serilog;
 using Serilog.Events;
 using Hangfire;
@@ -396,11 +395,6 @@ try
     // Add Hangfire server
     builder.Services.AddHangfireServer();
 
-    // Configure Health Checks (User Story 6 - T190, T191, T193)
-    builder.Services.AddHealthChecks()
-        .AddCheck<DatabaseHealthCheck>("database")
-        .AddCheck<FileSystemHealthCheck>("fileSystem");
-
     WebApplication app = builder.Build();
 
     // CLI Command: Seed sample data (T074 - Phase 3)
@@ -488,9 +482,6 @@ try
     });
 
     app.MapControllers();
-
-    // Map Health Check endpoint (T193)
-    app.MapHealthChecks("/health");
 
     Log.Information("Application configured successfully, starting web server");
     app.Run();

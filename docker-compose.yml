@@ -1,72 +1,57 @@
-# Docker Compose configuration for Caixa Seguradora Premium Reporting System
-# Implements T202 - Phase 10 (Polish)
-#
-# Usage:
-#   Development: docker-compose up --build
-#   Production:  docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
-#   Stop:        docker-compose down
-
 version: '3.8'
 
 services:
-  # Backend API service (.NET 9)
+  # Backend API service
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
-    container_name: caixa-seguradora-backend
+      dockerfile: Dockerfile.backend
+    container_name: caixa-backend
     ports:
-      - "5555:5555"  # HTTP port
+      - "5001:8080"  # Map to container port 8080 (common for .NET apps)
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:5555
       - ConnectionStrings__DefaultConnection=Data Source=/app/data/premium_reporting.db
-      - Jwt__SecretKey=${JWT_SECRET_KEY:-your-secret-key-change-in-production-min-32-chars}
-      - Jwt__Issuer=CaixaSeguradora
-      - Jwt__Audience=CaixaSeguradora.API
-      - Cors__AllowedOrigins__0=http://localhost:5173
-      - Serilog__MinimumLevel__Default=Information
     volumes:
-      - ./backend/logs:/app/logs:rw
-      - ./backend/output:/app/output:rw
-      - backend-data:/app/data:rw
-    healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:5555/api/v1/health/live"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
+      - ./backend/src/CaixaSeguradora.Api/logs:/app/logs
+      - ./data:/app/data  # For SQLite database persistence
+    depends_on:
+      - db
     networks:
       - app-network
-    restart: unless-stopped
 
-  # Frontend React SPA with nginx
+  # Frontend React service
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
-    container_name: caixa-seguradora-frontend
+      dockerfile: Dockerfile.frontend
+    container_name: caixa-frontend
     ports:
-      - "5173:80"  # Map host 5173 to container 80
+      - "5173:80"  # Vite dev server typically runs on port 80 in container
     environment:
-      - VITE_API_BASE_URL=http://localhost:5555
+      - VITE_API_BASE_URL=http://backend:8080/api/v1
+    volumes:
+      - ./frontend/src:/app/src:ro  # Live reload for development
     depends_on:
-      backend:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 5s
+      - backend
     networks:
       - app-network
-    restart: unless-stopped
+
+  # SQLite database service (using a file-based volume)
+  db:
+    image: nouchka/sqlite3:latest
+    container_name: caixa-db
+    volumes:
+      - ./data:/var/lib/sqlite3
+    environment:
+      - SQLITE_DATABASE=premium_reporting.db
+    networks:
+      - app-network
 
 networks:
   app-network:
     driver: bridge
 
 volumes:
-  backend-data:
+  database_data:
     driver: local

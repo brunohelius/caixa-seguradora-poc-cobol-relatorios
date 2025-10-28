@@ -70,17 +70,16 @@ public class DashboardService : IDashboardService
     /// </summary>
     public Task<FunctionPointsDto> GetFunctionPointsAsync(CancellationToken cancellationToken = default)
     {
-        // External Inputs (EI) - parâmetros de processamento, filtros de consulta e uploads auxiliares
-        // 8 entradas críticas (fase 1, alta complexidade) + 7 interações web (fase 2, média complexidade)
+        // External Inputs (EI) - data entry, configuration inputs
         var externalInputs = new FunctionPointCategoryDto
         {
             CategoryName = "External Inputs (EI)",
-            LowComplexityCount = 0,
-            AverageComplexityCount = 7,
-            HighComplexityCount = 8,
-            LowComplexityPoints = 0,
-            AverageComplexityPoints = 35, // Ajustado a partir da análise Fase 2 (7 EI × ~5 PF)
-            HighComplexityPoints = 48 // 8 EI críticos (V0 parameters, validações rigorosas)
+            LowComplexityCount = 2, // System configuration, report parameters
+            AverageComplexityCount = 3, // Date ranges, filter criteria
+            HighComplexityCount = 1, // Complex validation rules
+            LowComplexityPoints = 6, // 2 * 3 points
+            AverageComplexityPoints = 12, // 3 * 4 points
+            HighComplexityPoints = 6 // 1 * 6 points
         };
 
         // External Outputs (EO) - PREMIT.TXT, PREMCED.TXT reports
@@ -88,47 +87,47 @@ public class DashboardService : IDashboardService
         {
             CategoryName = "External Outputs (EO)",
             LowComplexityCount = 0,
-            AverageComplexityCount = 10,
-            HighComplexityCount = 12, // PREMIT/PREMCED + relatórios avançados
+            AverageComplexityCount = 0,
+            HighComplexityCount = 2, // PREMIT and PREMCED with complex formatting
             LowComplexityPoints = 0,
-            AverageComplexityPoints = 60, // 10 EO médios (exportações, dashboards) → 60 PF
-            HighComplexityPoints = 84 // 12 EO de alta complexidade (arquivos regulatórios, logs detalhados)
+            AverageComplexityPoints = 0,
+            HighComplexityPoints = 14 // 2 * 7 points
         };
 
         // External Inquiries (EQ) - queries for validation and lookup
         var externalInquiries = new FunctionPointCategoryDto
         {
             CategoryName = "External Inquiries (EQ)",
-            LowComplexityCount = 0,
-            AverageComplexityCount = 18, // 5 queries fase 1 + 13 consultas avançadas fase 2
-            HighComplexityCount = 0,
-            LowComplexityPoints = 0,
-            AverageComplexityPoints = 72, // 18 EQ × 4 PF (consultas agregadas, histórico, dashboards)
-            HighComplexityPoints = 0
+            LowComplexityCount = 5, // Simple lookups (client, policy)
+            AverageComplexityCount = 10, // Product, coverage, endorsement queries
+            HighComplexityCount = 3, // Complex multi-table joins
+            LowComplexityPoints = 15, // 5 * 3 points
+            AverageComplexityPoints = 40, // 10 * 4 points
+            HighComplexityPoints = 18 // 3 * 6 points
         };
 
         // Internal Logical Files (ILF) - 14 core entities maintained by the system
         var internalLogicalFiles = new FunctionPointCategoryDto
         {
             CategoryName = "Internal Logical Files (ILF)",
-            LowComplexityCount = 2, // Job history, user sessions (fase 2)
-            AverageComplexityCount = 26, // 26 views/tabelas DB2 mapeadas (fase 1)
-            HighComplexityCount = 0,
-            LowComplexityPoints = 14, // 2 ILF × 7 PF
-            AverageComplexityPoints = 260, // 26 ILF × 10 PF
-            HighComplexityPoints = 0
+            LowComplexityCount = 3, // Simple entities (SystemConfiguration, ReportDefinition, Agency)
+            AverageComplexityCount = 8, // Medium complexity (Policy, Client, Product, Coverage, etc.)
+            HighComplexityCount = 3, // Complex entities (PremiumRecord, CossuranceCalculation, Invoice)
+            LowComplexityPoints = 21, // 3 * 7 points
+            AverageComplexityPoints = 80, // 8 * 10 points
+            HighComplexityPoints = 45 // 3 * 15 points
         };
 
-        // External Interface Files (EIF) - views/tabelas referenciadas mas não mantidas
+        // External Interface Files (EIF) - 12 DB2 views referenced but not maintained
         var externalInterfaceFiles = new FunctionPointCategoryDto
         {
             CategoryName = "External Interface Files (EIF)",
-            LowComplexityCount = 5, // APIs externas (auth, storage, monitoring)
-            AverageComplexityCount = 3, // Módulos RE0001S, GE0009S, GE0010S
-            HighComplexityCount = 0,
-            LowComplexityPoints = 25, // 5 EIF × 5 PF
-            AverageComplexityPoints = 21, // 3 EIF × 7 PF
-            HighComplexityPoints = 0
+            LowComplexityCount = 4, // Simple views (V0SISTEMA, V0AGENCIAS, V0PRODUTOR)
+            AverageComplexityCount = 6, // Medium views (V0CLIENTE, V0APOLICE, V0PRODUTO)
+            HighComplexityCount = 2, // Complex views (V0PREMIOS, V0APOLCOSCED with many joins)
+            LowComplexityPoints = 20, // 4 * 5 points
+            AverageComplexityPoints = 42, // 6 * 7 points
+            HighComplexityPoints = 20 // 2 * 10 points
         };
 
         // Calculate totals
@@ -138,11 +137,15 @@ public class DashboardService : IDashboardService
             + internalLogicalFiles.TotalPoints
             + externalInterfaceFiles.TotalPoints;
 
-        // Value Adjustment Factor (VAF) calculation based on 14 General System Characteristics.
-        // Resultado ponderado das fases: 1.13 (migração core) + 1.50 (melhorias frontend) → 770 FP ajustados.
-        const decimal adjustedTarget = 770m;
-        var valueAdjustmentFactor = adjustedTarget / totalUnadjustedFP;
-        var totalAdjustedFP = Math.Round(totalUnadjustedFP * valueAdjustmentFactor, 0, MidpointRounding.AwayFromZero);
+        // Value Adjustment Factor (VAF) calculation based on 14 General System Characteristics
+        // Higher complexity due to:
+        // - Complex business logic (COBOL sections with high cyclomatic complexity)
+        // - High data volume (100K+ premium records, 26+ tables)
+        // - Performance requirements (batch processing < 5 minutes per SC-003)
+        // - Multiple external dependencies (3 external modules)
+        // - Regulatory compliance (byte-for-byte COBOL output matching)
+        var valueAdjustmentFactor = 1.20m; // High complexity project
+        var totalAdjustedFP = totalUnadjustedFP * valueAdjustmentFactor;
 
         // Effort estimation:
         // Industry standard: 6-10 hours per function point for complex migrations

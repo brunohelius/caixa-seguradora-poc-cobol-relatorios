@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import BatchJobForm from '../components/batch/BatchJobForm';
 import BatchJobList from '../components/batch/BatchJobList';
 import ExecutionHistoryTable from '../components/batch/ExecutionHistoryTable';
-import { Button } from '../components/ui/button';
-import { Alert, AlertDescription } from '../components/ui/alert';
 import {
   createBatchJob,
   getBatchJobs,
@@ -256,13 +254,12 @@ export default function BatchJobsPage() {
       {/* Create New Job Button */}
       {!showForm && (
         <div className="mb-6">
-          <Button
+          <button
             onClick={() => {
               setShowForm(true);
               setEditingJobId(null);
             }}
-            variant="primary"
-            size="medium"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
           >
             <span className="flex items-center">
               <svg
@@ -280,7 +277,7 @@ export default function BatchJobsPage() {
               </svg>
               Criar Novo Trabalho em Lote
             </span>
-          </Button>
+          </button>
         </div>
       )}
 
@@ -293,16 +290,15 @@ export default function BatchJobsPage() {
             mode={editingJobId ? 'edit' : 'create'}
           />
           <div className="mt-4">
-            <Button
+            <button
               onClick={() => {
                 setShowForm(false);
                 setEditingJobId(null);
               }}
-              variant="ghost"
-              size="small"
+              className="text-gray-600 hover:text-gray-900 underline"
             >
               Cancelar
-            </Button>
+            </button>
           </div>
         </div>
       )}
@@ -323,10 +319,9 @@ export default function BatchJobsPage() {
       {selectedJobId && (
         <div className="mb-6">
           <div className="mb-4">
-            <Button
+            <button
               onClick={() => setSelectedJobId(null)}
-              variant="ghost"
-              size="small"
+              className="text-blue-600 hover:text-blue-900 text-sm flex items-center"
             >
               <svg
                 className="h-4 w-4 mr-1"
@@ -342,7 +337,7 @@ export default function BatchJobsPage() {
                 />
               </svg>
               Voltar para lista de trabalhos
-            </Button>
+            </button>
           </div>
 
           <ExecutionHistoryTable
@@ -353,7 +348,7 @@ export default function BatchJobsPage() {
           />
 
           {monitoringExecutionId && (
-            <Alert variant="info" className="mt-4">
+            <div className="mt-4 bg-blue-50 border border-blue-200 rounded-md p-4">
               <div className="flex items-center">
                 <svg
                   className="animate-spin h-5 w-5 text-blue-600 mr-3"
@@ -375,44 +370,42 @@ export default function BatchJobsPage() {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
-                <AlertDescription>
+                <span className="text-blue-800 font-medium">
                   Monitorando execução #{monitoringExecutionId}...
-                </AlertDescription>
+                </span>
               </div>
-            </Alert>
+            </div>
           )}
         </div>
       )}
 
       {/* Instructions */}
       {!showForm && jobs.length === 0 && !jobsLoading && (
-        <Alert variant="info">
-          <AlertDescription>
-            <h3 className="text-lg font-semibold mb-3">
-              Como usar Trabalhos em Lote
-            </h3>
-            <ol className="list-decimal list-inside space-y-2">
-              <li>
-                Clique em "Criar Novo Trabalho em Lote" para agendar um novo trabalho
-              </li>
-              <li>
-                Configure o nome, descrição, padrão de recorrência (diário, semanal, mensal)
-              </li>
-              <li>
-                Defina os parâmetros do relatório (sistema, tipo, modo, empresa)
-              </li>
-              <li>
-                Configure horário de execução e destinatários de notificação
-              </li>
-              <li>
-                Use os botões de ação para executar, editar, pausar ou excluir trabalhos
-              </li>
-              <li>
-                Clique em um trabalho para ver seu histórico de execuções
-              </li>
-            </ol>
-          </AlertDescription>
-        </Alert>
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-3">
+            Como usar Trabalhos em Lote
+          </h3>
+          <ol className="list-decimal list-inside space-y-2 text-gray-700">
+            <li>
+              Clique em "Criar Novo Trabalho em Lote" para agendar um novo trabalho
+            </li>
+            <li>
+              Configure o nome, descrição, padrão de recorrência (diário, semanal, mensal)
+            </li>
+            <li>
+              Defina os parâmetros do relatório (sistema, tipo, modo, empresa)
+            </li>
+            <li>
+              Configure horário de execução e destinatários de notificação
+            </li>
+            <li>
+              Use os botões de ação para executar, editar, pausar ou excluir trabalhos
+            </li>
+            <li>
+              Clique em um trabalho para ver seu histórico de execuções
+            </li>
+          </ol>
+        </div>
       )}
     </div>
   );

@@ -1,10 +1,4 @@
-# Frontend Dockerfile - Multi-stage build with nginx
-# Implements T201 - Phase 10 (Polish)
-#
-# Build: docker build -t caixa-seguradora-frontend:latest .
-# Run:   docker run -p 5173:80 caixa-seguradora-frontend:latest
-
-# Stage 1: Build
+# Build stage
 FROM node:20-alpine AS build
 WORKDIR /app
 
@@ -12,7 +6,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --silent
+RUN npm ci
 
 # Copy source code
 COPY . .
@@ -20,33 +14,18 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Stage 2: Production with nginx
-FROM nginx:alpine AS runtime
+# Production stage
+FROM node:20-alpine
+WORKDIR /app
 
-# Copy custom nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Install serve to run the production build
+RUN npm install -g serve
 
 # Copy built assets from build stage
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# Create non-root user for security
-RUN addgroup -g 1001 -S appuser && \
-    adduser -S -u 1001 -G appuser appuser && \
-    chown -R appuser:appuser /usr/share/nginx/html && \
-    chown -R appuser:appuser /var/cache/nginx && \
-    chown -R appuser:appuser /var/log/nginx && \
-    touch /var/run/nginx.pid && \
-    chown -R appuser:appuser /var/run/nginx.pid
-
-# Switch to non-root user
-USER appuser
+COPY --from=build /app/dist ./dist
 
 # Expose port
-EXPOSE 80
+EXPOSE 5173
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD wget --quiet --tries=1 --spider http://localhost:80/ || exit 1
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Start the application
+CMD ["serve", "-s", "dist", "-l", "5173"]

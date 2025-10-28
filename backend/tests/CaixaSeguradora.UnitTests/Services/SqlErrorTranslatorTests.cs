@@ -232,13 +232,6 @@ public class SqlErrorTranslatorTests
         }
         catch (SqliteException ex)
         {
-            var requestedCode = (int)errorCode;
-            if ((int)ex.SqliteErrorCode != requestedCode)
-            {
-                // Preserve original message but ensure desired error code for translation tests
-                return new SqliteException(ex.Message, requestedCode);
-            }
-
             return ex;
         }
 

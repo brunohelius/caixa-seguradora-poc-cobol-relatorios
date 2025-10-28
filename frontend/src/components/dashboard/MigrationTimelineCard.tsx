@@ -1,5 +1,4 @@
 import Card from '../common/Card';
-import { Badge } from '../ui/badge';
 
 interface TimelinePhase {
   phase: string;
@@ -98,27 +97,30 @@ export const MigrationTimelineCard: React.FC = () => {
     switch (status) {
       case 'completed':
         return {
-          bgClass: 'bg-green-50',
-          borderClass: 'border-success',
-          dotClass: 'bg-success',
-          textClass: 'text-black',
-          badgeClass: 'bg-green-200 text-green-900'
+          bgColor: '#E8F5E9',
+          borderColor: '#28A745',
+          dotColor: '#28A745',
+          textColor: '#000',
+          badgeBg: '#C8E6C9',
+          badgeText: '#1B5E20'
         };
       case 'current':
         return {
-          bgClass: 'bg-blue-50',
-          borderClass: 'border-caixa-blue',
-          dotClass: 'bg-caixa-blue',
-          textClass: 'text-black',
-          badgeClass: 'bg-blue-200 text-blue-900'
+          bgColor: '#E3F2FD',
+          borderColor: '#0047BB',
+          dotColor: '#0047BB',
+          textColor: '#000',
+          badgeBg: '#BBDEFB',
+          badgeText: '#0D47A1'
         };
       case 'pending':
         return {
-          bgClass: 'bg-gray-100',
-          borderClass: 'border-gray-400',
-          dotClass: 'bg-gray-400',
-          textClass: 'text-gray-600',
-          badgeClass: 'bg-gray-200 text-gray-700'
+          bgColor: '#F5F5F5',
+          borderColor: '#BDBDBD',
+          dotColor: '#9E9E9E',
+          textColor: '#666',
+          badgeBg: '#EEEEEE',
+          badgeText: '#616161'
         };
     }
   };
@@ -135,23 +137,27 @@ export const MigrationTimelineCard: React.FC = () => {
               {/* Connecting Line */}
               {!isLast && (
                 <div
-                  className={`absolute left-6 top-12 w-0.5 h-full ${
-                    phase.status === 'completed' ? 'bg-green-300' : 'bg-gray-300'
-                  }`}
+                  className="absolute left-6 top-12 w-0.5 h-full"
+                  style={{
+                    backgroundColor: phase.status === 'completed' ? '#A5D6A7' : '#E0E0E0'
+                  }}
                 />
               )}
 
               {/* Phase Card */}
               <div
-                className={`relative flex gap-4 p-5 rounded-xl shadow-md border-2 ${styles.bgClass} ${styles.borderClass}`}
+                className="relative flex gap-4 p-5 rounded-xl shadow-md"
+                style={{
+                  backgroundColor: styles.bgColor,
+                  border: `2px solid ${styles.borderColor}`
+                }}
               >
                 {/* Icon & Dot */}
                 <div className="flex-shrink-0 flex flex-col items-center">
                   <div className="text-3xl mb-2">{phase.icon}</div>
                   <div
-                    className={`w-4 h-4 rounded-full ${styles.dotClass} ${
-                      phase.status === 'current' ? 'animate-pulse' : ''
-                    }`}
+                    className={`w-4 h-4 rounded-full ${phase.status === 'current' ? 'animate-pulse' : ''}`}
+                    style={{ backgroundColor: styles.dotColor }}
                   />
                 </div>
 
@@ -160,36 +166,52 @@ export const MigrationTimelineCard: React.FC = () => {
                   <div className="flex items-start justify-between mb-2">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className={`text-lg font-bold ${styles.textClass}`}>
+                        <h3 className="text-lg font-bold" style={{ color: styles.textColor }}>
                           {phase.phase}
                         </h3>
                         {phase.status === 'completed' && (
                           <span className="text-green-600 text-xl font-bold">✓</span>
                         )}
                         {phase.status === 'current' && (
-                          <Badge className={`${styles.badgeClass}`}>
+                          <span
+                            className="px-2 py-1 rounded text-xs font-bold"
+                            style={{
+                              backgroundColor: styles.badgeBg,
+                              color: styles.badgeText
+                            }}
+                          >
                             EM ANDAMENTO
-                          </Badge>
+                          </span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-600">{phase.description}</p>
+                      <p className="text-sm" style={{ color: '#666' }}>{phase.description}</p>
                     </div>
-                    <Badge className={`${styles.badgeClass} whitespace-nowrap`}>
+                    <span
+                      className="px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap"
+                      style={{
+                        backgroundColor: styles.badgeBg,
+                        color: styles.badgeText
+                      }}
+                    >
                       {phase.week}
-                    </Badge>
+                    </span>
                   </div>
 
                   {/* User Stories */}
                   {phase.userStories && phase.userStories.length > 0 && (
                     <div className="mt-2 flex flex-wrap gap-2">
                       {phase.userStories.map((us, usIndex) => (
-                        <Badge
+                        <span
                           key={usIndex}
-                          variant="outline"
-                          className="bg-white border-gray-400 text-gray-700"
+                          className="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium"
+                          style={{
+                            backgroundColor: '#fff',
+                            border: '1px solid #BDBDBD',
+                            color: '#333'
+                          }}
                         >
                           {us}
-                        </Badge>
+                        </span>
                       ))}
                     </div>
                   )}
@@ -201,19 +223,25 @@ export const MigrationTimelineCard: React.FC = () => {
       </div>
 
       {/* Summary Footer */}
-      <div className="mt-6 p-5 rounded-xl shadow-md bg-gradient-to-br from-green-50 to-blue-50 border-2 border-success">
+      <div
+        className="mt-6 p-5 rounded-xl shadow-md"
+        style={{
+          background: 'linear-gradient(135deg, #E8F5E9 0%, #E3F2FD 100%)',
+          border: '2px solid #28A745'
+        }}
+      >
         <div className="flex items-center justify-between">
           <div>
-            <h4 className="text-base font-bold mb-1 text-black">
+            <h4 className="text-base font-bold mb-1" style={{ color: '#000' }}>
               Status do Projeto
             </h4>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm" style={{ color: '#666' }}>
               8 de 10 fases completas • 2 fases pendentes (UAT e Produção)
             </p>
           </div>
           <div className="text-right">
-            <p className="text-4xl font-black text-success">80%</p>
-            <p className="text-xs font-medium text-gray-600">do cronograma</p>
+            <p className="text-4xl font-black" style={{ color: '#28A745' }}>80%</p>
+            <p className="text-xs font-medium" style={{ color: '#666' }}>do cronograma</p>
           </div>
         </div>
       </div>
