@@ -1,4 +1,5 @@
 using System.Text;
+using System.IO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -256,6 +257,15 @@ try
     {
         // Configure SQLite connection string with pooling and performance optimizations
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+        if (string.IsNullOrWhiteSpace(connectionString) || connectionString.Contains("${", StringComparison.Ordinal))
+        {
+            var dataDirectory = Path.Combine(AppContext.BaseDirectory, "data");
+            Directory.CreateDirectory(dataDirectory);
+            var fallbackDbPath = Path.Combine(dataDirectory, "premium-reporting.db");
+            connectionString = $"Data Source={fallbackDbPath}";
+            Log.Warning("Connection string not provided. Falling back to local SQLite database at {DatabasePath}", fallbackDbPath);
+        }
 
         // SQLite connection string builder for pooling configuration
         var sqliteConnectionStringBuilder = new Microsoft.Data.Sqlite.SqliteConnectionStringBuilder(connectionString!)
