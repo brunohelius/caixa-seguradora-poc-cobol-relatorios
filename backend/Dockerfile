@@ -58,7 +58,6 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 
 # Set environment variables
 ENV ASPNETCORE_ENVIRONMENT=Production \
-    ASPNETCORE_URLS=http://+:5555 \
     DOTNET_RUNNING_IN_CONTAINER=true \
     DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
