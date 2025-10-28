@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
-import { DashboardPage } from './pages/DashboardPage';
+import { MigrationDashboardPage } from './pages/MigrationDashboardPage';
+import { LegacySystemDocsPage } from './pages/LegacySystemDocsPage';
 import ReportGenerationPage from './pages/ReportGenerationPage';
 import QueryPage from './pages/QueryPage';
 import BatchJobsPage from './pages/BatchJobsPage';
@@ -22,7 +23,8 @@ function App() {
     <Router>
       <Layout>
         <Routes>
-          <Route path="/" element={<DashboardPage />} />
+          <Route path="/" element={<LegacySystemDocsPage />} />
+          <Route path="/dashboard" element={<MigrationDashboardPage />} />
           <Route path="/reports" element={<ReportGenerationPage />} />
           <Route path="/query" element={<QueryPage />} />
           <Route path="/batch-jobs" element={<BatchJobsPage />} />
