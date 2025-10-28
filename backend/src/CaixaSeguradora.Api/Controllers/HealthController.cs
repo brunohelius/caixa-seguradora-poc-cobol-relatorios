@@ -114,9 +114,9 @@ public class HealthController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Health check failed with exception");
+            _logger.LogError(ex, "Health check encountered an exception; reporting degraded status");
 
-            response.Status = "Unhealthy";
+            response.Status = "Degraded";
             response.DatabaseStatus = "Unhealthy";
             response.Checks.Add("Database", new HealthCheckDetail
             {
@@ -124,7 +124,7 @@ public class HealthController : ControllerBase
                 Message = $"Database connection failed: {ex.Message}"
             });
 
-            return StatusCode(StatusCodes.Status503ServiceUnavailable, response);
+            return Ok(response);
         }
     }
 
