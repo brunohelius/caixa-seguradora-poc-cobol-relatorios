@@ -1,0 +1,86 @@
+{
+  "reportGeneration": {
+    "pageTitle": "Geração de Relatórios SUSEP",
+    "pageDescription": "Gere relatórios de prêmios emitidos (PREMIT.TXT) e prêmios cedidos (PREMCED.TXT) conforme a Circular SUSEP 360/2008",
+    "monthLabel": "Mês de Referência",
+    "monthPlaceholder": "AAAAMM (exemplo: 202510)",
+    "monthHelp": "Formato: AAAAMM. Não é possível gerar relatórios para meses futuros",
+    "reportTypeLabel": "Tipo de Relatório",
+    "reportTypePREMIT": "PREMIT - Prêmios Emitidos",
+    "reportTypePREMCED": "PREMCED - Prêmios Cedidos (Cosseguro)",
+    "reportTypeBOTH": "Ambos os Relatórios",
+    "generateButton": "Gerar Relatório",
+    "generating": "Gerando Relatório...",
+    "newReportButton": "Gerar Novo Relatório"
+  },
+  "executionStatus": {
+    "statusLabel": "Status",
+    "statusPENDING": "Pendente",
+    "statusRUNNING": "Processando",
+    "statusCOMPLETED": "Concluído",
+    "statusFAILED": "Erro",
+    "progressLabel": "Progresso",
+    "recordsProcessed": "registros processados",
+    "elapsedTime": "Tempo Decorrido",
+    "estimatedTime": "Tempo Estimado",
+    "refreshButton": "Atualizar Status",
+    "cancelButton": "Cancelar Processamento",
+    "processing": "Processando registros..."
+  },
+  "downloadButtons": {
+    "downloadPREMIT": "Baixar PREMIT.TXT",
+    "downloadPREMCED": "Baixar PREMCED.TXT",
+    "fileSize": "Tamanho",
+    "downloading": "Baixando...",
+    "downloadSuccess": "Download concluído com sucesso",
+    "downloadError": "Erro ao baixar arquivo"
+  },
+  "executionHistory": {
+    "title": "Histórico de Execuções",
+    "month": "Mês",
+    "status": "Status",
+    "startTime": "Data/Hora Início",
+    "duration": "Duração",
+    "recordsProcessed": "Registros",
+    "actions": "Ações",
+    "viewDetails": "Ver Detalhes",
+    "download": "Baixar",
+    "noRecords": "Nenhuma execução encontrada",
+    "loading": "Carregando histórico...",
+    "previousPage": "Anterior",
+    "nextPage": "Próxima",
+    "page": "Página"
+  },
+  "errors": {
+    "invalidMonth": "Período inválido: formato deve ser AAAAMM (exemplo: 202510)",
+    "futureMonth": "Período inválido: não é possível gerar relatórios para meses futuros",
+    "alreadyProcessing": "Relatório já em processamento para o período",
+    "executionNotFound": "Execução não encontrada",
+    "fileNotFound": "Arquivo não encontrado",
+    "executionNotCompleted": "Não é possível baixar arquivo: execução ainda em andamento",
+    "networkError": "Erro de conexão: verifique sua conexão com o servidor",
+    "internalError": "Erro interno do servidor",
+    "loadHistoryError": "Erro ao carregar histórico de relatórios"
+  },
+  "validation": {
+    "monthRequired": "Mês de referência é obrigatório",
+    "monthInvalidFormat": "Formato inválido. Use AAAAMM (exemplo: 202510)",
+    "monthFuture": "Não é possível gerar relatórios para meses futuros",
+    "reportTypeRequired": "Selecione o tipo de relatório"
+  },
+  "instructions": {
+    "title": "Como usar este sistema",
+    "step1": "Preencha o mês de referência no formato AAAAMM (exemplo: 202510 para outubro de 2025)",
+    "step2": "Selecione o tipo de relatório que deseja gerar",
+    "step3": "Clique em 'Gerar Relatório' para iniciar o processamento",
+    "step4": "Acompanhe o progresso em tempo real na tela",
+    "step5": "Faça download dos arquivos quando o processamento for concluído",
+    "step6": "Acesse relatórios anteriores no histórico de execuções"
+  },
+  "returnCodes": {
+    "0000": "Sucesso - sem avisos",
+    "0004": "Sucesso com avisos (< 5% de registros rejeitados)",
+    "0008": "Erro parcial (> 5% de registros rejeitados)",
+    "0012": "Erro fatal - processamento abortado"
+  }
+}

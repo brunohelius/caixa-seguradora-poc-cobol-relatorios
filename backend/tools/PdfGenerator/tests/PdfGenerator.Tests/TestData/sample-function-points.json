@@ -1,0 +1,208 @@
+{
+  "projectName": "Migração COBOL RG1866B",
+  "methodology": "IFPUG 4.3.1",
+  "functions": [
+    {
+      "type": "EO",
+      "name": "Gerar PREMIT.TXT",
+      "description": "Geração de arquivo de prêmios emitidos",
+      "complexity": "High",
+      "files": 26,
+      "dataElements": 687
+    },
+    {
+      "type": "EO",
+      "name": "Gerar PREMCED.TXT",
+      "description": "Geração de arquivo de prêmios cedidos",
+      "complexity": "High",
+      "files": 26,
+      "dataElements": 687
+    },
+    {
+      "type": "EO",
+      "name": "Dashboard Métricas",
+      "description": "Painel de controle com métricas do sistema",
+      "complexity": "Average",
+      "files": 5,
+      "dataElements": 25
+    },
+    {
+      "type": "EO",
+      "name": "Relatório Comparação",
+      "description": "Relatório de comparação COBOL vs .NET",
+      "complexity": "Average",
+      "files": 3,
+      "dataElements": 15
+    },
+    {
+      "type": "EO",
+      "name": "Exportar CSV",
+      "description": "Exportação de dados para CSV",
+      "complexity": "Low",
+      "files": 2,
+      "dataElements": 10
+    },
+    {
+      "type": "EQ",
+      "name": "Consultar Prêmios",
+      "description": "Consulta de prêmios com filtros avançados",
+      "complexity": "High",
+      "files": 10,
+      "dataElements": 50
+    },
+    {
+      "type": "EQ",
+      "name": "Consultar Apólices",
+      "description": "Consulta de apólices por período",
+      "complexity": "Average",
+      "files": 5,
+      "dataElements": 30
+    },
+    {
+      "type": "EQ",
+      "name": "Consultar Endossos",
+      "description": "Consulta de endossos",
+      "complexity": "Average",
+      "files": 4,
+      "dataElements": 25
+    },
+    {
+      "type": "EQ",
+      "name": "Consultar Produtos",
+      "description": "Consulta de produtos disponíveis",
+      "complexity": "Low",
+      "files": 2,
+      "dataElements": 15
+    },
+    {
+      "type": "EQ",
+      "name": "Consultar Clientes",
+      "description": "Consulta de informações de clientes",
+      "complexity": "Average",
+      "files": 3,
+      "dataElements": 20
+    },
+    {
+      "type": "EI",
+      "name": "Carregar Dados Mock",
+      "description": "Carregamento de dados de teste",
+      "complexity": "Average",
+      "files": 3,
+      "dataElements": 15
+    },
+    {
+      "type": "EI",
+      "name": "Configurar Parâmetros",
+      "description": "Configuração de parâmetros do sistema",
+      "complexity": "Low",
+      "files": 1,
+      "dataElements": 10
+    },
+    {
+      "type": "EI",
+      "name": "Importar Arquivo",
+      "description": "Importação de arquivo de dados",
+      "complexity": "Average",
+      "files": 2,
+      "dataElements": 20
+    },
+    {
+      "type": "ILF",
+      "name": "V0PREMIOS",
+      "description": "Tabela de prêmios",
+      "complexity": "High",
+      "files": 1,
+      "dataElements": 45
+    },
+    {
+      "type": "ILF",
+      "name": "V0APOLICE",
+      "description": "Tabela de apólices",
+      "complexity": "High",
+      "files": 1,
+      "dataElements": 35
+    },
+    {
+      "type": "ILF",
+      "name": "V0ENDOSSO",
+      "description": "Tabela de endossos",
+      "complexity": "Average",
+      "files": 1,
+      "dataElements": 25
+    },
+    {
+      "type": "ILF",
+      "name": "V0PRODUTO",
+      "description": "Tabela de produtos",
+      "complexity": "Average",
+      "files": 1,
+      "dataElements": 20
+    },
+    {
+      "type": "ILF",
+      "name": "V0CLIENTE",
+      "description": "Tabela de clientes",
+      "complexity": "Average",
+      "files": 1,
+      "dataElements": 30
+    },
+    {
+      "type": "ILF",
+      "name": "V0ENDERECOS",
+      "description": "Tabela de endereços",
+      "complexity": "Low",
+      "files": 1,
+      "dataElements": 15
+    },
+    {
+      "type": "ILF",
+      "name": "V0COBERTURA",
+      "description": "Tabela de coberturas",
+      "complexity": "Average",
+      "files": 1,
+      "dataElements": 22
+    },
+    {
+      "type": "EIF",
+      "name": "GE399 Interface",
+      "description": "Interface de cosseguro",
+      "complexity": "High",
+      "files": 1,
+      "dataElements": 40
+    },
+    {
+      "type": "EIF",
+      "name": "Arquivo Config",
+      "description": "Arquivo de configuração",
+      "complexity": "Low",
+      "files": 1,
+      "dataElements": 5
+    },
+    {
+      "type": "EIF",
+      "name": "API Externa",
+      "description": "Interface com API externa",
+      "complexity": "Average",
+      "files": 1,
+      "dataElements": 15
+    }
+  ],
+  "systemCharacteristics": {
+    "dataComm
+
+unications": 5,
+    "distributedProcessing": 3,
+    "performance": 5,
+    "heavilyUsedConfig": 4,
+    "transactionRate": 5,
+    "onlineDataEntry": 5,
+    "endUserEfficiency": 5,
+    "onlineUpdate": 4,
+    "complexProcessing": 5,
+    "reusability": 4,
+    "installationEase": 3,
+    "operationalEase": 4,
+    "multipleSites": 2,
+    "facilitateChange": 4
+  }
+}

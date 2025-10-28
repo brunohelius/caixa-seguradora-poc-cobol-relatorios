@@ -1,0 +1,732 @@
+openapi: 3.0.3
+info:
+  title: COBOL RG1866B Migration API
+  version: 1.0.0
+  description: |
+    RESTful API for SUSEP Circular 360 Premium Reporting System migrated from COBOL RG1866B.
+
+    **Core Functionality**: Generate regulatory PREMIT.TXT and PREMCED.TXT files matching legacy COBOL output exactly.
+
+    **Compliance**: Brazilian insurance regulator (SUSEP) requirements, byte-for-byte output compatibility required.
+  contact:
+    name: Caixa Seguradora Development Team
+    email: dev@caixaseguradora.com.br
+
+servers:
+  - url: https://localhost:5555/api/v1
+    description: Local development (HTTPS)
+  - url: http://localhost:5556/api/v1
+    description: Local development (HTTP)
+  - url: https://api-dev.caixaseguradora.com.br/api/v1
+    description: Development environment
+  - url: https://api.caixaseguradora.com.br/api/v1
+    description: Production environment
+
+tags:
+  - name: Reports
+    description: SUSEP premium report generation and management
+  - name: Executions
+    description: Report execution monitoring and history
+  - name: Health
+    description: System health checks
+
+paths:
+  /reports/generate:
+    post:
+      tags:
+        - Reports
+      summary: Generate SUSEP premium reports
+      description: |
+        Trigger generation of PREMIT.TXT and/or PREMCED.TXT files for specified month.
+
+        **Processing**:
+        - Validates month parameter (YYYYMM format, must be past/current month)
+        - Processes premium records from V0PREMIOS view
+        - Applies COBOL business logic (sections R0700-R5500)
+        - Generates fixed-width output files (1200 bytes PREMIT, 800 bytes PREMCED)
+
+        **Performance**: Processes 10,000+ records in under 5 minutes
+
+        **Idempotency**: Duplicate requests for same month return existing execution
+      operationId: generateReport
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateReportRequest'
+            examples:
+              generateBoth:
+                summary: Generate both PREMIT and PREMCED
+                value:
+                  month: "202510"
+                  reportType: "BOTH"
+                  executionMode: "INTERACTIVE"
+              generatePremitOnly:
+                summary: Generate only PREMIT
+                value:
+                  month: "202510"
+                  reportType: "PREMIT"
+                  executionMode: "BATCH"
+      responses:
+        '202':
+          description: Report generation started successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportExecution'
+              example:
+                executionId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                month: "202510"
+                status: "RUNNING"
+                startTime: "2025-10-27T14:30:00Z"
+                endTime: null
+                recordsProcessed: 0
+                warnings: 0
+                errors: 0
+                returnCode: null
+                message: "Processamento iniciado - processando registros de prêmios"
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalidMonth:
+                  summary: Invalid month format
+                  value:
+                    errorCode: "ERR_INVALID_MONTH"
+                    message: "Período inválido: formato deve ser YYYYMM (exemplo: 202510)"
+                    details:
+                      field: "month"
+                      value: "2025-10"
+                      validPattern: "^\\d{6}$"
+                futureMonth:
+                  summary: Future month not allowed
+                  value:
+                    errorCode: "ERR_FUTURE_MONTH"
+                    message: "Período inválido: não é possível gerar relatórios para meses futuros"
+                    details:
+                      field: "month"
+                      value: "202512"
+                      currentMonth: "202510"
+        '409':
+          description: Report already being processed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errorCode: "ERR_ALREADY_PROCESSING"
+                message: "Relatório já em processamento para o período 202510"
+                details:
+                  executionId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                  status: "RUNNING"
+                  estimatedCompletionTime: "2025-10-27T14:35:00Z"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /reports/executions/{executionId}:
+    get:
+      tags:
+        - Executions
+      summary: Get execution status
+      description: |
+        Retrieve detailed status of report generation execution.
+
+        **Polling**: Frontend should poll this endpoint every 10 seconds while status is RUNNING
+
+        **Completion**: When status changes to COMPLETED, files are ready for download
+      operationId: getExecutionStatus
+      parameters:
+        - name: executionId
+          in: path
+          required: true
+          description: Unique execution identifier from generate endpoint
+          schema:
+            type: string
+            format: uuid
+          example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+      responses:
+        '200':
+          description: Execution details retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportExecution'
+              examples:
+                running:
+                  summary: Execution in progress
+                  value:
+                    executionId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                    month: "202510"
+                    status: "RUNNING"
+                    startTime: "2025-10-27T14:30:00Z"
+                    endTime: null
+                    recordsProcessed: 5243
+                    warnings: 3
+                    errors: 0
+                    returnCode: null
+                    message: "Processando registros - 5.243 de ~10.000 concluídos"
+                completed:
+                  summary: Execution completed successfully
+                  value:
+                    executionId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                    month: "202510"
+                    status: "COMPLETED"
+                    startTime: "2025-10-27T14:30:00Z"
+                    endTime: "2025-10-27T14:34:23Z"
+                    recordsProcessed: 10243
+                    warnings: 5
+                    errors: 0
+                    returnCode: "0004"
+                    message: "Relatórios gerados com sucesso - 10.243 registros processados, 5 avisos"
+                failed:
+                  summary: Execution failed
+                  value:
+                    executionId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                    month: "202510"
+                    status: "FAILED"
+                    startTime: "2025-10-27T14:30:00Z"
+                    endTime: "2025-10-27T14:31:15Z"
+                    recordsProcessed: 1523
+                    warnings: 0
+                    errors: 1
+                    returnCode: "0012"
+                    message: "Erro fatal: conexão com banco de dados perdida no registro 1523"
+        '404':
+          description: Execution not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errorCode: "ERR_EXECUTION_NOT_FOUND"
+                message: "Execução não encontrada: a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                details:
+                  executionId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+
+  /reports/executions/{executionId}/download/{fileType}:
+    get:
+      tags:
+        - Executions
+      summary: Download generated file
+      description: |
+        Download PREMIT.TXT or PREMCED.TXT file for completed execution.
+
+        **Prerequisites**: Execution status must be COMPLETED
+
+        **File Formats**:
+        - PREMIT: 765-byte fixed-width records (updated per JAZZ T285991)
+        - PREMCED: 168-byte fixed-width records (updated per JAZZ T285991)
+
+        **Content**: Plain text, no line terminators, ASCII encoding
+      operationId: downloadFile
+      parameters:
+        - name: executionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        - name: fileType
+          in: path
+          required: true
+          description: Type of file to download
+          schema:
+            type: string
+            enum:
+              - PREMIT
+              - PREMCED
+          example: "PREMIT"
+      responses:
+        '200':
+          description: File downloaded successfully
+          headers:
+            Content-Disposition:
+              description: Suggested filename
+              schema:
+                type: string
+                example: 'attachment; filename="PREMIT_202510.TXT"'
+            Content-Length:
+              description: File size in bytes
+              schema:
+                type: integer
+                example: 7835295
+          content:
+            text/plain:
+              schema:
+                type: string
+                format: binary
+                description: Fixed-width file content
+        '400':
+          description: Invalid request (execution not completed, file type invalid)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                errorCode: "ERR_EXECUTION_NOT_COMPLETED"
+                message: "Não é possível baixar arquivo: execução ainda em andamento (status: RUNNING)"
+                details:
+                  executionId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                  currentStatus: "RUNNING"
+        '404':
+          description: Execution or file not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                executionNotFound:
+                  summary: Execution not found
+                  value:
+                    errorCode: "ERR_EXECUTION_NOT_FOUND"
+                    message: "Execução não encontrada: a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                fileNotFound:
+                  summary: File not generated
+                  value:
+                    errorCode: "ERR_FILE_NOT_FOUND"
+                    message: "Arquivo PREMCED não foi gerado para esta execução (tipo de relatório: PREMIT)"
+                    details:
+                      executionId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                      requestedFileType: "PREMCED"
+                      availableFiles: ["PREMIT"]
+
+  /reports/executions:
+    get:
+      tags:
+        - Executions
+      summary: List execution history
+      description: |
+        Retrieve paginated list of report executions ordered by start time (newest first).
+
+        **Use Cases**:
+        - Display execution history in UI
+        - Monitor recent report generations
+        - Track execution statistics
+      operationId: listExecutions
+      parameters:
+        - name: page
+          in: query
+          description: Page number (1-based)
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          example: 1
+        - name: pageSize
+          in: query
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          example: 20
+        - name: month
+          in: query
+          description: Filter by month (YYYYMM format)
+          required: false
+          schema:
+            type: string
+            pattern: '^\d{6}$'
+          example: "202510"
+        - name: status
+          in: query
+          description: Filter by execution status
+          required: false
+          schema:
+            type: string
+            enum:
+              - PENDING
+              - RUNNING
+              - COMPLETED
+              - FAILED
+          example: "COMPLETED"
+      responses:
+        '200':
+          description: Execution list retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExecutionListResponse'
+              example:
+                items:
+                  - executionId: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                    month: "202510"
+                    status: "COMPLETED"
+                    startTime: "2025-10-27T14:30:00Z"
+                    recordsProcessed: 10243
+                  - executionId: "b2c3d4e5-f6a7-8901-bcde-f12345678901"
+                    month: "202509"
+                    status: "COMPLETED"
+                    startTime: "2025-10-01T03:00:00Z"
+                    recordsProcessed: 9876
+                totalCount: 156
+                page: 1
+                pageSize: 20
+                totalPages: 8
+        '400':
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /health:
+    get:
+      tags:
+        - Health
+      summary: Health check endpoint
+      description: |
+        Check system health including database connectivity, file system access, and memory usage.
+
+        **Use Cases**:
+        - Load balancer health checks
+        - Monitoring system integration
+        - Startup verification
+      operationId: healthCheck
+      responses:
+        '200':
+          description: System is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheckResponse'
+              example:
+                status: "Healthy"
+                timestamp: "2025-10-27T14:30:00Z"
+                version: "1.0.0"
+                checks:
+                  database:
+                    status: "Healthy"
+                    responseTime: 15
+                  fileSystem:
+                    status: "Healthy"
+                    availableSpace: 52428800000
+                  memory:
+                    status: "Healthy"
+                    usedMemory: 524288000
+                    totalMemory: 8589934592
+        '503':
+          description: System is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheckResponse'
+              example:
+                status: "Unhealthy"
+                timestamp: "2025-10-27T14:30:00Z"
+                version: "1.0.0"
+                checks:
+                  database:
+                    status: "Unhealthy"
+                    error: "Connection timeout after 30 seconds"
+                  fileSystem:
+                    status: "Healthy"
+                    availableSpace: 52428800000
+                  memory:
+                    status: "Degraded"
+                    usedMemory: 7516192768
+                    totalMemory: 8589934592
+
+components:
+  schemas:
+    GenerateReportRequest:
+      type: object
+      required:
+        - month
+        - reportType
+      properties:
+        month:
+          type: string
+          pattern: '^\d{6}$'
+          description: Reference month in YYYYMM format (must be past or current month)
+          example: "202510"
+        reportType:
+          type: string
+          enum:
+            - PREMIT
+            - PREMCED
+            - BOTH
+          description: |
+            Type of report to generate:
+            - PREMIT: Premium emissions report (PREMIT.TXT)
+            - PREMCED: Ceded premium/cossurance report (PREMCED.TXT)
+            - BOTH: Generate both files
+          example: "BOTH"
+        executionMode:
+          type: string
+          enum:
+            - BATCH
+            - INTERACTIVE
+          default: "INTERACTIVE"
+          description: |
+            Execution mode:
+            - BATCH: Background processing (immediate 202 response)
+            - INTERACTIVE: Wait for completion (blocking, returns final status)
+          example: "INTERACTIVE"
+
+    ReportExecution:
+      type: object
+      required:
+        - executionId
+        - month
+        - status
+        - startTime
+      properties:
+        executionId:
+          type: string
+          format: uuid
+          description: Unique execution identifier (used for status polling and file download)
+          example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        month:
+          type: string
+          pattern: '^\d{6}$'
+          description: Reference month (YYYYMM)
+          example: "202510"
+        status:
+          type: string
+          enum:
+            - PENDING
+            - RUNNING
+            - COMPLETED
+            - FAILED
+          description: |
+            Execution status:
+            - PENDING: Queued, not yet started
+            - RUNNING: Currently processing
+            - COMPLETED: Successfully finished
+            - FAILED: Terminated with error
+          example: "COMPLETED"
+        startTime:
+          type: string
+          format: date-time
+          description: Execution start timestamp (UTC)
+          example: "2025-10-27T14:30:00Z"
+        endTime:
+          type: string
+          format: date-time
+          nullable: true
+          description: Execution end timestamp (UTC), null if still running
+          example: "2025-10-27T14:34:23Z"
+        recordsProcessed:
+          type: integer
+          minimum: 0
+          description: Number of premium records processed so far
+          example: 10243
+        warnings:
+          type: integer
+          minimum: 0
+          description: Count of warning messages (non-fatal issues)
+          example: 5
+        errors:
+          type: integer
+          minimum: 0
+          description: Count of error messages (may indicate incomplete processing)
+          example: 0
+        returnCode:
+          type: string
+          enum:
+            - '0000'
+            - '0004'
+            - '0008'
+            - '0012'
+          nullable: true
+          description: |
+            COBOL-style return code (null while running):
+            - 0000: Success, no warnings
+            - 0004: Success with warnings (< 5% records rejected)
+            - 0008: Partial error (> 5% records rejected)
+            - 0012: Fatal error (processing aborted)
+          example: "0004"
+        message:
+          type: string
+          maxLength: 500
+          description: Human-readable status message in Brazilian Portuguese
+          example: "Relatórios gerados com sucesso - 10.243 registros processados, 5 avisos"
+
+    ReportExecutionSummary:
+      type: object
+      required:
+        - executionId
+        - month
+        - status
+        - startTime
+      properties:
+        executionId:
+          type: string
+          format: uuid
+          example: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+        month:
+          type: string
+          pattern: '^\d{6}$'
+          example: "202510"
+        status:
+          type: string
+          enum:
+            - PENDING
+            - RUNNING
+            - COMPLETED
+            - FAILED
+          example: "COMPLETED"
+        startTime:
+          type: string
+          format: date-time
+          example: "2025-10-27T14:30:00Z"
+        recordsProcessed:
+          type: integer
+          minimum: 0
+          example: 10243
+
+    ExecutionListResponse:
+      type: object
+      required:
+        - items
+        - totalCount
+        - page
+        - pageSize
+        - totalPages
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportExecutionSummary'
+          description: Execution summaries for current page
+        totalCount:
+          type: integer
+          minimum: 0
+          description: Total number of executions matching filters
+          example: 156
+        page:
+          type: integer
+          minimum: 1
+          description: Current page number (1-based)
+          example: 1
+        pageSize:
+          type: integer
+          minimum: 1
+          maximum: 100
+          description: Number of items per page
+          example: 20
+        totalPages:
+          type: integer
+          minimum: 0
+          description: Total number of pages
+          example: 8
+
+    ErrorResponse:
+      type: object
+      required:
+        - errorCode
+        - message
+      properties:
+        errorCode:
+          type: string
+          description: Machine-readable error code (ERR_* prefix)
+          example: "ERR_INVALID_MONTH"
+        message:
+          type: string
+          description: Human-readable error message in Brazilian Portuguese
+          example: "Período inválido: formato deve ser YYYYMM (exemplo: 202510)"
+        details:
+          type: object
+          nullable: true
+          description: Additional error context (field names, values, constraints)
+          additionalProperties: true
+          example:
+            field: "month"
+            value: "2025-10"
+            validPattern: "^\\d{6}$"
+
+    HealthCheckResponse:
+      type: object
+      required:
+        - status
+        - timestamp
+        - version
+        - checks
+      properties:
+        status:
+          type: string
+          enum:
+            - Healthy
+            - Degraded
+            - Unhealthy
+          description: Overall system health status
+          example: "Healthy"
+        timestamp:
+          type: string
+          format: date-time
+          description: Health check execution timestamp (UTC)
+          example: "2025-10-27T14:30:00Z"
+        version:
+          type: string
+          description: Application version
+          example: "1.0.0"
+        checks:
+          type: object
+          description: Individual component health checks
+          properties:
+            database:
+              $ref: '#/components/schemas/ComponentHealth'
+            fileSystem:
+              $ref: '#/components/schemas/ComponentHealth'
+            memory:
+              $ref: '#/components/schemas/ComponentHealth'
+
+    ComponentHealth:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - Healthy
+            - Degraded
+            - Unhealthy
+          example: "Healthy"
+        responseTime:
+          type: integer
+          description: Response time in milliseconds
+          example: 15
+        availableSpace:
+          type: integer
+          format: int64
+          description: Available disk space in bytes
+          example: 52428800000
+        usedMemory:
+          type: integer
+          format: int64
+          description: Used memory in bytes
+          example: 524288000
+        totalMemory:
+          type: integer
+          format: int64
+          description: Total available memory in bytes
+          example: 8589934592
+        error:
+          type: string
+          nullable: true
+          description: Error message if component is unhealthy
+          example: "Connection timeout after 30 seconds"
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for production environments (development uses anonymous access)
+
+security:
+  - ApiKeyAuth: []

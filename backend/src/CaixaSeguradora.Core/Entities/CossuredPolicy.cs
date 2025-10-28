@@ -65,6 +65,13 @@ namespace CaixaSeguradora.Core.Entities
         [MaxLength(1)]
         public string Status { get; set; } = "A";  // A=Active, I=Inactive
 
+        // Additional properties for OutputRecordMappingService compatibility
+        [NotMapped]
+        public string CessionType => CossuranceType;  // Alias for CossuranceType
+
+        [NotMapped]
+        public int CossurerCompanyCode => AcquiringCompanyCode;  // Alias for AcquiringCompanyCode
+
         // Navigation properties
         public Policy Policy { get; set; } = null!;
     }

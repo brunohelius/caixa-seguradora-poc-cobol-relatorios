@@ -64,6 +64,9 @@ namespace CaixaSeguradora.Core.Entities
         [NotMapped]
         public int ClientId => ClientCode;  // Alias
 
+        [NotMapped]
+        public string StateCode => State;  // Alias for ExternalValidationService compatibility
+
         // Navigation properties
         public Client Client { get; set; } = null!;
     }

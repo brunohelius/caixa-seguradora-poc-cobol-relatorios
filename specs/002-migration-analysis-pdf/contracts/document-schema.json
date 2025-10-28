@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Migration Analysis PDF Document Structure",
+  "description": "Schema defining the expected structure of the migration analysis PDF document",
+  "type": "object",
+  "required": ["metadata", "sections"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "description": "Document metadata and version information",
+      "required": ["version", "generatedAt", "title", "author"],
+      "properties": {
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Semantic version (e.g., 1.0.0)",
+          "examples": ["1.0.0", "1.1.0", "2.0.0"]
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of PDF generation"
+        },
+        "title": {
+          "type": "string",
+          "description": "Document title",
+          "minLength": 10,
+          "maxLength": 200
+        },
+        "author": {
+          "type": "string",
+          "description": "Author or team name",
+          "minLength": 1
+        },
+        "sourceDataVersions": {
+          "type": "object",
+          "description": "Source file paths mapped to git commit hashes",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sections": {
+      "type": "array",
+      "description": "Ordered list of document sections",
+      "minItems": 10,
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "order", "required"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique section identifier",
+            "pattern": "^[a-z-]+$",
+            "examples": ["cover-page", "executive-summary", "cobol-analysis"]
+          },
+          "title": {
+            "type": "string",
+            "description": "Section heading text",
+            "minLength": 3,
+            "maxLength": 100
+          },
+          "order": {
+            "type": "integer",
+            "description": "Section order (1-based)",
+            "minimum": 1
+          },
+          "required": {
+            "type": "boolean",
+            "description": "Whether section must be present"
+          },
+          "subsections": {
+            "type": "array",
+            "description": "Nested subsections",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "title": { "type": "string" },
+                "order": { "type": "integer" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "expectedSections": {
+      "type": "array",
+      "description": "Required section IDs in order",
+      "const": [
+        "cover-page",
+        "table-of-contents",
+        "executive-summary",
+        "cobol-system-analysis",
+        "migration-architecture",
+        "component-specifications",
+        "function-point-analysis",
+        "financial-analysis",
+        "project-timeline",
+        "migration-methodology",
+        "technical-diagrams",
+        "appendices"
+      ]
+    }
+  }
+}

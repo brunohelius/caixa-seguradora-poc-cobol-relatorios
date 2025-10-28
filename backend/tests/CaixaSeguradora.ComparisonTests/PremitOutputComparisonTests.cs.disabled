@@ -1,0 +1,357 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using CaixaSeguradora.Core.DTOs;
+using CaixaSeguradora.Core.Entities;
+using CaixaSeguradora.Core.Services;
+using CaixaSeguradora.Infrastructure.Data;
+using CaixaSeguradora.Infrastructure.Formatters;
+using CaixaSeguradora.Infrastructure.Services;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace CaixaSeguradora.ComparisonTests
+{
+    /// <summary>
+    /// Comparison tests for PREMIT output files to ensure byte-for-byte compatibility
+    /// with COBOL generated output as required by constitution requirement III
+    /// </summary>
+    public class PremitOutputComparisonTests : IDisposable
+    {
+        private readonly ITestOutputHelper _output;
+        private readonly SqliteConnection _connection;
+        private readonly PremiumReportingDbContext _context;
+        private readonly PremitFileGenerator _generator;
+        private readonly string _testDataPath;
+        private readonly string _cobolGoldenFile;
+
+        public PremitOutputComparisonTests(ITestOutputHelper output)
+        {
+            _output = output;
+
+            // Setup in-memory SQLite database
+            _connection = new SqliteConnection("DataSource=:memory:");
+            _connection.Open();
+
+            var options = new DbContextOptionsBuilder<PremiumReportingDbContext>()
+                .UseSqlite(_connection)
+                .Options;
+
+            _context = new PremiumReportingDbContext(options);
+            _context.Database.EnsureCreated();
+
+            // Setup file generator
+            var logger = new Mock<ILogger<PremitFileGenerator>>();
+            var formatter = new FixedWidthFormatter();
+            _generator = new PremitFileGenerator(logger.Object, formatter);
+
+            // Setup test data paths
+            var projectRoot = GetProjectRoot();
+            _testDataPath = Path.Combine(projectRoot, "backend", "tests",
+                "CaixaSeguradora.ComparisonTests", "TestData");
+            _cobolGoldenFile = Path.Combine(_testDataPath, "COBOL_PREMIT_202510.TXT");
+
+            _output.WriteLine($"Test data path: {_testDataPath}");
+            _output.WriteLine($"COBOL golden file: {_cobolGoldenFile}");
+        }
+
+        [Fact(Skip = "Manual test - requires full dataset load")]
+        public async Task PremitOutput_MatchesCOBOL_ByteForByte_FullDataset()
+        {
+            // Arrange: Load 1200-record CSV dataset
+            await LoadTestDataFromCsvAsync();
+
+            var startDate = new DateTime(2025, 10, 1);
+            var endDate = new DateTime(2025, 10, 31);
+
+            // Act: Generate PREMIT.TXT using .NET implementation
+            var dotnetOutputPath = Path.Combine(_testDataPath, "DOTNET_PREMIT_202510.TXT");
+            var records = await GetPremitRecordsAsync(startDate, endDate);
+            await _generator.GenerateFileAsync(records, dotnetOutputPath, CancellationToken.None);
+
+            // Read both files
+            var cobolBytes = await File.ReadAllBytesAsync(_cobolGoldenFile);
+            var dotnetBytes = await File.ReadAllBytesAsync(dotnetOutputPath);
+
+            // Assert: Byte-for-byte comparison
+            _output.WriteLine($"COBOL file size: {cobolBytes.Length} bytes");
+            _output.WriteLine($".NET file size: {dotnetBytes.Length} bytes");
+
+            Assert.Equal(cobolBytes.Length, dotnetBytes.Length);
+
+            // Compare each byte
+            for (int i = 0; i < cobolBytes.Length; i++)
+            {
+                if (cobolBytes[i] != dotnetBytes[i])
+                {
+                    var recordNumber = i / 765 + 1;
+                    var positionInRecord = i % 765;
+                    Assert.Fail($"Byte mismatch at position {i} (Record {recordNumber}, Position {positionInRecord}): " +
+                               $"COBOL=0x{cobolBytes[i]:X2} ('{(char)cobolBytes[i]}'), " +
+                               $".NET=0x{dotnetBytes[i]:X2} ('{(char)dotnetBytes[i]}')");
+                }
+            }
+
+            _output.WriteLine("✅ PREMIT.TXT output matches COBOL byte-for-byte!");
+        }
+
+        [Fact]
+        public async Task PremitOutput_FirstTenRecords_MatchCOBOL()
+        {
+            // Arrange: Load first 10 records from CSV
+            await LoadTestDataFromCsvAsync(limitRecords: 10);
+
+            var startDate = new DateTime(2025, 10, 1);
+            var endDate = new DateTime(2025, 10, 31);
+
+            // Act: Generate PREMIT.TXT using .NET implementation
+            var dotnetOutputPath = Path.Combine(_testDataPath, "DOTNET_PREMIT_10records.TXT");
+            var records = await GetPremitRecordsAsync(startDate, endDate);
+            await _generator.GenerateFileAsync(records, dotnetOutputPath, CancellationToken.None);
+
+            // Read both files
+            var cobolBytes = await File.ReadAllBytesAsync(_cobolGoldenFile);
+            var dotnetBytes = await File.ReadAllBytesAsync(dotnetOutputPath);
+
+            // Assert: Compare first 10 records (7650 bytes)
+            var expectedSize = 10 * 765;
+            Assert.Equal(expectedSize, cobolBytes.Length);
+            Assert.Equal(expectedSize, dotnetBytes.Length);
+
+            _output.WriteLine($"Comparing {expectedSize} bytes ({cobolBytes.Length / 765} records)...");
+
+            // Byte-for-byte comparison
+            for (int i = 0; i < expectedSize; i++)
+            {
+                if (cobolBytes[i] != dotnetBytes[i])
+                {
+                    var recordNumber = i / 765 + 1;
+                    var positionInRecord = i % 765;
+
+                    // Extract context (surrounding 20 bytes)
+                    var contextStart = Math.Max(0, i - 10);
+                    var contextEnd = Math.Min(expectedSize, i + 10);
+                    var cobolContext = System.Text.Encoding.ASCII.GetString(cobolBytes, contextStart, contextEnd - contextStart);
+                    var dotnetContext = System.Text.Encoding.ASCII.GetString(dotnetBytes, contextStart, contextEnd - contextStart);
+
+                    _output.WriteLine($"COBOL context:  {cobolContext}");
+                    _output.WriteLine($".NET context:   {dotnetContext}");
+
+                    Assert.Fail($"Byte mismatch at position {i} (Record {recordNumber}, Position {positionInRecord}): " +
+                               $"COBOL=0x{cobolBytes[i]:X2} ('{(char)cobolBytes[i]}'), " +
+                               $".NET=0x{dotnetBytes[i]:X2} ('{(char)dotnetBytes[i]}')");
+                }
+            }
+
+            _output.WriteLine("✅ First 10 PREMIT records match COBOL byte-for-byte!");
+        }
+
+        [Fact]
+        public async Task PremitOutput_BankersRoundingScenarios_MatchCOBOL()
+        {
+            // Arrange: Create specific banker's rounding test cases
+            var testRecords = new[]
+            {
+                CreateTestPremium(1, 1234.125m, "0.125 rounds to 0.12 (even)"),
+                CreateTestPremium(2, 1234.225m, "0.225 rounds to 0.22 (even)"),
+                CreateTestPremium(3, 1234.625m, "0.625 rounds to 0.62 (even)"),
+                CreateTestPremium(4, 1234.525m, "0.525 rounds to 0.52 (even)"),
+                CreateTestPremium(5, 1234.135m, "0.135 rounds to 0.14 (away from even)")
+            };
+
+            await _context.Premiums.AddRangeAsync(testRecords);
+            await _context.SaveChangesAsync();
+
+            // Act: Generate output
+            var dotnetOutputPath = Path.Combine(_testDataPath, "DOTNET_PREMIT_rounding.TXT");
+            var records = await GetPremitRecordsAsync(new DateTime(2025, 10, 1), new DateTime(2025, 10, 31));
+            await _generator.GenerateFileAsync(records, dotnetOutputPath, CancellationToken.None);
+
+            // Read generated file
+            var dotnetContent = await File.ReadAllTextAsync(dotnetOutputPath);
+            _output.WriteLine($"Generated {dotnetContent.Length} bytes for {testRecords.Length} records");
+
+            // Assert: Verify banker's rounding behavior
+            // Record format: positions 202-216 = PremiumAmountItem (15 chars, 9(13)V99)
+            var lines = dotnetContent.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+            Assert.Equal(5, lines.Length);
+
+            // 1234.125 → 1234.12 → 000000000123412 (positions 202-216)
+            var record1Premium = lines[0].Substring(201, 15);
+            Assert.Equal("000000000123412", record1Premium);
+            _output.WriteLine($"✅ 1234.125 → {record1Premium} (banker's rounding to even)");
+
+            // 1234.225 → 1234.22 → 000000000123422
+            var record2Premium = lines[1].Substring(201, 15);
+            Assert.Equal("000000000123422", record2Premium);
+            _output.WriteLine($"✅ 1234.225 → {record2Premium} (banker's rounding to even)");
+
+            // 1234.625 → 1234.62 → 000000000123462
+            var record3Premium = lines[2].Substring(201, 15);
+            Assert.Equal("000000000123462", record3Premium);
+            _output.WriteLine($"✅ 1234.625 → {record3Premium} (banker's rounding to even)");
+        }
+
+        private PremiumRecord CreateTestPremium(int id, decimal premiumAmount, string description)
+        {
+            _output.WriteLine($"Creating test premium {id}: {description}");
+
+            return new PremiumRecord
+            {
+                PremiumId = id,
+                PolicyNumber = 1000000 + id,
+                EndorsementNumberCA = id,
+                EndorsementNumber = id,
+                ProductCode = 1,
+                RamoSusep = 531,
+                MovementType = "1",
+                CompanyCode = 10,
+                IssueDate = new DateTime(2025, 10, id),
+                EffectiveDate = new DateTime(2025, 10, id),
+                ExpirationDate = new DateTime(2026, 10, id),
+                ProposalDate = new DateTime(2025, 9, id),
+                ClientCode = 123456 + id,
+                EstipulanteCode = 123456 + id,
+                ProducerCode = 56789 + id,
+                AgencyCode = 12345 + id,
+                StateCode = "SP",
+                PremiumAmountItem = premiumAmount,
+                IOFAmountItem = Math.Round(premiumAmount * 0.0738m, 2, MidpointRounding.ToEven),
+                AdditionalAmountItem = 0m,
+                TotalAmountItem = premiumAmount + Math.Round(premiumAmount * 0.0738m, 2, MidpointRounding.ToEven),
+                TotalPremiumAmount = premiumAmount,
+                TotalIOFAmount = Math.Round(premiumAmount * 0.0738m, 2, MidpointRounding.ToEven),
+                TotalAdditionalAmount = 0m,
+                GrandTotalAmount = premiumAmount + Math.Round(premiumAmount * 0.0738m, 2, MidpointRounding.ToEven),
+                SusepProcessNumber = $"SUSEP{id:D10}{id:D8}",
+                CoverageCount = 1,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+        }
+
+        private async Task<PremitOutputRecord[]> GetPremitRecordsAsync(DateTime startDate, DateTime endDate)
+        {
+            var premiums = await _context.Premiums
+                .AsNoTracking()
+                .Where(p => p.EffectiveDate >= startDate && p.EffectiveDate <= endDate)
+                .OrderBy(p => p.PolicyNumber)
+                .ThenBy(p => p.EndorsementNumberCA)
+                .ToListAsync();
+
+            return premiums.Select(p => new PremitOutputRecord
+            {
+                CompanyCode = p.CompanyCode,
+                RamoSusep = p.RamoSusep,
+                PolicyNumber = p.PolicyNumber,
+                EndorsementNumberCA = p.EndorsementNumberCA,
+                EndorsementNumber = p.EndorsementNumber,
+                IssueDate = p.IssueDate,
+                EffectiveDate = p.EffectiveDate,
+                ExpirationDate = p.ExpirationDate,
+                ProposalDate = p.ProposalDate,
+                MovementType = p.MovementType,
+                ClientCode = p.ClientCode,
+                EstipulanteCode = p.EstipulanteCode,
+                ProducerCode = p.ProducerCode,
+                AgencyCode = p.AgencyCode,
+                StateCode = p.StateCode,
+                PremiumAmountItem = p.PremiumAmountItem,
+                IOFAmountItem = p.IOFAmountItem,
+                AdditionalAmountItem = p.AdditionalAmountItem,
+                TotalAmountItem = p.TotalAmountItem,
+                TotalPremiumAmount = p.TotalPremiumAmount,
+                TotalIOFAmount = p.TotalIOFAmount,
+                TotalAdditionalAmount = p.TotalAdditionalAmount,
+                GrandTotalAmount = p.GrandTotalAmount,
+                SusepProcessNumber = p.SusepProcessNumber,
+                Filler = "FILLER"
+            }).ToArray();
+        }
+
+        private async Task LoadTestDataFromCsvAsync(int? limitRecords = null)
+        {
+            var csvPath = Path.Combine(_testDataPath, "golden-premiums.csv");
+
+            if (!File.Exists(csvPath))
+            {
+                throw new FileNotFoundException($"Test data CSV not found: {csvPath}");
+            }
+
+            var lines = await File.ReadAllLinesAsync(csvPath);
+            var dataLines = limitRecords.HasValue
+                ? lines.Skip(1).Take(limitRecords.Value)
+                : lines.Skip(1);
+
+            var premiums = dataLines.Select(ParseCsvLine).ToList();
+
+            await _context.Premiums.AddRangeAsync(premiums);
+            await _context.SaveChangesAsync();
+
+            _output.WriteLine($"Loaded {premiums.Count} premium records from CSV");
+        }
+
+        private PremiumRecord ParseCsvLine(string line)
+        {
+            var fields = line.Split(',');
+
+            return new PremiumRecord
+            {
+                PremiumId = long.Parse(fields[0]),
+                PolicyNumber = long.Parse(fields[1]),
+                EndorsementNumberCA = int.Parse(fields[2]),
+                EndorsementNumber = int.Parse(fields[3]),
+                ProductCode = short.Parse(fields[4]),
+                RamoSusep = int.Parse(fields[5]),
+                MovementType = fields[6],
+                CompanyCode = int.Parse(fields[7]),
+                IssueDate = DateTime.ParseExact(fields[8], "yyyyMMdd", null),
+                EffectiveDate = DateTime.ParseExact(fields[9], "yyyyMMdd", null),
+                ExpirationDate = DateTime.ParseExact(fields[10], "yyyyMMdd", null),
+                ProposalDate = DateTime.ParseExact(fields[11], "yyyyMMdd", null),
+                ClientCode = long.Parse(fields[12]),
+                EstipulanteCode = long.Parse(fields[13]),
+                ProducerCode = long.Parse(fields[14]),
+                AgencyCode = int.Parse(fields[15]),
+                StateCode = fields[16],
+                PremiumAmountItem = decimal.Parse(fields[17]),
+                IOFAmountItem = decimal.Parse(fields[18]),
+                AdditionalAmountItem = decimal.Parse(fields[19]),
+                TotalAmountItem = decimal.Parse(fields[20]),
+                TotalPremiumAmount = decimal.Parse(fields[21]),
+                TotalIOFAmount = decimal.Parse(fields[22]),
+                TotalAdditionalAmount = decimal.Parse(fields[23]),
+                GrandTotalAmount = decimal.Parse(fields[24]),
+                BilheteNumber = long.Parse(fields[30]),
+                InsuredQuantity = int.Parse(fields[31]),
+                SusepProcessNumber = fields[32],
+                CoverageCount = int.Parse(fields[33]),
+                CreatedAt = DateTime.Parse(fields[34]),
+                UpdatedAt = DateTime.Parse(fields[35])
+            };
+        }
+
+        private string GetProjectRoot()
+        {
+            var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
+            while (directory != null && !File.Exists(Path.Combine(directory.FullName, "backend", "CaixaSeguradora.sln")))
+            {
+                directory = directory.Parent;
+            }
+            return directory?.FullName ?? throw new InvalidOperationException("Could not find project root");
+        }
+
+        public void Dispose()
+        {
+            _context?.Dispose();
+            _connection?.Dispose();
+        }
+    }
+}

@@ -1,0 +1,290 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using CaixaSeguradora.Core.DTOs;
+using CaixaSeguradora.Core.Entities;
+using CaixaSeguradora.Infrastructure.Data;
+using CaixaSeguradora.Infrastructure.Formatters;
+using CaixaSeguradora.Infrastructure.Services;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace CaixaSeguradora.ComparisonTests
+{
+    /// <summary>
+    /// Comparison tests for PREMCED output files to ensure byte-for-byte compatibility
+    /// with COBOL generated output as required by constitution requirement III
+    /// </summary>
+    public class PremcedOutputComparisonTests : IDisposable
+    {
+        private readonly ITestOutputHelper _output;
+        private readonly SqliteConnection _connection;
+        private readonly PremiumReportingDbContext _context;
+        private readonly PremcedFileGenerator _generator;
+        private readonly string _testDataPath;
+        private readonly string _cobolGoldenFile;
+
+        public PremcedOutputComparisonTests(ITestOutputHelper output)
+        {
+            _output = output;
+
+            // Setup in-memory SQLite database
+            _connection = new SqliteConnection("DataSource=:memory:");
+            _connection.Open();
+
+            var options = new DbContextOptionsBuilder<PremiumReportingDbContext>()
+                .UseSqlite(_connection)
+                .Options;
+
+            _context = new PremiumReportingDbContext(options);
+            _context.Database.EnsureCreated();
+
+            // Setup file generator
+            var logger = new Mock<ILogger<PremcedFileGenerator>>();
+            var formatter = new FixedWidthFormatter();
+            _generator = new PremcedFileGenerator(logger.Object, formatter);
+
+            // Setup test data paths
+            var projectRoot = GetProjectRoot();
+            _testDataPath = Path.Combine(projectRoot, "backend", "tests",
+                "CaixaSeguradora.ComparisonTests", "TestData");
+            _cobolGoldenFile = Path.Combine(_testDataPath, "COBOL_PREMCED_202510.TXT");
+
+            _output.WriteLine($"Test data path: {_testDataPath}");
+            _output.WriteLine($"COBOL golden file: {_cobolGoldenFile}");
+        }
+
+        [Fact]
+        public async Task PremcedOutput_FirstFifteenRecords_MatchCOBOL()
+        {
+            // Arrange: Load cossurance test data
+            await LoadCosuranceTestDataAsync();
+
+            var startDate = new DateTime(2025, 10, 1);
+            var endDate = new DateTime(2025, 10, 31);
+
+            // Act: Generate PREMCED.TXT using .NET implementation
+            var dotnetOutputPath = Path.Combine(_testDataPath, "DOTNET_PREMCED_15records.TXT");
+            var records = await GetPremcedRecordsAsync(startDate, endDate);
+            await _generator.GenerateFileAsync(records, dotnetOutputPath, CancellationToken.None);
+
+            // Read both files
+            var cobolBytes = await File.ReadAllBytesAsync(_cobolGoldenFile);
+            var dotnetBytes = await File.ReadAllBytesAsync(dotnetOutputPath);
+
+            // Assert: Compare 15 records (2520 bytes)
+            var expectedSize = 15 * 168;
+            Assert.Equal(expectedSize, cobolBytes.Length);
+            Assert.Equal(expectedSize, dotnetBytes.Length);
+
+            _output.WriteLine($"Comparing {expectedSize} bytes ({cobolBytes.Length / 168} records)...");
+
+            // Byte-for-byte comparison
+            for (int i = 0; i < expectedSize; i++)
+            {
+                if (cobolBytes[i] != dotnetBytes[i])
+                {
+                    var recordNumber = i / 168 + 1;
+                    var positionInRecord = i % 168;
+
+                    // Extract context (surrounding 20 bytes)
+                    var contextStart = Math.Max(0, i - 10);
+                    var contextEnd = Math.Min(expectedSize, i + 10);
+                    var cobolContext = System.Text.Encoding.ASCII.GetString(cobolBytes, contextStart, contextEnd - contextStart);
+                    var dotnetContext = System.Text.Encoding.ASCII.GetString(dotnetBytes, contextStart, contextEnd - contextStart);
+
+                    _output.WriteLine($"COBOL context:  {cobolContext}");
+                    _output.WriteLine($".NET context:   {dotnetContext}");
+
+                    Assert.Fail($"Byte mismatch at position {i} (Record {recordNumber}, Position {positionInRecord}): " +
+                               $"COBOL=0x{cobolBytes[i]:X2} ('{(char)cobolBytes[i]}'), " +
+                               $".NET=0x{dotnetBytes[i]:X2} ('{(char)dotnetBytes[i]}')");
+                }
+            }
+
+            _output.WriteLine("✅ First 15 PREMCED records match COBOL byte-for-byte!");
+        }
+
+        [Fact]
+        public async Task PremcedOutput_CessionTypes_BothCedidoAndObtido()
+        {
+            // Arrange: Create mixed cession type records
+            var testRecords = new[]
+            {
+                CreateCosuranceRecord(1, 1000001, 'C', 25.50m, 15000.00m, 2250.00m),
+                CreateCosuranceRecord(2, 1000001, 'O', 15.00m, 8000.00m, 1200.00m),
+                CreateCosuranceRecord(3, 1000002, 'C', 40.00m, 25000.00m, 5000.00m),
+                CreateCosuranceRecord(4, 1000003, 'O', 20.00m, 12000.00m, 2400.00m)
+            };
+
+            await _context.Cosurances.AddRangeAsync(testRecords);
+            await _context.SaveChangesAsync();
+
+            // Act: Generate output
+            var dotnetOutputPath = Path.Combine(_testDataPath, "DOTNET_PREMCED_cessiontypes.TXT");
+            var records = await GetPremcedRecordsAsync(new DateTime(2025, 10, 1), new DateTime(2025, 10, 31));
+            await _generator.GenerateFileAsync(records, dotnetOutputPath, CancellationToken.None);
+
+            // Read generated file
+            var dotnetContent = await File.ReadAllTextAsync(dotnetOutputPath);
+            var lines = dotnetContent.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+            // Assert: Verify cession types
+            Assert.Equal(4, lines.Length);
+
+            // Record format: position 30 = CessionType ('C' or 'O')
+            Assert.Equal('C', lines[0][29]); // Zero-indexed, position 30
+            _output.WriteLine($"✅ Record 1: Cession type = {lines[0][29]} (Cedido)");
+
+            Assert.Equal('O', lines[1][29]);
+            _output.WriteLine($"✅ Record 2: Cession type = {lines[1][29]} (Obtido)");
+
+            Assert.Equal('C', lines[2][29]);
+            _output.WriteLine($"✅ Record 3: Cession type = {lines[2][29]} (Cedido)");
+
+            Assert.Equal('O', lines[3][29]);
+            _output.WriteLine($"✅ Record 4: Cession type = {lines[3][29]} (Obtido)");
+        }
+
+        [Fact]
+        public async Task PremcedOutput_ParticipationPercentages_SumTo100()
+        {
+            // Arrange: Create cossurance records for policy with multiple cossurers
+            var policyNumber = 1000005L;
+            var testRecords = new[]
+            {
+                // Policy 1000005 has 3 cossurers totaling 100% participation
+                CreateCosuranceRecord(1, policyNumber, 'C', 35.00m, 20000.00m, 3000.00m), // 35%
+                CreateCosuranceRecord(2, policyNumber, 'C', 25.00m, 15000.00m, 2250.00m), // 25%
+                CreateCosuranceRecord(3, policyNumber, 'O', 40.00m, 22000.00m, 4400.00m)  // 40%
+            };
+
+            await _context.Cosurances.AddRangeAsync(testRecords);
+            await _context.SaveChangesAsync();
+
+            // Act: Generate output
+            var dotnetOutputPath = Path.Combine(_testDataPath, "DOTNET_PREMCED_participation.TXT");
+            var records = await GetPremcedRecordsAsync(new DateTime(2025, 10, 1), new DateTime(2025, 10, 31));
+            await _generator.GenerateFileAsync(records, dotnetOutputPath, CancellationToken.None);
+
+            // Read generated file
+            var dotnetContent = await File.ReadAllTextAsync(dotnetOutputPath);
+            var lines = dotnetContent.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+
+            // Assert: Sum participations = 100%
+            var totalParticipation = 0m;
+
+            foreach (var line in lines)
+            {
+                // Positions 62-76 = ParticipationPercentage (15 chars, 9(13)V99)
+                var participationStr = line.Substring(61, 15);
+                var participation = decimal.Parse(participationStr) / 10000m; // Implied 4 decimal places
+                totalParticipation += participation;
+                _output.WriteLine($"Participation: {participation:F2}%");
+            }
+
+            Assert.Equal(100.00m, totalParticipation);
+            _output.WriteLine($"✅ Total participation: {totalParticipation:F2}% (expected 100%)");
+        }
+
+        private CosuranceRecord CreateCosuranceRecord(
+            int id,
+            long policyNumber,
+            char cessionType,
+            decimal participationPercentage,
+            decimal cedidoPremium,
+            decimal cedidoCommission)
+        {
+            return new CosuranceRecord
+            {
+                CosuranceId = id,
+                CompanyCode = 10,
+                RamoSusep = 531,
+                PolicyNumber = policyNumber,
+                EndorsementNumber = id,
+                CessionType = cessionType,
+                CossurerCnpj = $"{id:D14}{id:D14}",
+                ParticipationPercentage = participationPercentage,
+                CedidoPremium = cedidoPremium,
+                CedidoCommission = cedidoCommission,
+                SusepProcessNumber = $"SUSEP{id:D10}{id:D18}",
+                StateCode = cessionType == 'C' ? "SP" : "RJ",
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+        }
+
+        private async Task<PremcedOutputRecord[]> GetPremcedRecordsAsync(DateTime startDate, DateTime endDate)
+        {
+            var cosurances = await _context.Cosurances
+                .AsNoTracking()
+                .OrderBy(c => c.PolicyNumber)
+                .ThenBy(c => c.EndorsementNumber)
+                .ThenBy(c => c.CessionType)
+                .ToListAsync();
+
+            return cosurances.Select(c => new PremcedOutputRecord
+            {
+                CompanyCode = c.CompanyCode,
+                RamoSusep = c.RamoSusep,
+                PolicyNumber = c.PolicyNumber,
+                EndorsementNumber = c.EndorsementNumber,
+                CessionType = c.CessionType,
+                CossurerCnpj = c.CossurerCnpj,
+                ParticipationPercentage = c.ParticipationPercentage,
+                CedidoPremium = c.CedidoPremium,
+                CedidoCommission = c.CedidoCommission,
+                ObtidoPremium = c.CessionType == 'O' ? c.CedidoPremium : 0m,
+                ObtidoCommission = c.CessionType == 'O' ? c.CedidoCommission : 0m,
+                SusepProcessNumber = c.SusepProcessNumber,
+                StateCode = c.StateCode
+            }).ToArray();
+        }
+
+        private async Task LoadCosuranceTestDataAsync()
+        {
+            // Create 15 cossurance records matching COBOL golden file
+            var records = Enumerable.Range(1, 15).Select(i =>
+            {
+                var policyNumber = 1000000L + ((i - 1) / 2);  // 2 records per policy
+                var cessionType = i % 2 == 1 ? 'C' : 'O';
+
+                return CreateCosuranceRecord(
+                    id: i,
+                    policyNumber: policyNumber,
+                    cessionType: cessionType,
+                    participationPercentage: 25.00m + (i * 2.5m),
+                    cedidoPremium: 10000.00m + (i * 1000m),
+                    cedidoCommission: 1500.00m + (i * 150m)
+                );
+            }).ToList();
+
+            await _context.Cosurances.AddRangeAsync(records);
+            await _context.SaveChangesAsync();
+
+            _output.WriteLine($"Loaded {records.Count} cossurance records for testing");
+        }
+
+        private string GetProjectRoot()
+        {
+            var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
+            while (directory != null && !File.Exists(Path.Combine(directory.FullName, "backend", "CaixaSeguradora.sln")))
+            {
+                directory = directory.Parent;
+            }
+            return directory?.FullName ?? throw new InvalidOperationException("Could not find project root");
+        }
+
+        public void Dispose()
+        {
+            _context?.Dispose();
+            _connection?.Dispose();
+        }
+    }
+}

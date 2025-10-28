@@ -1,0 +1,110 @@
+# PDF Document Generation Configuration
+# For COBOL RG1866B Migration Analysis
+
+document:
+  title: "Análise de Migração COBOL para .NET"
+  subtitle: "Sistema SUSEP Circular 360 - Apuração de Prêmios"
+  version: "1.0.0"
+  author: "Equipe de Migração COBOL"
+  company: "Caixa Seguradora"
+  date: "2025-10-24"
+  classification: "CONFIDENCIAL"
+
+branding:
+  primary_color: "#0047BB"  # Caixa Blue
+  accent_color: "#FFB81C"   # Caixa Yellow
+  logo_path: "contracts/assets/caixa-seguradora-logo.png"
+
+paths:
+  # Source documents (relative to feature directory)
+  spec_file: "../../001-vamos-migrar-sistema/spec.md"
+  plan_file: "../../001-vamos-migrar-sistema/plan.md"
+  research_file: "../../001-vamos-migrar-sistema/research.md"
+  data_model_file: "../../001-vamos-migrar-sistema/data-model.md"
+  tasks_file: "../../001-vamos-migrar-sistema/tasks.md"
+  cobol_analysis_file: "../../../docs/parser/FINAL-ANALYSIS-REPORT.md"
+  openapi_contract: "../../001-vamos-migrar-sistema/contracts/openapi.yaml"
+
+  # Output paths
+  output_dir: "output"
+  diagrams_dir: "output/diagrams"
+  intermediate_dir: "output/intermediate"
+  final_pdf: "output/migration-analysis-cobol-v1.0.0.pdf"
+
+  # Template paths
+  templates_dir: "templates/document-generation"
+  master_template: "templates/document-generation/master-template.tex"
+  preamble: "templates/document-generation/preamble.tex"
+
+  # Diagram definitions
+  diagram_definitions_dir: "contracts/diagram-definitions"
+
+sections:
+  - id: "executive-summary"
+    title: "Resumo Executivo"
+    enabled: true
+
+  - id: "cobol-analysis"
+    title: "Análise do Sistema COBOL Legado"
+    enabled: true
+
+  - id: "architecture"
+    title: "Arquitetura de Migração"
+    enabled: true
+
+  - id: "function-points"
+    title: "Análise de Pontos de Função"
+    enabled: true
+
+  - id: "timeline"
+    title: "Cronograma do Projeto"
+    enabled: true
+
+  - id: "methodology"
+    title: "Metodologia MIGRAI"
+    enabled: true
+
+  - id: "budget"
+    title: "Orçamento e ROI"
+    enabled: true
+
+  - id: "components"
+    title: "Especificações de Componentes"
+    enabled: true
+
+  - id: "risks"
+    title: "Gerenciamento de Riscos"
+    enabled: true
+
+  - id: "appendices"
+    title: "Apêndices"
+    enabled: true
+
+function_points:
+  methodology: "IFPUG 4.3.1"
+  cost_per_fp: 750  # BRL
+  vaf: 1.13  # Value Adjustment Factor
+
+financial:
+  development_multiplier: 0.75  # 75% of total FP cost
+  infrastructure_monthly: 1500  # BRL per month
+  infrastructure_months: 12
+  contingency_percentage: 15  # 15%
+
+timeline:
+  total_weeks: 12
+  development_weeks: 8
+  homologation_weeks: 4
+  phases: 6
+  milestones: 8
+
+latex:
+  compiler: "pdflatex"
+  bibliography_tool: "bibtex"
+  iterations: 2  # Number of pdflatex runs for TOC/refs
+
+validation:
+  min_pages: 40
+  max_file_size_mb: 25
+  required_sections: 10
+  required_diagrams: 5

@@ -1,0 +1,247 @@
+{
+  "backendFramework": ".NET 9.0",
+  "frontendFramework": "React 18.2",
+  "databaseType": "Azure SQL Database",
+  "deploymentPlatform": "Azure App Service",
+  "containerization": "Docker",
+  "orchestration": "Kubernetes (AKS)",
+  "apiEndpoints": [
+    {
+      "category": "Reports",
+      "path": "/api/v1/reports/generate",
+      "method": "POST",
+      "description": "Gera relatórios PREMIT/PREMCED"
+    },
+    {
+      "category": "Reports",
+      "path": "/api/v1/reports/{id}",
+      "method": "GET",
+      "description": "Obtém status/download de relatório"
+    },
+    {
+      "category": "Reports",
+      "path": "/api/v1/reports/history",
+      "method": "GET",
+      "description": "Histórico de relatórios gerados"
+    },
+    {
+      "category": "Premiums",
+      "path": "/api/v1/premiums/query",
+      "method": "POST",
+      "description": "Consulta prêmios com filtros"
+    },
+    {
+      "category": "Premiums",
+      "path": "/api/v1/premiums/{id}",
+      "method": "GET",
+      "description": "Detalhes de prêmio específico"
+    },
+    {
+      "category": "Premiums",
+      "path": "/api/v1/premiums/statistics",
+      "method": "GET",
+      "description": "Estatísticas de prêmios"
+    },
+    {
+      "category": "Policies",
+      "path": "/api/v1/policies/{id}",
+      "method": "GET",
+      "description": "Detalhes de apólice"
+    },
+    {
+      "category": "Policies",
+      "path": "/api/v1/policies/{id}/endorsements",
+      "method": "GET",
+      "description": "Endossos de apólice"
+    },
+    {
+      "category": "Policies",
+      "path": "/api/v1/policies/{id}/coverages",
+      "method": "GET",
+      "description": "Coberturas contratadas"
+    },
+    {
+      "category": "Clients",
+      "path": "/api/v1/clients/{id}",
+      "method": "GET",
+      "description": "Dados do cliente"
+    },
+    {
+      "category": "Batch",
+      "path": "/api/v1/batch/jobs",
+      "method": "POST",
+      "description": "Cria job de processamento"
+    },
+    {
+      "category": "Batch",
+      "path": "/api/v1/batch/jobs/{id}",
+      "method": "GET",
+      "description": "Status do job"
+    },
+    {
+      "category": "Dashboard",
+      "path": "/api/v1/dashboard/metrics",
+      "method": "GET",
+      "description": "Métricas do dashboard"
+    },
+    {
+      "category": "System",
+      "path": "/api/v1/health",
+      "method": "GET",
+      "description": "Health check"
+    },
+    {
+      "category": "System",
+      "path": "/api/v1/configuration",
+      "method": "GET",
+      "description": "Configurações do sistema"
+    }
+  ],
+  "reactComponents": [
+    {
+      "name": "DashboardPage",
+      "category": "Pages",
+      "filePath": "src/pages/DashboardPage.tsx",
+      "props": ["user", "metrics", "refreshInterval"],
+      "linesOfCode": 245
+    },
+    {
+      "name": "ReportGenerationPage",
+      "category": "Pages",
+      "filePath": "src/pages/ReportGenerationPage.tsx",
+      "props": ["reportTypes", "onGenerate"],
+      "linesOfCode": 312
+    },
+    {
+      "name": "PremiumQueryPage",
+      "category": "Pages",
+      "filePath": "src/pages/PremiumQueryPage.tsx",
+      "props": ["filters", "onSearch"],
+      "linesOfCode": 189
+    },
+    {
+      "name": "PolicyDetailsPage",
+      "category": "Pages",
+      "filePath": "src/pages/PolicyDetailsPage.tsx",
+      "props": ["policyId"],
+      "linesOfCode": 267
+    },
+    {
+      "name": "BatchJobsPage",
+      "category": "Pages",
+      "filePath": "src/pages/BatchJobsPage.tsx",
+      "props": ["jobs", "onCreateJob"],
+      "linesOfCode": 198
+    },
+    {
+      "name": "MetricsCard",
+      "category": "Dashboard",
+      "filePath": "src/components/dashboard/MetricsCard.tsx",
+      "props": ["title", "value", "trend", "icon"],
+      "linesOfCode": 67
+    },
+    {
+      "name": "PremiumChart",
+      "category": "Dashboard",
+      "filePath": "src/components/dashboard/PremiumChart.tsx",
+      "props": ["data", "type", "period"],
+      "linesOfCode": 134
+    },
+    {
+      "name": "ReportGenerator",
+      "category": "Reports",
+      "filePath": "src/components/reports/ReportGenerator.tsx",
+      "props": ["parameters", "onGenerate", "onCancel"],
+      "linesOfCode": 223
+    },
+    {
+      "name": "ReportHistory",
+      "category": "Reports",
+      "filePath": "src/components/reports/ReportHistory.tsx",
+      "props": ["reports", "onDownload", "onDelete"],
+      "linesOfCode": 156
+    },
+    {
+      "name": "PremiumTable",
+      "category": "Query",
+      "filePath": "src/components/query/PremiumTable.tsx",
+      "props": ["data", "columns", "onSort", "pagination"],
+      "linesOfCode": 198
+    },
+    {
+      "name": "FilterPanel",
+      "category": "Query",
+      "filePath": "src/components/query/FilterPanel.tsx",
+      "props": ["filters", "onChange", "onReset"],
+      "linesOfCode": 145
+    },
+    {
+      "name": "Button",
+      "category": "Common",
+      "filePath": "src/components/common/Button.tsx",
+      "props": ["onClick", "variant", "size", "disabled"],
+      "linesOfCode": 45
+    },
+    {
+      "name": "Card",
+      "category": "Common",
+      "filePath": "src/components/common/Card.tsx",
+      "props": ["title", "children", "footer"],
+      "linesOfCode": 38
+    },
+    {
+      "name": "Table",
+      "category": "Common",
+      "filePath": "src/components/common/Table.tsx",
+      "props": ["data", "columns", "onSort", "selectable"],
+      "linesOfCode": 112
+    },
+    {
+      "name": "Modal",
+      "category": "Common",
+      "filePath": "src/components/common/Modal.tsx",
+      "props": ["isOpen", "onClose", "title", "children"],
+      "linesOfCode": 67
+    }
+  ],
+  "layers": {
+    "presentation": {
+      "technologies": ["ASP.NET Core Web API", "Swagger/OpenAPI", "JWT Authentication"],
+      "responsibilities": ["HTTP handling", "Request validation", "Response formatting"]
+    },
+    "application": {
+      "technologies": ["MediatR", "AutoMapper", "FluentValidation"],
+      "responsibilities": ["Use case orchestration", "DTO mapping", "Business validation"]
+    },
+    "domain": {
+      "technologies": ["C# 13", "Domain-Driven Design"],
+      "responsibilities": ["Business logic", "Domain entities", "Domain services"]
+    },
+    "infrastructure": {
+      "technologies": ["Entity Framework Core 9", "Azure Storage", "Serilog"],
+      "responsibilities": ["Data persistence", "External services", "Cross-cutting concerns"]
+    }
+  },
+  "integrations": [
+    {
+      "system": "SUSEP API",
+      "protocol": "REST",
+      "authentication": "OAuth 2.0"
+    },
+    {
+      "system": "DB2 Mainframe",
+      "protocol": "JDBC",
+      "authentication": "Service Account"
+    },
+    {
+      "system": "Azure Active Directory",
+      "protocol": "OpenID Connect",
+      "authentication": "SSO"
+    },
+    {
+      "system": "Azure Service Bus",
+      "protocol": "AMQP",
+      "authentication": "Managed Identity"
+    }
+  ]
+}

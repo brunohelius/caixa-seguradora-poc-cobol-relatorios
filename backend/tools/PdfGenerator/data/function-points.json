@@ -1,0 +1,162 @@
+[
+  {
+    "name": "Generate PREMIT Report",
+    "type": "External Output",
+    "complexity": "High",
+    "unadjustedPoints": 7,
+    "adjustedPoints": 10,
+    "description": "Gera relatório PREMIT para SUSEP com dados de prêmios"
+  },
+  {
+    "name": "Generate PREMCED Report",
+    "type": "External Output",
+    "complexity": "High",
+    "unadjustedPoints": 7,
+    "adjustedPoints": 10,
+    "description": "Gera relatório PREMCED para cosseguro"
+  },
+  {
+    "name": "Calculate Cossurance",
+    "type": "External Inquiry",
+    "complexity": "High",
+    "unadjustedPoints": 6,
+    "adjustedPoints": 9,
+    "description": "Cálculos complexos de cosseguro com múltiplas condições"
+  },
+  {
+    "name": "Premium Database",
+    "type": "Internal Logical File",
+    "complexity": "High",
+    "unadjustedPoints": 15,
+    "adjustedPoints": 22,
+    "description": "Base de dados principal com 26+ tabelas DB2"
+  },
+  {
+    "name": "Policy Query",
+    "type": "External Input",
+    "complexity": "Average",
+    "unadjustedPoints": 4,
+    "adjustedPoints": 6,
+    "description": "Consulta de apólices por múltiplos critérios"
+  },
+  {
+    "name": "Premium Calculation",
+    "type": "External Inquiry",
+    "complexity": "High",
+    "unadjustedPoints": 6,
+    "adjustedPoints": 9,
+    "description": "Cálculo de prêmios com regras SUSEP"
+  },
+  {
+    "name": "Endorsement Processing",
+    "type": "External Input",
+    "complexity": "High",
+    "unadjustedPoints": 6,
+    "adjustedPoints": 9,
+    "description": "Processamento de endossos com validações complexas"
+  },
+  {
+    "name": "Client Management",
+    "type": "Internal Logical File",
+    "complexity": "Average",
+    "unadjustedPoints": 10,
+    "adjustedPoints": 14,
+    "description": "Gestão de dados de clientes e segurados"
+  },
+  {
+    "name": "SUSEP Interface",
+    "type": "External Interface File",
+    "complexity": "Average",
+    "unadjustedPoints": 7,
+    "adjustedPoints": 10,
+    "description": "Interface com sistemas SUSEP para compliance"
+  },
+  {
+    "name": "Product Catalog",
+    "type": "Internal Logical File",
+    "complexity": "Low",
+    "unadjustedPoints": 7,
+    "adjustedPoints": 9,
+    "description": "Catálogo de produtos de seguro"
+  },
+  {
+    "name": "Coverage Management",
+    "type": "External Input",
+    "complexity": "Average",
+    "unadjustedPoints": 4,
+    "adjustedPoints": 6,
+    "description": "Gestão de coberturas contratadas"
+  },
+  {
+    "name": "Claims Interface",
+    "type": "External Interface File",
+    "complexity": "Average",
+    "unadjustedPoints": 7,
+    "adjustedPoints": 10,
+    "description": "Interface com sistema de sinistros"
+  },
+  {
+    "name": "Commission Calculation",
+    "type": "External Inquiry",
+    "complexity": "Average",
+    "unadjustedPoints": 4,
+    "adjustedPoints": 6,
+    "description": "Cálculo de comissões de corretores"
+  },
+  {
+    "name": "Batch Processing Control",
+    "type": "External Input",
+    "complexity": "Average",
+    "unadjustedPoints": 4,
+    "adjustedPoints": 6,
+    "description": "Controle de processamento batch mensal"
+  },
+  {
+    "name": "Error Handling",
+    "type": "External Output",
+    "complexity": "Low",
+    "unadjustedPoints": 4,
+    "adjustedPoints": 5,
+    "description": "Log de erros e exceções"
+  },
+  {
+    "name": "Dashboard Metrics",
+    "type": "External Output",
+    "complexity": "Average",
+    "unadjustedPoints": 5,
+    "adjustedPoints": 7,
+    "description": "Métricas para dashboard executivo"
+  },
+  {
+    "name": "Address Management",
+    "type": "Internal Logical File",
+    "complexity": "Low",
+    "unadjustedPoints": 7,
+    "adjustedPoints": 9,
+    "description": "Gestão de endereços de segurados"
+  },
+  {
+    "name": "Audit Trail",
+    "type": "Internal Logical File",
+    "complexity": "Average",
+    "unadjustedPoints": 10,
+    "adjustedPoints": 14,
+    "description": "Trilha de auditoria para compliance"
+  },
+  {
+    "name": "Report Scheduler",
+    "type": "External Input",
+    "complexity": "Low",
+    "unadjustedPoints": 3,
+    "adjustedPoints": 4,
+    "description": "Agendamento de relatórios"
+  },
+  {
+    "name": "Data Export",
+    "type": "External Output",
+    "complexity": "Low",
+    "unadjustedPoints": 4,
+    "adjustedPoints": 5,
+    "description": "Exportação de dados para análise"
+  }
+]

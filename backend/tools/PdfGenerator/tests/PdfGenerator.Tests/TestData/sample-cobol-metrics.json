@@ -1,0 +1,112 @@
+{
+  "programId": "RG1866B",
+  "programName": "Sistema de Apuração de Prêmios SUSEP",
+  "totalLines": 4977,
+  "codeLines": 3982,
+  "commentLines": 995,
+  "dataItems": 687,
+  "tablesAccessed": 26,
+  "divisions": [
+    {
+      "name": "IDENTIFICATION DIVISION",
+      "startLine": 1,
+      "endLine": 10
+    },
+    {
+      "name": "ENVIRONMENT DIVISION",
+      "startLine": 11,
+      "endLine": 50
+    },
+    {
+      "name": "DATA DIVISION",
+      "startLine": 51,
+      "endLine": 1500
+    },
+    {
+      "name": "PROCEDURE DIVISION",
+      "startLine": 1501,
+      "endLine": 4977
+    }
+  ],
+  "sections": [
+    {
+      "name": "WORKING-STORAGE",
+      "division": "DATA DIVISION",
+      "lineCount": 1300
+    },
+    {
+      "name": "FILE SECTION",
+      "division": "DATA DIVISION",
+      "lineCount": 100
+    },
+    {
+      "name": "R0000-INICIO",
+      "division": "PROCEDURE DIVISION",
+      "lineCount": 50
+    },
+    {
+      "name": "R0100-PROCESSAR",
+      "division": "PROCEDURE DIVISION",
+      "lineCount": 200
+    },
+    {
+      "name": "R0500-CALCULAR-PREMIO",
+      "division": "PROCEDURE DIVISION",
+      "lineCount": 350
+    },
+    {
+      "name": "R9000-FINALIZAR",
+      "division": "PROCEDURE DIVISION",
+      "lineCount": 75
+    }
+  ],
+  "databaseTables": [
+    "V0PREMIOS",
+    "V0APOLICE",
+    "V0ENDOSSO",
+    "V0PRODUTO",
+    "V0CLIENTE",
+    "V0ENDERECOS",
+    "V0COBERTURA",
+    "V0SINISTRO",
+    "V0RESSEGURO",
+    "V0COMISSAO",
+    "V0PARCELA",
+    "V0MOVIMENTO",
+    "V0RAMO",
+    "V0SUCURSAL",
+    "V0CORRETOR",
+    "V0BENEFICIARIO",
+    "V0COSSEGURO",
+    "V0DESCONTO",
+    "V0IOF",
+    "V0PIS",
+    "V0COFINS",
+    "V0ISS",
+    "V0AGRUPAMENTO",
+    "V0HISTORICO",
+    "GE399",
+    "GE400"
+  ],
+  "outputFiles": [
+    {
+      "name": "PREMIT.TXT",
+      "recordLength": 1024,
+      "format": "Fixed-width",
+      "description": "Arquivo de prêmios emitidos"
+    },
+    {
+      "name": "PREMCED.TXT",
+      "recordLength": 1024,
+      "format": "Fixed-width",
+      "description": "Arquivo de prêmios cedidos"
+    }
+  ],
+  "complexity": {
+    "cyclomaticComplexity": 312,
+    "cognitiveComplexity": 245,
+    "halsteadDifficulty": 89.4,
+    "maintainabilityIndex": 42.3,
+    "technicalDebt": "480 hours"
+  }
+}

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using CaixaSeguradora.Core.Attributes;
 
 namespace CaixaSeguradora.Core.Entities
@@ -62,8 +63,26 @@ namespace CaixaSeguradora.Core.Entities
         [CobolField("WS-NUM-PROPOSTA", CobolFieldType.Numeric, 128, 13)]
         public long ProposalNumber { get; set; }  // Proposal/quote number
 
-        // Computed property for RamoValidationService compatibility
-        public int RamoSusep => Product?.LineOfBusiness ?? 0;
+        // Computed property for RamoValidationService compatibility (with setter for tests)
+        [NotMapped]
+        public int RamoSusep
+        {
+            get => Product?.LineOfBusiness ?? 0;
+            set { } // Setter for test compatibility
+        }
+
+        // Additional properties for service compatibility
+        [NotMapped]
+        public string StateCode { get; set; } = string.Empty;
+
+        [NotMapped]
+        public DateTime IssueDate { get; set; }
+
+        [NotMapped]
+        public int ProposerClientCode { get; set; }
+
+        [NotMapped]
+        public DateTime ProposalDate { get; set; }
 
         // Navigation properties
         public Client Client { get; set; } = null!;

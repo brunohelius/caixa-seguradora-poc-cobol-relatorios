@@ -1,0 +1,405 @@
+{
+  "timestamp": "2025-10-23T23:55:07.174Z",
+  "summary": {
+    "totalTests": 29,
+    "passed": 25,
+    "failed": 4,
+    "warnings": 4
+  },
+  "details": {
+    "passed": [
+      {
+        "name": "Header present",
+        "passed": true,
+        "selector": "header"
+      },
+      {
+        "name": "Navigation links",
+        "passed": true,
+        "count": 5,
+        "expected": 5
+      },
+      {
+        "name": "Footer present",
+        "passed": true,
+        "selector": "footer"
+      },
+      {
+        "name": "Text visibility",
+        "passed": true,
+        "totalTexts": 11,
+        "invisibleCount": 0,
+        "invisibleTexts": []
+      },
+      {
+        "name": "Header present",
+        "passed": true,
+        "selector": "header"
+      },
+      {
+        "name": "Navigation links",
+        "passed": true,
+        "count": 5,
+        "expected": 5
+      },
+      {
+        "name": "Footer present",
+        "passed": true,
+        "selector": "footer"
+      },
+      {
+        "name": "Text visibility",
+        "passed": true,
+        "totalTexts": 16,
+        "invisibleCount": 0,
+        "invisibleTexts": []
+      },
+      {
+        "page": "BatchJobs",
+        "name": "Action buttons",
+        "found": true,
+        "count": 1
+      },
+      {
+        "page": "BatchJobs",
+        "name": "Alert sections",
+        "found": true,
+        "count": 1
+      },
+      {
+        "name": "Header present",
+        "passed": true,
+        "selector": "header"
+      },
+      {
+        "name": "Navigation links",
+        "passed": true,
+        "count": 5,
+        "expected": 5
+      },
+      {
+        "name": "Footer present",
+        "passed": true,
+        "selector": "footer"
+      },
+      {
+        "name": "Text visibility",
+        "passed": true,
+        "totalTexts": 20,
+        "invisibleCount": 0,
+        "invisibleTexts": []
+      },
+      {
+        "page": "Query",
+        "name": "Query tabs",
+        "found": true,
+        "count": 4
+      },
+      {
+        "page": "Query",
+        "name": "Filter inputs",
+        "found": true,
+        "count": 8
+      },
+      {
+        "name": "Header present",
+        "passed": true,
+        "selector": "header"
+      },
+      {
+        "name": "Navigation links",
+        "passed": true,
+        "count": 5,
+        "expected": 5
+      },
+      {
+        "name": "Footer present",
+        "passed": true,
+        "selector": "footer"
+      },
+      {
+        "name": "Text visibility",
+        "passed": true,
+        "totalTexts": 13,
+        "invisibleCount": 0,
+        "invisibleTexts": []
+      },
+      {
+        "name": "Header present",
+        "passed": true,
+        "selector": "header"
+      },
+      {
+        "name": "Navigation links",
+        "passed": true,
+        "count": 5,
+        "expected": 5
+      },
+      {
+        "name": "Footer present",
+        "passed": true,
+        "selector": "footer"
+      },
+      {
+        "name": "Brand colors",
+        "passed": true,
+        "colors": {
+          "blue": true,
+          "yellow": false,
+          "green": false
+        }
+      },
+      {
+        "name": "Text visibility",
+        "passed": true,
+        "totalTexts": 27,
+        "invisibleCount": 0,
+        "invisibleTexts": []
+      }
+    ],
+    "failed": [
+      {
+        "name": "Brand colors",
+        "passed": false,
+        "colors": {
+          "blue": false,
+          "yellow": false,
+          "green": false
+        },
+        "page": "Dashboard"
+      },
+      {
+        "name": "Brand colors",
+        "passed": false,
+        "colors": {
+          "blue": false,
+          "yellow": false,
+          "green": false
+        },
+        "page": "BatchJobs"
+      },
+      {
+        "name": "Brand colors",
+        "passed": false,
+        "colors": {
+          "blue": false,
+          "yellow": false,
+          "green": false
+        },
+        "page": "Query"
+      },
+      {
+        "name": "Brand colors",
+        "passed": false,
+        "colors": {
+          "blue": false,
+          "yellow": false,
+          "green": false
+        },
+        "page": "ReportGeneration"
+      }
+    ],
+    "warnings": [
+      {
+        "page": "Dashboard",
+        "name": "Success banner",
+        "found": false
+      },
+      {
+        "page": "Dashboard",
+        "name": "Próximas ações section",
+        "found": false
+      },
+      {
+        "page": "Dashboard",
+        "name": "Dashboard cards",
+        "found": false,
+        "count": 2
+      },
+      {
+        "page": "Query",
+        "name": "Results table",
+        "found": false
+      }
+    ]
+  },
+  "screenshots": [
+    {
+      "page": "Dashboard",
+      "screenshots": [
+        {
+          "type": "full",
+          "path": "/Users/brunosouza/Development/Caixa Seguradora/POC Cobol/frontend/tests/e2e/screenshots/puppeteer/dashboard-full.png"
+        },
+        {
+          "type": "viewport",
+          "path": "/Users/brunosouza/Development/Caixa Seguradora/POC Cobol/frontend/tests/e2e/screenshots/puppeteer/dashboard-viewport.png"
+        },
+        {
+          "type": "mobile",
+          "path": "/Users/brunosouza/Development/Caixa Seguradora/POC Cobol/frontend/tests/e2e/screenshots/puppeteer/dashboard-mobile.png"
+        }
+      ]
+    },
+    {
+      "page": "BatchJobs",
+      "screenshots": [
+        {
+          "type": "full",
+          "path": "/Users/brunosouza/Development/Caixa Seguradora/POC Cobol/frontend/tests/e2e/screenshots/puppeteer/batchjobs-full.png"
+        },
+        {
+          "type": "viewport",
+          "path": "/Users/brunosouza/Development/Caixa Seguradora/POC Cobol/frontend/tests/e2e/screenshots/puppeteer/batchjobs-viewport.png"
+        },
+        {
+          "type": "mobile",
+          "path": "/Users/brunosouza/Development/Caixa Seguradora/POC Cobol/frontend/tests/e2e/screenshots/puppeteer/batchjobs-mobile.png"
+        }
+      ]
+    },
+    {
+      "page": "Query",
+      "screenshots": [
+        {
+          "type": "full",
+          "path": "/Users/brunosouza/Development/Caixa Seguradora/POC Cobol/frontend/tests/e2e/screenshots/puppeteer/query-full.png"
+        },
+        {
+          "type": "viewport",
+          "path": "/Users/brunosouza/Development/Caixa Seguradora/POC Cobol/frontend/tests/e2e/screenshots/puppeteer/query-viewport.png"
+        },
+        {
+          "type": "mobile",
+          "path": "/Users/brunosouza/Development/Caixa Seguradora/POC Cobol/frontend/tests/e2e/screenshots/puppeteer/query-mobile.png"
+        }
+      ]
+    },
+    {
+      "page": "ReportGeneration",
+      "screenshots": [
+        {
+          "type": "full",
+          "path": "/Users/brunosouza/Development/Caixa Seguradora/POC Cobol/frontend/tests/e2e/screenshots/puppeteer/reportgeneration-full.png"
+        },
+        {
+          "type": "viewport",
+          "path": "/Users/brunosouza/Development/Caixa Seguradora/POC Cobol/frontend/tests/e2e/screenshots/puppeteer/reportgeneration-viewport.png"
+        },
+        {
+          "type": "mobile",
+          "path": "/Users/brunosouza/Development/Caixa Seguradora/POC Cobol/frontend/tests/e2e/screenshots/puppeteer/reportgeneration-mobile.png"
+        }
+      ]
+    },
+    {
+      "page": "MockData",
+      "screenshots": [
+        {
+          "type": "full",
+          "path": "/Users/brunosouza/Development/Caixa Seguradora/POC Cobol/frontend/tests/e2e/screenshots/puppeteer/mockdata-full.png"
+        },
+        {
+          "type": "viewport",
+          "path": "/Users/brunosouza/Development/Caixa Seguradora/POC Cobol/frontend/tests/e2e/screenshots/puppeteer/mockdata-viewport.png"
+        },
+        {
+          "type": "mobile",
+          "path": "/Users/brunosouza/Development/Caixa Seguradora/POC Cobol/frontend/tests/e2e/screenshots/puppeteer/mockdata-mobile.png"
+        }
+      ]
+    }
+  ],
+  "performance": {
+    "Dashboard": {
+      "Timestamp": 112194.497812,
+      "Documents": 3,
+      "Frames": 1,
+      "JSEventListeners": 185,
+      "Nodes": 104,
+      "LayoutCount": 10,
+      "RecalcStyleCount": 15,
+      "LayoutDuration": 0.011221,
+      "RecalcStyleDuration": 0.014194,
+      "ScriptDuration": 0.079237,
+      "TaskDuration": 0.164867,
+      "JSHeapUsedSize": 12069704,
+      "JSHeapTotalSize": 15532032,
+      "loadTime": 215,
+      "domContentLoaded": 214,
+      "firstPaint": 232
+    },
+    "BatchJobs": {
+      "Timestamp": 112197.065501,
+      "Documents": 5,
+      "Frames": 3,
+      "JSEventListeners": 356,
+      "Nodes": 260,
+      "LayoutCount": 7,
+      "RecalcStyleCount": 13,
+      "LayoutDuration": 0.001524,
+      "RecalcStyleDuration": 0.002294,
+      "ScriptDuration": 0.020796,
+      "TaskDuration": 0.055487,
+      "JSHeapUsedSize": 19073836,
+      "JSHeapTotalSize": 24739840,
+      "loadTime": 74,
+      "domContentLoaded": 74,
+      "firstPaint": 96
+    },
+    "Query": {
+      "Timestamp": 112199.691018,
+      "Documents": 9,
+      "Frames": 6,
+      "JSEventListeners": 544,
+      "Nodes": 587,
+      "LayoutCount": 7,
+      "RecalcStyleCount": 13,
+      "LayoutDuration": 0.003781,
+      "RecalcStyleDuration": 0.00724,
+      "ScriptDuration": 0.030114,
+      "TaskDuration": 0.06709,
+      "JSHeapUsedSize": 25490372,
+      "JSHeapTotalSize": 35635200,
+      "loadTime": 44,
+      "domContentLoaded": 44,
+      "firstPaint": 68
+    },
+    "ReportGeneration": {
+      "Timestamp": 112202.047036,
+      "Documents": 11,
+      "Frames": 8,
+      "JSEventListeners": 704,
+      "Nodes": 680,
+      "LayoutCount": 7,
+      "RecalcStyleCount": 12,
+      "LayoutDuration": 0.001089,
+      "RecalcStyleDuration": 0.001696,
+      "ScriptDuration": 0.01465,
+      "TaskDuration": 0.033607,
+      "JSHeapUsedSize": 31122416,
+      "JSHeapTotalSize": 44171264,
+      "loadTime": 36,
+      "domContentLoaded": 36,
+      "firstPaint": 56
+    },
+    "MockData": {
+      "Timestamp": 112204.59103,
+      "Documents": 13,
+      "Frames": 10,
+      "JSEventListeners": 889,
+      "Nodes": 976,
+      "LayoutCount": 9,
+      "RecalcStyleCount": 23,
+      "LayoutDuration": 0.00231,
+      "RecalcStyleDuration": 0.003229,
+      "ScriptDuration": 0.024754,
+      "TaskDuration": 0.050232,
+      "JSHeapUsedSize": 42011328,
+      "JSHeapTotalSize": 51658752,
+      "loadTime": 36,
+      "domContentLoaded": 36,
+      "firstPaint": 56
+    }
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "programName": "RG1866B",
+  "totalLines": 4876,
+  "totalSections": 63,
+  "totalParagraphs": 145,
+  "totalDataItems": 687,
+  "databaseTables": 26,
+  "sqlCursors": 8,
+  "complexityLevel": "Alta",
+  "processingType": "Batch",
+  "executionFrequency": "Mensal",
+  "sections": [
+    {
+      "name": "IDENTIFICATION DIVISION",
+      "lines": 15
+    },
+    {
+      "name": "ENVIRONMENT DIVISION",
+      "lines": 45
+    },
+    {
+      "name": "DATA DIVISION",
+      "lines": 1823
+    },
+    {
+      "name": "PROCEDURE DIVISION",
+      "lines": 2993
+    }
+  ],
+  "dataStructures": {
+    "workingStorage": {
+      "items": 342,
+      "bytes": 18450
+    },
+    "fileSection": {
+      "items": 8,
+      "bytes": 4096
+    },
+    "linkageSection": {
+      "items": 45,
+      "bytes": 2340
+    },
+    "localStorage": {
+      "items": 120,
+      "bytes": 6780
+    }
+  },
+  "mainParagraphs": [
+    "R0000-MAIN",
+    "R0100-INITIALIZE",
+    "R0200-OPEN-CURSORS",
+    "R0300-PROCESS-PREMIUMS",
+    "R0500-CALCULATE-TOTALS",
+    "R0700-COSSURANCE-CALC",
+    "R1000-GENERATE-REPORTS",
+    "R1300-WRITE-OUTPUT",
+    "R9000-ERROR-HANDLING",
+    "R9900-FINALIZE"
+  ],
+  "databaseAccess": {
+    "selectStatements": 42,
+    "updateStatements": 8,
+    "insertStatements": 12,
+    "deleteStatements": 2,
+    "joinOperations": 18,
+    "aggregateFunctions": 24
+  },
+  "fileOperations": {
+    "inputFiles": ["PREMIOS.DAT", "APOLICES.DAT", "CLIENTES.DAT"],
+    "outputFiles": ["PREMIT.TXT", "PREMCED.TXT"],
+    "tempFiles": ["WORK01.TMP", "WORK02.TMP"]
+  },
+  "performanceMetrics": {
+    "averageExecutionMinutes": 240,
+    "recordsProcessedMonthly": 15000,
+    "peakMemoryUsageMB": 512,
+    "cpuUtilizationPercent": 85
+  }
+}

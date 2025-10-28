@@ -1,0 +1,320 @@
+{
+  "startDate": "2025-11-01T00:00:00",
+  "endDate": "2026-01-24T00:00:00",
+  "totalWeeks": 12,
+  "phases": [
+    {
+      "name": "Setup & Análise",
+      "startWeek": 1,
+      "endWeek": 2,
+      "durationWeeks": 2,
+      "description": "Configuração do ambiente de desenvolvimento e análise detalhada do código COBOL",
+      "tasks": [
+        {
+          "name": "Configurar ambiente de desenvolvimento",
+          "durationDays": 2,
+          "dependencies": [],
+          "status": "Completed"
+        },
+        {
+          "name": "Instalar ferramentas e SDKs",
+          "durationDays": 1,
+          "dependencies": [],
+          "status": "Completed"
+        },
+        {
+          "name": "Análise completa do programa COBOL",
+          "durationDays": 3,
+          "dependencies": [],
+          "status": "Completed"
+        },
+        {
+          "name": "Mapeamento de tipos de dados",
+          "durationDays": 2,
+          "dependencies": ["Análise COBOL"],
+          "status": "Completed"
+        },
+        {
+          "name": "Documentar regras de negócio",
+          "durationDays": 2,
+          "dependencies": ["Análise COBOL"],
+          "status": "Completed"
+        }
+      ]
+    },
+    {
+      "name": "Backend Development",
+      "startWeek": 3,
+      "endWeek": 6,
+      "durationWeeks": 4,
+      "description": "Desenvolvimento da API .NET 9 com Clean Architecture",
+      "tasks": [
+        {
+          "name": "Criar estrutura do projeto",
+          "durationDays": 1,
+          "dependencies": [],
+          "status": "InProgress"
+        },
+        {
+          "name": "Implementar entities e DbContext",
+          "durationDays": 3,
+          "dependencies": ["Estrutura"],
+          "status": "InProgress"
+        },
+        {
+          "name": "Desenvolver repositories",
+          "durationDays": 3,
+          "dependencies": ["Entities"],
+          "status": "Pending"
+        },
+        {
+          "name": "Implementar business services",
+          "durationDays": 5,
+          "dependencies": ["Repositories"],
+          "status": "Pending"
+        },
+        {
+          "name": "Criar API controllers",
+          "durationDays": 3,
+          "dependencies": ["Services"],
+          "status": "Pending"
+        },
+        {
+          "name": "Implementar formatadores COBOL",
+          "durationDays": 2,
+          "dependencies": ["Services"],
+          "status": "Pending"
+        },
+        {
+          "name": "Configurar Swagger/OpenAPI",
+          "durationDays": 1,
+          "dependencies": ["Controllers"],
+          "status": "Pending"
+        },
+        {
+          "name": "Implementar autenticação JWT",
+          "durationDays": 2,
+          "dependencies": ["Controllers"],
+          "status": "Pending"
+        }
+      ]
+    },
+    {
+      "name": "Frontend Development",
+      "startWeek": 5,
+      "endWeek": 8,
+      "durationWeeks": 4,
+      "description": "Desenvolvimento da aplicação React com TypeScript",
+      "tasks": [
+        {
+          "name": "Setup projeto React + Vite",
+          "durationDays": 1,
+          "dependencies": [],
+          "status": "Pending"
+        },
+        {
+          "name": "Configurar TailwindCSS",
+          "durationDays": 1,
+          "dependencies": ["Setup"],
+          "status": "Pending"
+        },
+        {
+          "name": "Implementar componentes comuns",
+          "durationDays": 3,
+          "dependencies": ["Tailwind"],
+          "status": "Pending"
+        },
+        {
+          "name": "Desenvolver páginas principais",
+          "durationDays": 5,
+          "dependencies": ["Componentes"],
+          "status": "Pending"
+        },
+        {
+          "name": "Integrar com API backend",
+          "durationDays": 3,
+          "dependencies": ["Páginas"],
+          "status": "Pending"
+        },
+        {
+          "name": "Implementar dashboards",
+          "durationDays": 3,
+          "dependencies": ["API Integration"],
+          "status": "Pending"
+        },
+        {
+          "name": "Adicionar gráficos Recharts",
+          "durationDays": 2,
+          "dependencies": ["Dashboards"],
+          "status": "Pending"
+        },
+        {
+          "name": "Implementar gerenciamento de estado",
+          "durationDays": 2,
+          "dependencies": ["Páginas"],
+          "status": "Pending"
+        }
+      ]
+    },
+    {
+      "name": "Integração & Testes",
+      "startWeek": 8,
+      "endWeek": 10,
+      "durationWeeks": 2,
+      "description": "Integração completa e testes de validação",
+      "tasks": [
+        {
+          "name": "Testes unitários backend",
+          "durationDays": 3,
+          "dependencies": [],
+          "status": "Pending"
+        },
+        {
+          "name": "Testes unitários frontend",
+          "durationDays": 2,
+          "dependencies": [],
+          "status": "Pending"
+        },
+        {
+          "name": "Testes de integração API",
+          "durationDays": 2,
+          "dependencies": ["Unit Tests"],
+          "status": "Pending"
+        },
+        {
+          "name": "Testes E2E com Playwright",
+          "durationDays": 2,
+          "dependencies": ["Integration"],
+          "status": "Pending"
+        },
+        {
+          "name": "Validação byte-a-byte COBOL",
+          "durationDays": 3,
+          "dependencies": ["E2E"],
+          "status": "Pending"
+        },
+        {
+          "name": "Testes de performance",
+          "durationDays": 2,
+          "dependencies": ["Validation"],
+          "status": "Pending"
+        }
+      ]
+    },
+    {
+      "name": "Homologação",
+      "startWeek": 10,
+      "endWeek": 12,
+      "durationWeeks": 2,
+      "description": "Homologação com usuários e preparação para produção",
+      "tasks": [
+        {
+          "name": "Deploy em ambiente de homologação",
+          "durationDays": 1,
+          "dependencies": [],
+          "status": "Pending"
+        },
+        {
+          "name": "Testes com usuários-chave",
+          "durationDays": 5,
+          "dependencies": ["Deploy"],
+          "status": "Pending"
+        },
+        {
+          "name": "Correção de bugs encontrados",
+          "durationDays": 3,
+          "dependencies": ["User Tests"],
+          "status": "Pending"
+        },
+        {
+          "name": "Validação SUSEP compliance",
+          "durationDays": 2,
+          "dependencies": ["Bug Fixes"],
+          "status": "Pending"
+        },
+        {
+          "name": "Documentação final",
+          "durationDays": 2,
+          "dependencies": [],
+          "status": "Pending"
+        },
+        {
+          "name": "Treinamento de usuários",
+          "durationDays": 2,
+          "dependencies": ["Documentation"],
+          "status": "Pending"
+        }
+      ]
+    },
+    {
+      "name": "Go-Live",
+      "startWeek": 12,
+      "endWeek": 12,
+      "durationWeeks": 1,
+      "description": "Implantação em produção e suporte inicial",
+      "tasks": [
+        {
+          "name": "Deploy em produção",
+          "durationDays": 1,
+          "dependencies": [],
+          "status": "Pending"
+        },
+        {
+          "name": "Migração de dados",
+          "durationDays": 1,
+          "dependencies": ["Deploy"],
+          "status": "Pending"
+        },
+        {
+          "name": "Monitoramento intensivo",
+          "durationDays": 3,
+          "dependencies": ["Migration"],
+          "status": "Pending"
+        },
+        {
+          "name": "Suporte 24x7 primeira semana",
+          "durationDays": 5,
+          "dependencies": ["Deploy"],
+          "status": "Pending"
+        }
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "name": "Projeto Kickoff",
+      "date": "2025-11-01T00:00:00",
+      "acceptanceCriteria": "Ambiente configurado, equipe alinhada, cronograma aprovado"
+    },
+    {
+      "name": "Análise Completa",
+      "date": "2025-11-14T00:00:00",
+      "acceptanceCriteria": "Documentação de regras de negócio, mapeamento de dados completo"
+    },
+    {
+      "name": "Backend MVP",
+      "date": "2025-11-28T00:00:00",
+      "acceptanceCriteria": "API funcional com endpoints principais, testes unitários passando"
+    },
+    {
+      "name": "Frontend MVP",
+      "date": "2025-12-19T00:00:00",
+      "acceptanceCriteria": "Interface funcional, integração com backend, dashboards operacionais"
+    },
+    {
+      "name": "Testes Completos",
+      "date": "2026-01-02T00:00:00",
+      "acceptanceCriteria": "100% cobertura de testes críticos, validação COBOL byte-a-byte"
+    },
+    {
+      "name": "Homologação Aprovada",
+      "date": "2026-01-16T00:00:00",
+      "acceptanceCriteria": "Sign-off dos usuários, compliance SUSEP validado"
+    },
+    {
+      "name": "Go-Live",
+      "date": "2026-01-24T00:00:00",
+      "acceptanceCriteria": "Sistema em produção, monitoramento ativo, suporte disponível"
+    }
+  ]
+}

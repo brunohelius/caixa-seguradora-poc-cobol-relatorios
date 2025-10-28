@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using CaixaSeguradora.Core.Attributes;
@@ -473,6 +474,97 @@ namespace CaixaSeguradora.Core.Entities
 
         [NotMapped]
         public decimal PolicyCost => IssuanceCostTotal;
+
+        // Additional computed properties for OutputRecordMappingService compatibility
+        [NotMapped]
+        public int RamoSusep => LineOfBusiness;
+
+        [NotMapped]
+        public int EndorsementNumberCA => EndorsementNumber;
+
+        [NotMapped]
+        public DateTime IssueDate { get; set; }
+
+        [NotMapped]
+        public DateTime EffectiveDate { get; set; }
+
+        [NotMapped]
+        public DateTime ExpirationDate { get; set; }
+
+        [NotMapped]
+        public DateTime ProposalDate { get; set; }
+
+        // Plural aliases for Item properties (as collections for OutputRecordMappingService)
+        [NotMapped]
+        public IEnumerable<decimal>? InsuredSumItems => new[] { InsuredAmountItem };
+
+        [NotMapped]
+        public IEnumerable<decimal>? BasePremiumItems => new[] { BasePremiumItem };
+
+        [NotMapped]
+        public IEnumerable<decimal>? FixedPremiumItems => new[] { FixedPremiumItem };
+
+        [NotMapped]
+        public IEnumerable<decimal>? TariffPremiumItems => new[] { TariffPremiumItem };
+
+        [NotMapped]
+        public IEnumerable<decimal>? DiscountItems => new[] { DiscountItem };
+
+        [NotMapped]
+        public IEnumerable<decimal>? NetPremiumItems => new[] { NetPremiumItem };
+
+        [NotMapped]
+        public IEnumerable<decimal>? InstallmentSurchargeItems => new[] { AdditionalFractionalItem };
+
+        [NotMapped]
+        public IEnumerable<decimal>? IssuanceCostItems => new[] { IssuanceCostItem };
+
+        [NotMapped]
+        public IEnumerable<decimal>? IofItems => new[] { IofItem };
+
+        [NotMapped]
+        public IEnumerable<decimal>? TotalPremiumItems => new[] { TotalPremiumItem };
+
+        [NotMapped]
+        public IEnumerable<decimal>? CommissionItems => new[] { CommissionItem };
+
+        [NotMapped]
+        public IEnumerable<decimal>? AdministrationFeeItems => new[] { AdministrationFeeItem };
+
+        [NotMapped]
+        public IEnumerable<decimal>? AgencyFeeItems => new[] { AgencyCommissionItem };
+
+        // Total aliases
+        [NotMapped]
+        public decimal InsuredSumTotal => InsuredAmountTotal;
+
+        [NotMapped]
+        public decimal TotalPremiumAmount => TotalPremiumTotal;
+
+        // Additional business properties
+        [NotMapped]
+        public int EstipulanteCode { get; set; }
+
+        [NotMapped]
+        public int TomadorCode { get; set; }
+
+        [NotMapped]
+        public int SalesChannelCode { get; set; }
+
+        [NotMapped]
+        public long BilheteNumber { get; set; }
+
+        [NotMapped]
+        public int NumberOfInsured { get; set; }
+
+        [NotMapped]
+        public int NumberOfInstallments { get; set; }
+
+        [NotMapped]
+        public bool HasCossurance => CossuranceIndicator == "S";
+
+        [NotMapped]
+        public bool IsRenewal { get; set; }
 
         // Navigation Properties
         public Policy? Policy { get; set; }
