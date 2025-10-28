@@ -62,6 +62,9 @@ namespace CaixaSeguradora.Core.Entities
         [CobolField("WS-NUM-PROPOSTA", CobolFieldType.Numeric, 128, 13)]
         public long ProposalNumber { get; set; }  // Proposal/quote number
 
+        // Computed property for RamoValidationService compatibility
+        public int RamoSusep => Product?.LineOfBusiness ?? 0;
+
         // Navigation properties
         public Client Client { get; set; } = null!;
         public Agency Agency { get; set; } = null!;

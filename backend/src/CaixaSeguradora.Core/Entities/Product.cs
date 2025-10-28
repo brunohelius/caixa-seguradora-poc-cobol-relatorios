@@ -69,6 +69,9 @@ namespace CaixaSeguradora.Core.Entities
         [NotMapped]
         public bool IsActive => ProductStatus == "A";  // Alias for controller compatibility
 
+        [NotMapped]
+        public int GrupoRamo => LineOfBusinessGroup;  // Alias for RamoValidationService compatibility
+
         // Navigation properties
         public ICollection<Policy> Policies { get; set; } = new List<Policy>();
         public ICollection<Coverage> Coverages { get; set; } = new List<Coverage>();
