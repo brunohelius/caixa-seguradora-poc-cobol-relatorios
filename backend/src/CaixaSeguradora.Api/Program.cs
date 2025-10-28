@@ -330,25 +330,13 @@ try
     builder.Services.AddScoped<ICossuredPolicyRepository, CossuredPolicyRepository>();
     builder.Services.AddScoped<ICossuranceCalculationRepository, CossuranceCalculationRepository>();
 
-    // Register Phase 7 (US5) repositories for nested cursor patterns
-    builder.Services.AddScoped<ICossuranceRepository, CossuranceRepository>();
-
-    // Register Phase 3 repositories (US1 - T051-T055)
-    builder.Services.AddScoped<IReportExecutionRepository, ReportExecutionRepository>();
-
     // Register business logic services (User Story 2)
     builder.Services.AddScoped<IPremiumCalculationService, PremiumCalculationService>();
     builder.Services.AddScoped<ICossuranceService, CossuranceService>();
     builder.Services.AddScoped<IExternalModuleService, ExternalModuleService>();
-    builder.Services.AddScoped<IBusinessRuleValidationService, BusinessRuleValidationService>();
 
     // Register report generation service (User Story 2)
     builder.Services.AddScoped<IReportGenerationService, ReportGenerationService>();
-
-    // Register Phase 3 services (US1 - T062-T063)
-    builder.Services.AddScoped<ReportOrchestrationService>();
-    builder.Services.AddScoped<IExecutionTrackingService, ExecutionTrackingService>();
-    builder.Services.AddScoped<IFileWriterService, FileWriterService>(); // Stub for Phase 3, full impl in Phase 6
 
     // Register dashboard service (User Story 1)
     builder.Services.AddScoped<IDashboardService, DashboardService>();
@@ -380,11 +368,6 @@ try
     // Register authentication service (User Story 6 - T228)
     builder.Services.AddScoped<IAuthService, AuthService>();
 
-    // Register external service integration (Phase 8 - US6 - T159-T172)
-    builder.Services.AddScoped<IReinsuranceCalculationService, ReinsuranceCalculationService>();
-    builder.Services.AddScoped<IFormattingService, FormattingService>();
-    builder.Services.AddScoped<IExternalValidationService, ExternalValidationService>();
-
     // Configure Hangfire for batch job scheduling (User Story 4 - T181, T182)
     builder.Services.AddHangfire(config => config
         .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
@@ -397,27 +380,7 @@ try
 
     WebApplication app = builder.Build();
 
-    // CLI Command: Seed sample data (T074 - Phase 3)
-    // Usage: dotnet run --seed-data
-    if (args.Contains("--seed-data"))
-    {
-        Log.Information("CLI: Seeding sample data");
-        using (var scope = app.Services.CreateScope())
-        {
-            var context = scope.ServiceProvider.GetRequiredService<PremiumReportingDbContext>();
-            var seederLogger = scope.ServiceProvider.GetRequiredService<ILogger<DataSeeder>>();
-            var seeder = new DataSeeder(context, seederLogger);
-
-            await seeder.SeedSampleDataAsync();
-        }
-        Log.Information("CLI: Data seeding completed");
-        return; // Exit after seeding
-    }
-
     // Configure the HTTP request pipeline
-
-    // Correlation ID MUST be first to track all requests
-    app.UseCorrelationId();
 
     // Global exception handler MUST be early in the pipeline
     app.UseGlobalExceptionHandler();
