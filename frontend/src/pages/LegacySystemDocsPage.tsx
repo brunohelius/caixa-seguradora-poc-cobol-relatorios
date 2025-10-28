@@ -37,6 +37,7 @@ import {
   Zap
 } from 'lucide-react';
 import { BusinessLogicTab } from '../components/legacy-system/BusinessLogicTab';
+import { ArchitectureTab } from '../components/legacy-docs/ArchitectureTab';
 
 export default function LegacySystemDocsPage() {
   return (
@@ -365,100 +366,7 @@ export default function LegacySystemDocsPage() {
 
         {/* Tab 2: Architecture */}
         <TabsContent value="architecture" className="space-y-6">
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Arquitetura do Sistema COBOL RG1866B</h2>
-
-            <section className="mb-8">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Visão Geral da Arquitetura</h3>
-              <p className="text-gray-700 mb-4">
-                O programa RG1866B segue o padrão clássico de batch processing mainframe com estrutura COBOL modular.
-              </p>
-
-              <div className="bg-gray-900 text-gray-100 p-6 rounded-lg font-mono text-sm overflow-x-auto mb-6">
-                <pre>{`┌─────────────────────────────────────────────────────────────┐
-│                    CAMADA DE APRESENTAÇÃO                    │
-│  (Não existe - Sistema Batch sem interface)                 │
-└─────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────┐
-│                    CAMADA DE CONTROLE                        │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │  JCL (Job Control Language)                         │   │
-│  │  • Define parâmetros (PARM='202510')                │   │
-│  │  • Aloca arquivos (PREMIT, PREMCED)                 │   │
-│  │  • Configura ambiente DB2                           │   │
-│  └──────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────┐
-│                   CAMADA DE APLICAÇÃO                        │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │  RG1866B.cbl (COBOL ANSI 85)                        │   │
-│  │  • IDENTIFICATION DIVISION                          │   │
-│  │  • ENVIRONMENT DIVISION                             │   │
-│  │  • DATA DIVISION                                    │   │
-│  │    ├─ FILE SECTION (PREMIT, PREMCED)               │   │
-│  │    └─ WORKING-STORAGE SECTION (687 vars)           │   │
-│  │  • PROCEDURE DIVISION                               │   │
-│  │    ├─ 63 seções de processamento                   │   │
-│  │    └─ 65 parágrafos                                │   │
-│  └──────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────┐
-│                CAMADA DE INTEGRAÇÃO                          │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │  Módulos Externos (Binários Compilados)            │   │
-│  │  • RE0001S - Cálculos de resseguro                 │   │
-│  │  • GE0009S - Formatações especiais                 │   │
-│  │  • GE0010S - Validações auxiliares                 │   │
-│  └──────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────┐
-│                    CAMADA DE DADOS                           │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │  IBM DB2 for z/OS                                   │   │
-│  │  • 26+ tabelas/views                                │   │
-│  │  • 4 cursores ativos                                │   │
-│  │  • SQL embarcado (EXEC SQL ... END-EXEC)           │   │
-│  └──────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-
-┌─────────────────────────────────────────────────────────────┐
-│                  CAMADA DE PERSISTÊNCIA                      │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │  Arquivos Sequenciais (DASD)                       │   │
-│  │  • PREMIT.TXT (fixed-width, 1200 bytes/rec)        │   │
-│  │  • PREMCED.TXT (fixed-width, 800 bytes/rec)        │   │
-│  └──────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘`}</pre>
-              </div>
-            </section>
-
-            <section className="mb-8">
-              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Fluxo de Execução Completo</h3>
-              <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded">
-                <ol className="list-decimal list-inside space-y-3 text-gray-700">
-                  <li><strong>R0000-INICIO:</strong> Ponto de entrada do programa</li>
-                  <li><strong>R0100-INICIALIZACAO:</strong> Inicializar variáveis, contadores, flags</li>
-                  <li><strong>R0200-ABRIR-ARQUIVOS:</strong> Abrir arquivos de saída (PREMIT.TXT, PREMCED.TXT)</li>
-                  <li><strong>R0300-LER-PARAMETROS:</strong> Ler data de processamento e código da companhia</li>
-                  <li><strong>R0400-ABRIR-CURSORES:</strong> Declarar e abrir cursores DB2</li>
-                  <li><strong>R0500-PROCESSAR-LOTE:</strong> Loop principal processando todos os registros</li>
-                  <li><strong>R0600-PROCESSAR-PREMIO:</strong> Processar cada prêmio individualmente</li>
-                  <li><strong>R0700-R1800:</strong> Cálculos por tipo de movimento (emissão, endosso, cancelamento)</li>
-                  <li><strong>R3000-R3900:</strong> Processamento de cosseguro (se aplicável)</li>
-                  <li><strong>R4000-FORMATAR-PREMIT:</strong> Formatar registro PREMIT (1200 bytes)</li>
-                  <li><strong>R5000-ESCREVER-REGISTRO:</strong> Escrever no arquivo de saída</li>
-                  <li><strong>R8000-FECHAR-CURSORES:</strong> Fechar todos os cursores DB2</li>
-                  <li><strong>R8100-FECHAR-ARQUIVOS:</strong> Fechar arquivos de saída</li>
-                  <li><strong>R8200-GERAR-TOTALIZADORES:</strong> Gerar relatório de totais</li>
-                  <li><strong>R9999-FIM:</strong> Término normal do programa</li>
-                </ol>
-              </div>
-            </section>
-          </div>
+          <ArchitectureTab />
         </TabsContent>
 
         {/* Tab 3: Data Structures - Continue with remaining tabs with FULL CONTENT */}
